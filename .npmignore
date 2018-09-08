@@ -1,0 +1,16 @@
+# node.js
+src
+
+# typescript
+tsconfig.json
+
+# prettier
+.prettierignore
+.prettierrc
+
+# jest
+coverage
+jest.json
+
+# typedoc
+docs
