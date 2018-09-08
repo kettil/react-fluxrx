@@ -47,28 +47,36 @@ export function middlewareHandler(
     const complete = () => subscriber$.complete();
     const error = (err: any) => subscriber$.error(err);
     const next = (action: actionType) => {
-      const result = middleware(action, dispatch);
-      const name = middleware.name;
+      try {
+        const result = middleware(action, dispatch);
+        const name = middleware.name;
 
-      if (result instanceof Observable) {
-        // result is a observable
-        return result.subscribe(
-          (action: actionType) => {
-            if (!actionValidator(action)) {
-              throw new Error('The middleware "' + name + '" does not return a valid action');
-            }
-            subscriber$.next(action);
-          },
-          error,
-          complete,
-        );
-      }
+        if (result instanceof Observable) {
+          // result is a observable
+          return result.subscribe(
+            (action: actionType) => {
+              try {
+                if (!actionValidator(action)) {
+                  throw new Error('The middleware "' + name + '" does not return a valid action');
+                }
+                subscriber$.next(action);
+              } catch (err) {
+                error(err);
+              }
+            },
+            error,
+            complete,
+          );
+        }
 
-      if (!actionValidator(result)) {
-        throw new Error('The middleware "' + name + '" does not return a valid action');
+        if (!actionValidator(result)) {
+          throw new Error('The middleware "' + name + '" does not return a valid action');
+        }
+        // result is a action object
+        return subscriber$.next(result);
+      } catch (err) {
+        error(err);
       }
-      // result is a action object
-      return subscriber$.next(result);
     };
 
     return source$.subscribe(next, error, complete);
