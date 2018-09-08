@@ -198,3 +198,20 @@ describe('Check the function actionError()', () => {
     },
   );
 });
+
+/**
+ * errorDefaultHandler()
+ */
+describe('Check the function errorDefaultHandler()', () => {
+  test('errorDefaultHandler(%s) return void', () => {
+    // mocks
+    const error = jest.fn();
+    const dispatch = jest.fn();
+
+    const returnValue = store.errorDefaultHandler(<any>error, dispatch);
+
+    expect(error).toHaveBeenCalledTimes(0);
+    expect(dispatch).toHaveBeenCalledTimes(0);
+    expect(returnValue).toBeUndefined();
+  });
+});
