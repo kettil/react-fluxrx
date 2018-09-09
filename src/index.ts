@@ -1,4 +1,4 @@
-import React, { createContext } from 'react';
+import React, { createContext as defaultCreateContext } from 'react';
 import { createStore as defaultCreateStore } from './store';
 import { createConnect as defaultCreateConnect } from './connect';
 
@@ -15,12 +15,7 @@ import {
 import { actionFlat, actionFilter, actionError } from './utils/store';
 import { reducerType, optionsType, storeType, middlewareActionType } from './utils/types';
 
-/*
-@todo Idee, dass man statt ein Action auch mehrere
-Aktion als Array übergeben kann.
-Dann müsste der Actionfilter, der reducer und die
-Middleware angepasst werden
-*/
+export * from './utils/types';
 
 /**
  * TS-Type Legende
@@ -39,6 +34,7 @@ export default function<S>(
   init: S | null = null,
   middleware: middlewareActionType[] = [],
   options: optionsType<S> = {
+    createContext: defaultCreateContext,
     createStore: defaultCreateStore,
     createConnect: defaultCreateConnect,
 
@@ -75,7 +71,7 @@ export default function<S>(
 
   // create a react context instance
   // https://reactjs.org/docs/context.html
-  const context = createContext<storeType<S>>(store);
+  const context = options.createContext(store);
   const Consumer: React.Consumer<storeType<S>> = context.Consumer;
   const Provider: React.Provider<storeType<S>> = context.Provider;
 

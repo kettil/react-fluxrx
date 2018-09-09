@@ -10,6 +10,7 @@ import { Observable } from 'rxjs/internal/Observable';
  *
  */
 export type optionsType<S> = {
+  createContext: createContextType<storeType<S>>;
   createStore: createStoreType<S>;
   createConnect: createConnectType<S>;
 } & optionsConnect<S, any, any, any> &
@@ -47,6 +48,14 @@ export type optionsStore<S> = {
   actionFlat: actionFlatType;
   actionError: actionErrorType;
 };
+
+/**
+ *
+ */
+export type createContextType<T> = (
+  defaultValue: T,
+  calculateChangedBits?: ((prev: T, next: T) => number) | undefined,
+) => React.Context<T>;
 
 /**
  *
