@@ -59,9 +59,8 @@ export function createStore<S>(
         options.actionFilter,
         options.middlewareHandler,
       ),
-      //...middlewareOperator,
       // error handling
-      catchError(options.actionError(options.errorHandler, dispatch)),
+      catchError(options.actionError(options.errorStoreHandler, dispatch)),
       // change action to state type
       scan(reducer, init),
     )

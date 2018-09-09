@@ -42,7 +42,7 @@ export type optionsStore<S> = {
   middlewareManager: middlewareManagerType;
   middlewareHandler: middlewareHandlerType;
 
-  errorHandler: errorHandlerType;
+  errorStoreHandler: errorHandlerType;
 
   actionFilter: actionValidatorType;
   actionFlat: actionFlatType;

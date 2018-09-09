@@ -40,7 +40,7 @@ export default function<S>(
 
     middlewareHandler: middlewareHandler,
     middlewareManager: middlewareManager,
-    errorHandler: errorStoreDefaultHandler(console.error),
+    errorStoreHandler: errorStoreDefaultHandler(console.error),
 
     actionFilter: actionFilter,
     actionFlat: actionFlat,
