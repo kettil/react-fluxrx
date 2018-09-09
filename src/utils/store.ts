@@ -3,7 +3,7 @@ import { empty } from 'rxjs/internal/observable/empty';
 import { of } from 'rxjs/internal/observable/of';
 import { filter } from 'rxjs/internal/operators/filter';
 
-import { actionType, actionSubjectType, errorHandlerType, dispatchType } from './types';
+import { actionType, actionSubjectType, errorHandlerType, dispatchType, logType } from './types';
 
 //////////////////////
 //
@@ -62,4 +62,8 @@ export function actionError(errorHandler: errorHandlerType, dispatch: dispatchTy
  * @param error
  * @param dispatch
  */
-export function errorDefaultHandler(error: Error, dispatch: dispatchType): void {}
+export function errorStoreDefaultHandler(log: logType) {
+  return (error: Error, dispatch: dispatchType): void => {
+    log('Error: ' + error);
+  };
+}

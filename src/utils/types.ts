@@ -62,6 +62,11 @@ export type createContextType<T> = (
  */
 export type equalType<A = any, B = any> = (a: A, b: B) => boolean;
 
+/**
+ *
+ */
+export type logType = (a: any) => void;
+
 //////////////////////
 //
 // CONNECT

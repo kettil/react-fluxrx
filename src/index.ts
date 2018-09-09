@@ -2,7 +2,7 @@ import React, { createContext as defaultCreateContext } from 'react';
 import { createStore as defaultCreateStore } from './store';
 import { createConnect as defaultCreateConnect } from './connect';
 
-import { errorDefaultHandler } from './utils/store';
+import { errorStoreDefaultHandler } from './utils/store';
 import * as factory from './utils/factory';
 import { middlewareHandler, middlewareManager } from './utils/middleware';
 import {
@@ -40,7 +40,7 @@ export default function<S>(
 
     middlewareHandler: middlewareHandler,
     middlewareManager: middlewareManager,
-    errorHandler: errorDefaultHandler,
+    errorHandler: errorStoreDefaultHandler(console.error),
 
     actionFilter: actionFilter,
     actionFlat: actionFlat,

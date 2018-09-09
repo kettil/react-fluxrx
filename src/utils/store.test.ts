@@ -200,17 +200,30 @@ describe('Check the function actionError()', () => {
 });
 
 /**
- * errorDefaultHandler()
+ * errorStoreDefaultHandler()
  */
-describe('Check the function errorDefaultHandler()', () => {
-  test('errorDefaultHandler(%s) return void', () => {
+describe('Check the function errorStoreDefaultHandler()', () => {
+  test('return a callback function', () => {
     // mocks
-    const error = jest.fn();
+    const log = jest.fn();
+
+    const returnCallback = store.errorStoreDefaultHandler(log);
+
+    expect(log).toHaveBeenCalledTimes(0);
+    expect(typeof returnCallback).toBe('function');
+  });
+
+  test('callback function return a expected object', () => {
+    const error = 'error message';
+    // mocks
+    const log = jest.fn();
     const dispatch = jest.fn();
 
-    const returnValue = store.errorDefaultHandler(<any>error, dispatch);
+    const returnCallback = store.errorStoreDefaultHandler(log);
+    const returnValue = returnCallback(<any>error, dispatch);
 
-    expect(error).toHaveBeenCalledTimes(0);
+    expect(log).toHaveBeenCalledTimes(1);
+    expect(log).toHaveBeenCalledWith('Error: ' + error);
     expect(dispatch).toHaveBeenCalledTimes(0);
     expect(returnValue).toBeUndefined();
   });
