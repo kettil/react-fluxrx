@@ -5,13 +5,18 @@ import { mergeMap } from 'rxjs/internal/operators/mergeMap';
 import { filter } from 'rxjs/internal/operators/filter';
 import { scan } from 'rxjs/internal/operators/scan';
 
+//import { Observable } from 'rxjs/internal/Observable';
+//import { empty } from 'rxjs/internal/observable/empty';
+//import { of } from 'rxjs/internal/observable/of';
+//import { never } from 'rxjs/internal/observable/never';
+
 import {
   optionsStore,
   reducerType,
   storeType,
+  actionType,
   actionSubjectType,
   subscribeType,
-  actionType,
   middlewareActionType,
 } from './utils/types';
 
@@ -31,7 +36,7 @@ import {
 export function createStore<S>(
   reducer: reducerType<S>,
   init: S,
-  middleware: middlewareActionType[] = [],
+  middlewares: middlewareActionType[] = [],
   options: optionsStore<S>,
 ): storeType<S> {
   // create a stream for the action
@@ -55,14 +60,14 @@ export function createStore<S>(
       // middleware
       options.middlewareManager(
         dispatch,
-        middleware,
+        middlewares,
         options.actionFilter,
         options.middlewareHandler,
       ),
-      // error handling
-      catchError(options.actionError(options.errorStoreHandler, dispatch)),
       // change action to state type
       scan(reducer, init),
+      // error handling
+      catchError<any, actionType>(options.actionError(options.errorStoreHandler, dispatch)),
     )
     .subscribe(<any>state$);
 

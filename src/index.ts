@@ -32,7 +32,7 @@ export * from './utils/types';
 export default function<S>(
   reducer: reducerType<S>,
   init: S | null = null,
-  middleware: middlewareActionType[] = [],
+  middlewares: middlewareActionType[] = [],
   options: optionsType<S> = {
     createContext: defaultCreateContext,
     createStore: defaultCreateStore,
@@ -67,7 +67,7 @@ export default function<S>(
   }
 
   // init the store
-  const store = options.createStore(reducer, init, middleware, options);
+  const store = options.createStore(reducer, init, middlewares, options);
 
   // create a react context instance
   // https://reactjs.org/docs/context.html
