@@ -1,5 +1,6 @@
 import { Subscription } from 'rxjs/internal/Subscription';
 import { Observable } from 'rxjs/internal/Observable';
+import { ObservableInput } from 'rxjs/internal/types';
 
 //////////////////////
 //
@@ -248,7 +249,7 @@ export type middlewareManagerType = (
  */
 export type middlewareHandlerType = (
   dispatch: dispatchType,
-  middleware: middlewareActionType,
+  middlewares: middlewareActionType,
   actionValidator: actionValidatorType,
   source$: Observable<actionType>,
 ) => Observable<actionType>;
@@ -333,9 +334,9 @@ export type actionFlatType = (action: actionSubjectType) => Observable<actionTyp
 export type actionErrorType = (
   errorHandler: errorHandlerType,
   dispatch: dispatchType,
-) => (error: Error) => Observable<actionType>;
+) => (error: any, action$: Observable<actionType>) => ObservableInput<actionType>;
 
 /**
  *
  */
-export type errorHandlerType = (error: Error, dispatch: dispatchType) => actionSubjectType | void;
+export type errorHandlerType = (error: any, dispatch: dispatchType) => void;

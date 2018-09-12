@@ -1,7 +1,6 @@
 import * as store from './store';
 
 import { Observable } from 'rxjs/internal/Observable';
-import { from } from 'rxjs/internal/observable/from';
 import { of } from 'rxjs/internal/observable/of';
 
 import { dispatchType, actionSubjectType } from './types';
@@ -90,7 +89,7 @@ describe('Check the function actionFlat()', () => {
  * actionError()
  */
 describe('Check the function actionError()', () => {
-  test('actionError(<error>, <func>) return a function', () => {
+  test('return a callback function', () => {
     const errorHandler = (error: Error, dispatch: dispatchType) => {};
     const dispatch = (action: actionSubjectType) => {};
 
@@ -99,104 +98,31 @@ describe('Check the function actionError()', () => {
     expect(typeof returnCallback).toBe('function');
     // count the arguments from the
     // callback function
-    expect(returnCallback.length).toBe(1);
+    expect(returnCallback.length).toBe(2);
   });
 
-  const testErrorHandlerReturnWrongValue = [
-    [null],
-    [undefined],
-    ['string'],
-    [0],
-    [true],
-    [false],
-    [of('string')],
-    [from([{ type: 'testType-1', payload: undefined }, { type: null, payload: 'lorem ipsum 2' }])],
-    [from(['string', 123])],
-  ];
+  test('call the callback function)', () => {
+    const dispatch = (action: actionSubjectType) => {};
+    const action = { type: 'add', payload: 'a' };
+    const action$ = of(action);
+    const error = new Error('test error message');
 
-  test.each(testErrorHandlerReturnWrongValue)(
-    'actionError(<errorHandler>, <dispatch>) and the errorHandler return wrong <actionType>)',
-    (wrongActionType, done) => {
-      const dispatch = (action: actionSubjectType) => {};
-      const error = new Error('test error message');
+    const mockErrorHandler = jest.fn();
 
-      const mockErrorHandler = jest.fn().mockReturnValue(wrongActionType);
+    const returnCallback = store.actionError(mockErrorHandler, dispatch);
+    expect(typeof returnCallback).toBe('function');
 
-      const returnCallback = store.actionError(mockErrorHandler, dispatch);
-      expect(typeof returnCallback).toBe('function');
+    // callback
+    const returnValue = returnCallback(error, action$);
 
-      // callback
-      const returnValue = returnCallback(error);
+    // error handler
+    expect(mockErrorHandler).toHaveBeenCalledTimes(1);
+    expect(mockErrorHandler).toHaveReturnedWith(undefined);
+    expect(mockErrorHandler).toHaveBeenCalledWith(error, dispatch);
 
-      // error handler
-      expect(mockErrorHandler).toHaveBeenCalledTimes(1);
-      expect(mockErrorHandler).toHaveBeenCalledWith(error, dispatch);
-
-      // result from callback
-      expect(returnValue).toBeInstanceOf(Observable);
-
-      const mockNext = jest.fn();
-      const mockError = jest.fn();
-      const mockComplete = jest.fn().mockImplementation(() => {
-        expect(mockNext).toHaveBeenCalledTimes(0);
-        expect(mockError).toHaveBeenCalledTimes(0);
-        expect(mockComplete).toHaveBeenCalledTimes(1);
-        done();
-      });
-
-      returnValue.subscribe({
-        next: mockNext,
-        error: mockError,
-        complete: mockComplete,
-      });
-    },
-  );
-
-  const testErrorHandlerReturnCorrectValue = [
-    [{ type: 'testType', payload: 'lorem ipsum' }, { type: 'testType', payload: 'lorem ipsum' }],
-    [
-      of({ type: 'testType', payload: 'lorem ipsum' }),
-      { type: 'testType', payload: 'lorem ipsum' },
-    ],
-  ];
-
-  test.each(testErrorHandlerReturnCorrectValue)(
-    'actionError(<errorHandler>, <dispatch>) and the errorHandler return correct <actionType>)',
-    (correctActionType, returnActionType, done) => {
-      const dispatch = (action: actionSubjectType) => {};
-      const error = new Error('test error message');
-
-      const mockErrorHandler = jest.fn().mockReturnValue(correctActionType);
-
-      const returnCallback = store.actionError(mockErrorHandler, dispatch);
-      expect(typeof returnCallback).toBe('function');
-      // callback
-      const returnValue = returnCallback(error);
-
-      // error handler
-      expect(mockErrorHandler).toHaveBeenCalledTimes(1);
-      expect(mockErrorHandler).toHaveBeenCalledWith(error, dispatch);
-
-      // result from callback
-      expect(returnValue).toBeInstanceOf(Observable);
-
-      const mockNext = jest.fn();
-      const mockError = jest.fn();
-      const mockComplete = jest.fn().mockImplementation(() => {
-        expect(mockNext).toHaveBeenCalledTimes(1);
-        expect(mockNext).toHaveBeenCalledWith(returnActionType);
-        expect(mockError).toHaveBeenCalledTimes(0);
-        expect(mockComplete).toHaveBeenCalledTimes(1);
-        done();
-      });
-
-      returnValue.subscribe({
-        next: mockNext,
-        error: mockError,
-        complete: mockComplete,
-      });
-    },
-  );
+    // result from callback
+    expect(returnValue).toBe(action$);
+  });
 });
 
 /**
