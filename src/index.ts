@@ -3,6 +3,7 @@ import { createStore as defaultCreateStore } from './store';
 import { createConnect as defaultCreateConnect } from './connect';
 
 import { errorStoreDefaultHandler } from './utils/store';
+import { reducerDefaultHandler } from './utils/reducers';
 import * as factory from './utils/factory';
 import { middlewareHandler, middlewareManager } from './utils/middleware';
 import {
@@ -40,6 +41,7 @@ export default function<S>(
 
     middlewareHandler: middlewareHandler,
     middlewareManager: middlewareManager,
+    reducerHandler: reducerDefaultHandler,
     errorStoreHandler: errorStoreDefaultHandler(console.error),
 
     actionFilter: actionFilter,

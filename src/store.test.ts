@@ -11,6 +11,7 @@ describe('Check the function createStore()', () => {
   test('create the store', () => {
     // mocks
     const reducer = jest.fn();
+    const reducerHandler = jest.fn();
     const middlewareManager = jest.fn();
     const middlewareManagerHelper = jest.fn();
     const middlewareHandler = jest.fn();
@@ -26,6 +27,7 @@ describe('Check the function createStore()', () => {
       actionFlat,
       actionFilter,
       actionError,
+      reducerHandler,
       errorStoreHandler,
       middlewareManager,
       middlewareHandler,
@@ -34,6 +36,7 @@ describe('Check the function createStore()', () => {
     const returnMiddlewareHelper = of('a');
     const returnActionError = of('b');
 
+    reducerHandler.mockReturnValue(reducer);
     reducer.mockReturnValue(result);
     middlewareManager.mockReturnValue(middlewareManagerHelper);
     middlewareManagerHelper.mockReturnValue(returnMiddlewareHelper);
@@ -50,6 +53,7 @@ describe('Check the function createStore()', () => {
     expect(returnValue.getState()).toEqual(result);
 
     expect(reducer).toHaveBeenCalledTimes(1);
+    expect(reducerHandler).toHaveBeenCalledTimes(1);
     expect(middlewareManager).toHaveBeenCalledTimes(1);
     expect(middlewareManagerHelper).toHaveBeenCalledTimes(1);
     expect(middlewareHandler).toHaveBeenCalledTimes(0);
@@ -58,6 +62,7 @@ describe('Check the function createStore()', () => {
     expect(actionFilter).toHaveBeenCalledTimes(0);
     expect(actionError).toHaveBeenCalledTimes(1);
 
+    expect(reducerHandler).toHaveBeenCalledWith(reducer);
     expect(actionError).toHaveBeenCalledWith(errorStoreHandler, returnValue.dispatch);
     expect(middlewareManager).toHaveBeenCalledWith(
       returnValue.dispatch,
@@ -72,6 +77,7 @@ describe('Check the function createStore()', () => {
 
     // mocks
     const reducer = jest.fn();
+    const reducerHandler = jest.fn();
     const middlewareManager = jest.fn(() => (source$: any) => source$);
     const middlewareHandler = jest.fn();
     const errorStoreHandler = jest.fn();
@@ -84,10 +90,13 @@ describe('Check the function createStore()', () => {
       actionFlat,
       actionFilter,
       actionError,
+      reducerHandler,
       errorStoreHandler,
       middlewareManager,
       middlewareHandler,
     };
+
+    reducerHandler.mockReturnValue(reducer);
 
     // create callback function
     const returnValue = createStore(reducer, init, middlewares, options);
@@ -105,6 +114,7 @@ describe('Check the function createStore()', () => {
       .unsubscribe();
 
     expect(reducer).toHaveBeenCalledTimes(0);
+    expect(reducerHandler).toHaveBeenCalledTimes(1);
     expect(middlewareManager).toHaveBeenCalledTimes(1);
     expect(middlewareHandler).toHaveBeenCalledTimes(0);
     expect(errorStoreHandler).toHaveBeenCalledTimes(0);
@@ -125,6 +135,7 @@ describe('Check the function createStore()', () => {
 
     // mocks
     const reducer = jest.fn((state, action) => ({ ...state, a: action.payload }));
+    const reducerHandler = jest.fn();
     const middlewareManager = jest.fn(() => (source$: any) => source$);
     const middlewareHandler = jest.fn();
     const errorStoreHandler = jest.fn();
@@ -137,10 +148,13 @@ describe('Check the function createStore()', () => {
       actionFlat,
       actionFilter,
       actionError,
+      reducerHandler,
       errorStoreHandler,
       middlewareManager,
       middlewareHandler,
     };
+
+    reducerHandler.mockReturnValue(reducer);
 
     // create callback function
     const returnValue = createStore(reducer, init, middlewares, options);
@@ -162,6 +176,7 @@ describe('Check the function createStore()', () => {
       .unsubscribe();
 
     expect(reducer).toHaveBeenCalledTimes(3);
+    expect(reducerHandler).toHaveBeenCalledTimes(1);
     expect(middlewareManager).toHaveBeenCalledTimes(1);
     expect(middlewareHandler).toHaveBeenCalledTimes(0);
     expect(errorStoreHandler).toHaveBeenCalledTimes(0);
@@ -181,12 +196,13 @@ describe('Check the function createStore()', () => {
     done();
   });
 
-  test('with wronge update', (done) => {
+  test('update store with wronge action', (done) => {
     const init = { a: 'z' };
     const action = { type: undefined, payload: 'a' };
 
     // mocks
     const reducer = jest.fn((state, action) => ({ ...state, a: action.payload }));
+    const reducerHandler = jest.fn();
     const middlewareManager = jest.fn(() => (source$: any) => source$);
     const middlewareHandler = jest.fn();
     const errorStoreHandler = jest.fn();
@@ -199,10 +215,13 @@ describe('Check the function createStore()', () => {
       actionFlat,
       actionFilter,
       actionError,
+      reducerHandler,
       errorStoreHandler,
       middlewareManager,
       middlewareHandler,
     };
+
+    reducerHandler.mockReturnValue(reducer);
 
     // create callback function
     const returnValue = createStore(reducer, init, middlewares, options);
@@ -212,6 +231,7 @@ describe('Check the function createStore()', () => {
     expect(returnValue.getState()).toEqual(init);
 
     expect(reducer).toHaveBeenCalledTimes(0);
+    expect(reducerHandler).toHaveBeenCalledTimes(1);
     expect(middlewareManager).toHaveBeenCalledTimes(1);
     expect(middlewareHandler).toHaveBeenCalledTimes(0);
     expect(errorStoreHandler).toHaveBeenCalledTimes(0);
@@ -224,12 +244,13 @@ describe('Check the function createStore()', () => {
     done();
   });
 
-  test('update with execption', (done) => {
+  test('update store with execption', (done) => {
     const init = { a: 'z' };
     const action = throwError('error message');
 
     // mocks
     const reducer = jest.fn();
+    const reducerHandler = jest.fn();
     const middlewareManager = jest.fn(() => (source$: any) => source$);
     const middlewareHandler = jest.fn();
     const errorStoreHandler = jest.fn((message) => {
@@ -249,10 +270,55 @@ describe('Check the function createStore()', () => {
       actionFlat,
       actionFilter,
       actionError,
+      reducerHandler,
       errorStoreHandler,
       middlewareManager,
       middlewareHandler,
     };
+
+    reducerHandler.mockReturnValue(reducer);
+
+    // create callback function
+    const returnValue = createStore(reducer, init, middlewares, options);
+
+    expect(typeof returnValue).toBe('object');
+
+    returnValue.dispatch(action);
+  });
+
+  test('subscription with updates and exception', (done) => {
+    const init = { a: 'z' };
+    const action = throwError('error message');
+
+    // mocks
+    const reducer = jest.fn();
+    const reducerHandler = jest.fn();
+    const middlewareManager = jest.fn(() => (source$: any) => source$);
+    const middlewareHandler = jest.fn();
+    const errorStoreHandler = jest.fn((message) => {
+      try {
+        expect(message).toBe('error message');
+        done();
+      } catch (err) {
+        done(err);
+      }
+    });
+    const actionFlat = jest.fn((action) => (action instanceof Observable ? action : of(action)));
+    const actionFilter = jest.fn(() => true);
+    const actionError = jest.fn((handler) => (err: any) => handler(err));
+
+    const middlewares: any[] = [];
+    const options: any = {
+      actionFlat,
+      actionFilter,
+      actionError,
+      reducerHandler,
+      errorStoreHandler,
+      middlewareManager,
+      middlewareHandler,
+    };
+
+    reducerHandler.mockReturnValue(reducer);
 
     // create callback function
     const returnValue = createStore(reducer, init, middlewares, options);

@@ -1,9 +1,19 @@
-import { actionType } from './types';
+import { actionType, reducerType } from './types';
 
 //////////////////////
 //
 // REDUCERS
 //
+
+/**
+ *
+ * @param reducer
+ */
+export function reducerDefaultHandler<S>(reducer: reducerType<S>): reducerType<S> {
+  return (state: S | undefined, action: actionType): S => {
+    return reducer(state, action);
+  };
+}
 
 /**
  *

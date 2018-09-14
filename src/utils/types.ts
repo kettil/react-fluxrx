@@ -43,6 +43,7 @@ export type optionsStore<S> = {
   middlewareManager: middlewareManagerType;
   middlewareHandler: middlewareHandlerType;
 
+  reducerHandler: reducerHandlerType<S>;
   errorStoreHandler: errorHandlerType;
 
   actionFilter: actionValidatorType;
@@ -258,6 +259,11 @@ export type middlewareHandlerType = (
 //
 // REDUCERS
 //
+
+/**
+ *
+ */
+export type reducerHandlerType<S> = (reducer: reducerType<S>) => reducerType<S>;
 
 /**
  *

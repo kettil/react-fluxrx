@@ -5,11 +5,6 @@ import { mergeMap } from 'rxjs/internal/operators/mergeMap';
 import { filter } from 'rxjs/internal/operators/filter';
 import { scan } from 'rxjs/internal/operators/scan';
 
-//import { Observable } from 'rxjs/internal/Observable';
-//import { empty } from 'rxjs/internal/observable/empty';
-//import { of } from 'rxjs/internal/observable/of';
-//import { never } from 'rxjs/internal/observable/never';
-
 import {
   optionsStore,
   reducerType,
@@ -65,7 +60,7 @@ export function createStore<S>(
         options.middlewareHandler,
       ),
       // change action to state type
-      scan(reducer, init),
+      scan(options.reducerHandler(reducer), init),
       // error handling
       catchError<any, actionType>(options.actionError(options.errorStoreHandler, dispatch)),
     )
