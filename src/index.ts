@@ -2,18 +2,12 @@ import React, { createContext as defaultCreateContext } from 'react';
 import { createStore as defaultCreateStore } from './store';
 import { createConnect as defaultCreateConnect } from './connect';
 
-import { errorStoreDefaultHandler } from './utils/store';
-import { reducerDefaultHandler } from './utils/reducers';
+import * as utilsConnect from './utils/connect';
 import * as factory from './utils/factory';
-import { middlewareHandler, middlewareManager } from './utils/middleware';
-import {
-  defaultMapStateToProps,
-  defaultMapDispatchToProps,
-  defaultMergeProps,
-  isStrictEqual,
-  shallowEqual,
-} from './utils/connect';
-import { actionFlat, actionFilter, actionError } from './utils/store';
+import * as utilsMiddleware from './utils/middleware';
+import * as utilsReducers from './utils/reducers';
+import * as utilsStore from './utils/store';
+
 import { reducerType, optionsType, storeType, middlewareActionType } from './utils/types';
 
 export * from './utils/types';
@@ -34,34 +28,34 @@ export default function<S>(
   reducer: reducerType<S>,
   init: S | null = null,
   middlewares: middlewareActionType[] = [],
-  options: optionsType<S> = {
-    createContext: defaultCreateContext,
-    createStore: defaultCreateStore,
-    createConnect: defaultCreateConnect,
+  {
+    createContext = defaultCreateContext,
+    createStore = defaultCreateStore,
+    createConnect = defaultCreateConnect,
 
-    middlewareHandler: middlewareHandler,
-    middlewareManager: middlewareManager,
-    reducerHandler: reducerDefaultHandler,
-    errorStoreHandler: errorStoreDefaultHandler(console.error),
+    middlewareHandler = utilsMiddleware.middlewareHandler,
+    middlewareManager = utilsMiddleware.middlewareManager,
+    reducerHandler = utilsReducers.reducerDefaultHandler,
+    errorStoreHandler = utilsStore.errorStoreDefaultHandler(console.error),
 
-    actionFilter: actionFilter,
-    actionFlat: actionFlat,
-    actionError: actionError,
+    actionFilter = utilsStore.actionFilter,
+    actionFlat = utilsStore.actionFlat,
+    actionError = utilsStore.actionError,
 
-    mapStateToProps: defaultMapStateToProps,
-    mapDispatchToProps: defaultMapDispatchToProps,
-    mergeProps: defaultMergeProps,
+    mapStateToProps = utilsConnect.defaultMapStateToProps,
+    mapDispatchToProps = utilsConnect.defaultMapDispatchToProps,
+    mergeProps = utilsConnect.defaultMergeProps,
 
-    mapStateToPropsWithCacheFactory: factory.mapStateToPropsWithCacheFactory,
-    mapDispatchToPropsWithCacheFactory: factory.mapDispatchToPropsWithCacheFactory,
-    mergePropsWithCacheFactory: factory.mergePropsWithCacheFactory,
-    propsFactory: factory.propsFactory,
+    mapStateToPropsWithCacheFactory = factory.mapStateToPropsWithCacheFactory,
+    mapDispatchToPropsWithCacheFactory = factory.mapDispatchToPropsWithCacheFactory,
+    mergePropsWithCacheFactory = factory.mergePropsWithCacheFactory,
+    propsFactory = factory.propsFactory,
 
-    areStatesEqual: isStrictEqual,
-    arePropsEqual: shallowEqual,
-    areMappedEqual: shallowEqual,
-    areDispatchedEqual: shallowEqual,
-  },
+    areStatesEqual = utilsConnect.isStrictEqual,
+    arePropsEqual = utilsConnect.shallowEqual,
+    areMappedEqual = utilsConnect.shallowEqual,
+    areDispatchedEqual = utilsConnect.shallowEqual,
+  }: optionsType<S>,
 ) {
   if (init === null) {
     // set default state, if it is not defined
@@ -69,16 +63,36 @@ export default function<S>(
   }
 
   // init the store
-  const store = options.createStore(reducer, init, middlewares, options);
+  const store = createStore(reducer, init, middlewares, {
+    actionError,
+    actionFilter,
+    actionFlat,
+    errorStoreHandler,
+    middlewareHandler,
+    middlewareManager,
+    reducerHandler,
+  });
 
   // create a react context instance
   // https://reactjs.org/docs/context.html
-  const context = options.createContext(store);
+  const context = createContext(store);
   const Consumer: React.Consumer<storeType<S>> = context.Consumer;
   const Provider: React.Provider<storeType<S>> = context.Provider;
 
   // creates the connect function for linking to the react component
-  const connect = options.createConnect(Consumer, options);
+  const connect = createConnect(Consumer, {
+    areDispatchedEqual,
+    areMappedEqual,
+    arePropsEqual,
+    areStatesEqual,
+    mapDispatchToProps,
+    mapDispatchToPropsWithCacheFactory,
+    mapStateToProps,
+    mapStateToPropsWithCacheFactory,
+    mergeProps,
+    mergePropsWithCacheFactory,
+    propsFactory,
+  });
 
   return {
     // store
