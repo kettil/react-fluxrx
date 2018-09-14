@@ -1,10 +1,5 @@
 import { dispatchType, propsMergeReturnType } from './types';
 
-//////////////////////
-//
-// CONNECT
-//
-
 /**
  *
  * @param state

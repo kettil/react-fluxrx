@@ -1,10 +1,5 @@
 import { actionType, reducerType } from './types';
 
-//////////////////////
-//
-// REDUCERS
-//
-
 /**
  *
  * @param reducer

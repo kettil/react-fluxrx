@@ -3,11 +3,6 @@ import { of } from 'rxjs/internal/observable/of';
 
 import { actionType, actionSubjectType, errorHandlerType, dispatchType, logType } from './types';
 
-//////////////////////
-//
-// STORE
-//
-
 /**
  *
  * @param action
