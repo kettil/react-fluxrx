@@ -21,34 +21,34 @@ export type optionsType<S> = {
  *
  */
 export type optionsConnect<S, P, MS, MD> = {
-  mapStateToProps?: mapStateToPropsType<S, P, MS>;
-  mapDispatchToProps?: mapDispatchToPropsType<P, MD>;
-  mergeProps?: mergePropsType<MS, MD, P>;
+  mapStateToProps: mapStateToPropsType<S, P, MS>;
+  mapDispatchToProps: mapDispatchToPropsType<P, MD>;
+  mergeProps: mergePropsType<MS, MD, P>;
 
-  mapStateToPropsWithCacheFactory?: mapStateToPropsWithCacheFactoryType<S, P, MS>;
-  mapDispatchToPropsWithCacheFactory?: mapDispatchToPropsWithCacheFactoryType<P, MD>;
-  mergePropsWithCacheFactory?: mergePropsWithCacheFactoryType<P, MS, MD>;
-  propsFactory?: propsFactoryType<S, P, MS, MD>;
+  mapStateToPropsWithCacheFactory: mapStateToPropsWithCacheFactoryType<S, P, MS>;
+  mapDispatchToPropsWithCacheFactory: mapDispatchToPropsWithCacheFactoryType<P, MD>;
+  mergePropsWithCacheFactory: mergePropsWithCacheFactoryType<P, MS, MD>;
+  propsFactory: propsFactoryType<S, P, MS, MD>;
 
-  areStatesEqual?: equalType<S, S>;
-  arePropsEqual?: equalType<P, P>;
-  areMappedEqual?: equalType<MS, MS>;
-  areDispatchedEqual?: equalType<MD, MD>;
+  areStatesEqual: equalType<S, S>;
+  arePropsEqual: equalType<P, P>;
+  areMappedEqual: equalType<MS, MS>;
+  areDispatchedEqual: equalType<MD, MD>;
 };
 
 /**
  *
  */
 export type optionsStore<S> = {
-  middlewareManager?: middlewareManagerType;
-  middlewareHandler?: middlewareHandlerType;
+  middlewareManager: middlewareManagerType;
+  middlewareHandler: middlewareHandlerType;
 
-  reducerHandler?: reducerHandlerType<S>;
-  errorStoreHandler?: errorHandlerType;
+  reducerHandler: reducerHandlerType<S>;
+  errorStoreHandler: errorHandlerType;
 
-  actionFilter?: actionValidatorType;
-  actionFlat?: actionFlatType;
-  actionError?: actionErrorType;
+  actionFilter: actionValidatorType;
+  actionFlat: actionFlatType;
+  actionError: actionErrorType;
 };
 
 /**
