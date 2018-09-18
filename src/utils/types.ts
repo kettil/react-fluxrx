@@ -14,13 +14,36 @@ export type optionsType<S> = {
   createContext?: createContextType<storeType<S>>;
   createStore?: createStoreType<S>;
   createConnect?: createConnectType<S>;
-} & optionsConnect<S, any, any, any> &
-  optionsStore<S>;
+
+  mapStateToProps?: mapStateToPropsType<S, any, any>;
+  mapDispatchToProps?: mapDispatchToPropsType<any, any>;
+  mergeProps?: mergePropsType<any, any, any>;
+
+  mapStateToPropsWithCacheFactory?: mapStateToPropsWithCacheFactoryType<S, any, any>;
+  mapDispatchToPropsWithCacheFactory?: mapDispatchToPropsWithCacheFactoryType<any, any>;
+  mergePropsWithCacheFactory?: mergePropsWithCacheFactoryType<any, any, any>;
+  propsFactory?: propsFactoryType<S, any, any, any>;
+
+  areStatesEqual?: equalType<S, S>;
+  arePropsEqual?: equalType<any, any>;
+  areMappedEqual?: equalType<any, any>;
+  areDispatchedEqual?: equalType<any, any>;
+
+  middlewareManager?: middlewareManagerType;
+  middlewareHandler?: middlewareHandlerType;
+
+  reducerHandler?: reducerHandlerType<S>;
+  errorStoreHandler?: errorHandlerType;
+
+  actionFilter?: actionValidatorType;
+  actionFlat?: actionFlatType;
+  actionError?: actionErrorType;
+};
 
 /**
  *
  */
-export type optionsConnect<S, P, MS, MD> = {
+export type optionsConnectType<S, P, MS, MD> = {
   mapStateToProps: mapStateToPropsType<S, P, MS>;
   mapDispatchToProps: mapDispatchToPropsType<P, MD>;
   mergeProps: mergePropsType<MS, MD, P>;
@@ -39,7 +62,7 @@ export type optionsConnect<S, P, MS, MD> = {
 /**
  *
  */
-export type optionsStore<S> = {
+export type optionsStoreType<S> = {
   middlewareManager: middlewareManagerType;
   middlewareHandler: middlewareHandlerType;
 
@@ -76,7 +99,7 @@ export type logType = (a: any) => void;
 
 export type createConnectType<S> = (
   Consumer: React.ComponentType<React.ConsumerProps<storeType<S>>>,
-  options: optionsConnect<S, any, any, any>,
+  options: optionsConnectType<S, any, any, any>,
 ) => <P, MS, MD>(
   mapStateToProps?: mapStateToPropsType<S, P, MS> | null,
   mapDispatchToProps?: mapDispatchToPropsType<P, MD>,
@@ -289,7 +312,7 @@ export type createStoreType<S> = (
   reducer: reducerType<S>,
   init: S,
   middleware: middlewareActionType[],
-  options: optionsStore<S>,
+  options: optionsStoreType<S>,
 ) => storeType<S>;
 
 /**

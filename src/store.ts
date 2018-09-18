@@ -6,7 +6,7 @@ import { filter } from 'rxjs/internal/operators/filter';
 import { scan } from 'rxjs/internal/operators/scan';
 
 import {
-  optionsStore,
+  optionsStoreType,
   reducerType,
   storeType,
   actionType,
@@ -32,7 +32,7 @@ export function createStore<S>(
   reducer: reducerType<S>,
   init: S,
   middlewares: middlewareActionType[] = [],
-  options: optionsStore<S>,
+  options: optionsStoreType<S>,
 ): storeType<S> {
   // create a stream for the action
   const action$ = new Subject<actionSubjectType>();

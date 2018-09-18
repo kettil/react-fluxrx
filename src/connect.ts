@@ -4,7 +4,7 @@ import { getElementWithoutSubscription, getElementWithSubscription } from './com
 import {
   storeType,
   dispatchType,
-  optionsConnect,
+  optionsConnectType,
   mapStateToPropsType,
   mapDispatchToPropsType,
   mergePropsType,
@@ -24,7 +24,7 @@ import {
  */
 export function createConnect<S>(
   Consumer: Consumer<storeType<S>>,
-  options: optionsConnect<S, any, any, any>,
+  options: optionsConnectType<S, any, any, any>,
 ) {
   return function connect<P = {}, MS = { state: S }, MD = { dispatch: dispatchType }>(
     mapStateToProps: null | mapStateToPropsType<S, P, MS> = options.mapStateToProps,

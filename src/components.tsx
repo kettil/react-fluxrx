@@ -2,12 +2,14 @@ import React, { ComponentType } from 'react';
 import { createSubscription, Subscription } from 'create-subscription';
 
 import {
-  optionsConnect,
+  optionsConnectType,
   storeType,
   propsMergeType,
   subscriptionType,
   propsMergeReturnType,
 } from './utils/types';
+
+// @todo versuchen die Componenten zu trennen; also jede Componete einzeln
 
 /**
  *
@@ -16,7 +18,7 @@ import {
  */
 export function getElementWithoutSubscription<S, P, MS, MD>(
   Consumer: ComponentType<React.ConsumerProps<storeType<S>>>,
-  { mapDispatchToProps, mergeProps }: optionsConnect<S, P, MS, MD>,
+  { mapDispatchToProps, mergeProps }: optionsConnectType<S, P, MS, MD>,
 ) {
   return (Element: ComponentType<propsMergeReturnType<P, MS, MD>>): ComponentType<P> => (
     ownProps,
@@ -38,7 +40,7 @@ export function getElementWithoutSubscription<S, P, MS, MD>(
  */
 export function getElementWithSubscription<S, P, MS, MD>(
   Consumer: ComponentType<React.ConsumerProps<storeType<S>>>,
-  options: optionsConnect<S, P, MS, MD>,
+  options: optionsConnectType<S, P, MS, MD>,
 ) {
   const propsFactory = options.propsFactory(
     options.mapStateToPropsWithCacheFactory(
