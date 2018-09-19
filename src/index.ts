@@ -1,16 +1,18 @@
 import React, { createContext as defaultCreateContext } from 'react';
 import { createStore as defaultCreateStore } from './store';
 import { createConnect as defaultCreateConnect } from './connect';
+import { createSubscription as createSubscriptionReact } from 'create-subscription';
 
-import * as utilsConnect from './utils/connect';
-import * as factory from './utils/factory';
-import * as utilsMiddleware from './utils/middleware';
-import * as utilsReducers from './utils/reducers';
-import * as utilsStore from './utils/store';
+import * as components from './libs/components';
+import * as utilsConnect from './libs/connect';
+import * as factory from './libs/factory';
+import * as utilsMiddleware from './libs/middleware';
+import * as utilsReducers from './libs/reducers';
+import * as utilsStore from './libs/store';
 
-import { reducerType, optionsType, storeType, middlewareActionType } from './utils/types';
+import { reducerType, optionsType, storeType, middlewareActionType } from './libs/types';
 
-export * from './utils/types';
+export * from './libs/types';
 
 /**
  * TS-Type Legende
@@ -51,6 +53,11 @@ export default function<S>(
     mergePropsWithCacheFactory = factory.mergePropsWithCacheFactory,
     propsFactory = factory.propsFactory,
 
+    createElementWithoutSubscription = components.createElementWithoutSubscription,
+    createElementWithSubscription = components.createElementWithSubscription,
+    createSubscriptionWrapper = components.createSubscriptionWrapper,
+    createSubscription = createSubscriptionReact,
+
     areStatesEqual = utilsConnect.isStrictEqual,
     arePropsEqual = utilsConnect.shallowEqual,
     areMappedEqual = utilsConnect.shallowEqual,
@@ -85,6 +92,10 @@ export default function<S>(
     areMappedEqual,
     arePropsEqual,
     areStatesEqual,
+    createElementWithoutSubscription,
+    createElementWithSubscription,
+    createSubscription,
+    createSubscriptionWrapper,
     mapDispatchToProps,
     mapDispatchToPropsWithCacheFactory,
     mapStateToProps,

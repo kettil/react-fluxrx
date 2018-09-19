@@ -13,7 +13,7 @@ import {
   actionSubjectType,
   subscribeType,
   middlewareActionType,
-} from './utils/types';
+} from './libs/types';
 
 /**
  * TypeScript Type Legende

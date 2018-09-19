@@ -1,22 +1,21 @@
 import React, { ComponentType } from 'react';
-import { createSubscription, Subscription } from 'create-subscription';
+import { Subscription } from 'create-subscription';
 
 import {
   optionsConnectType,
   storeType,
   propsMergeType,
   subscriptionType,
+  createSubscriptionType,
   propsMergeReturnType,
-} from './utils/types';
-
-// @todo versuchen die Componenten zu trennen; also jede Componete einzeln
+} from './types';
 
 /**
  *
  * @param Consumer
- * @param Subscription
+ * @param param1
  */
-export function getElementWithoutSubscription<S, P, MS, MD>(
+export function createElementWithoutSubscription<S, P, MS, MD>(
   Consumer: ComponentType<React.ConsumerProps<storeType<S>>>,
   { mapDispatchToProps, mergeProps }: optionsConnectType<S, P, MS, MD>,
 ) {
@@ -36,9 +35,9 @@ export function getElementWithoutSubscription<S, P, MS, MD>(
 /**
  *
  * @param Consumer
- * @param Subscription
+ * @param options
  */
-export function getElementWithSubscription<S, P, MS, MD>(
+export function createElementWithSubscription<S, P, MS, MD>(
   Consumer: ComponentType<React.ConsumerProps<storeType<S>>>,
   options: optionsConnectType<S, P, MS, MD>,
 ) {
@@ -64,7 +63,10 @@ export function getElementWithSubscription<S, P, MS, MD>(
   ) => (
     <Consumer>
       {(store) => {
-        const Subscription = getSubscription<S, P, MS, MD>(propsFactory(store.dispatch));
+        const Subscription = options.createSubscriptionWrapper(
+          options.createSubscription,
+          propsFactory(store.dispatch),
+        );
         return (
           <Subscription source={{ store, ownProps }}>
             {(props) => <Element {...props} />}
@@ -79,12 +81,14 @@ export function getElementWithSubscription<S, P, MS, MD>(
  *
  * @param merge
  */
-export function getSubscription<S, P, MS, MD>(
+export function createSubscriptionWrapper<S, P, MS, MD>(
+  createSubscription: createSubscriptionType<S, P, MS, MD>,
   merge: propsMergeType<S, P, MS, MD>,
 ): Subscription<subscriptionType<S, P>, propsMergeReturnType<P, MS, MD>> {
   // cache props object
   let nowProps: propsMergeReturnType<P, MS, MD>;
-  return createSubscription<subscriptionType<S, P>, propsMergeReturnType<P, MS, MD>>({
+  // create subscription element
+  return createSubscription({
     getCurrentValue(source) {
       nowProps = merge(source.store.getState(), source.ownProps);
       return nowProps;

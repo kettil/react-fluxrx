@@ -1,6 +1,7 @@
 import { Subscription } from 'rxjs/internal/Subscription';
 import { Observable } from 'rxjs/internal/Observable';
 import { ObservableInput } from 'rxjs/internal/types';
+import { Subscription as SubscriptionReact, SubscriptionConfig } from 'create-subscription';
 
 //////////////////////
 //
@@ -23,6 +24,11 @@ export type optionsType<S> = {
   mapDispatchToPropsWithCacheFactory?: mapDispatchToPropsWithCacheFactoryType<any, any>;
   mergePropsWithCacheFactory?: mergePropsWithCacheFactoryType<any, any, any>;
   propsFactory?: propsFactoryType<S, any, any, any>;
+
+  createElementWithoutSubscription?: createElementWithoutSubscriptionType<S, any, any, any>;
+  createElementWithSubscription?: createElementWithSubscriptionType<S, any, any, any>;
+  createSubscriptionWrapper?: createSubscriptionWrapperType<S, any, any, any>;
+  createSubscription?: createSubscriptionType<S, any, any, any>;
 
   areStatesEqual?: equalType<S, S>;
   arePropsEqual?: equalType<any, any>;
@@ -52,6 +58,11 @@ export type optionsConnectType<S, P, MS, MD> = {
   mapDispatchToPropsWithCacheFactory: mapDispatchToPropsWithCacheFactoryType<P, MD>;
   mergePropsWithCacheFactory: mergePropsWithCacheFactoryType<P, MS, MD>;
   propsFactory: propsFactoryType<S, P, MS, MD>;
+
+  createElementWithoutSubscription: createElementWithoutSubscriptionType<S, P, MS, MD>;
+  createElementWithSubscription: createElementWithSubscriptionType<S, P, MS, MD>;
+  createSubscriptionWrapper: createSubscriptionWrapperType<S, P, MS, MD>;
+  createSubscription: createSubscriptionType<S, P, MS, MD>;
 
   areStatesEqual: equalType<S, S>;
   arePropsEqual: equalType<P, P>;
@@ -109,10 +120,41 @@ export type createConnectType<S> = (
 /**
  *
  */
+export type createElementWithoutSubscriptionType<S, P, MS, MD> = (
+  Consumer: React.ComponentType<React.ConsumerProps<storeType<S>>>,
+  options: optionsConnectType<S, P, MS, MD>,
+) => (Element: React.ComponentType<propsMergeReturnType<P, MS, MD>>) => React.ComponentType<P>;
+
+/**
+ *
+ */
+export type createElementWithSubscriptionType<S, P, MS, MD> = (
+  Consumer: React.ComponentType<React.ConsumerProps<storeType<S>>>,
+  options: optionsConnectType<S, P, MS, MD>,
+) => (Element: React.ComponentType<propsMergeReturnType<P, MS, MD>>) => React.ComponentType<P>;
+
+/**
+ *
+ */
 export type subscriptionType<S, P> = {
   store: storeType<S>;
   ownProps: P;
 };
+
+/**
+ *
+ */
+export type createSubscriptionType<S, P, MS, MD> = (
+  config: SubscriptionConfig<subscriptionType<S, P>, propsMergeReturnType<P, MS, MD>>,
+) => SubscriptionReact<subscriptionType<S, P>, propsMergeReturnType<P, MS, MD>>;
+
+/**
+ *
+ */
+export type createSubscriptionWrapperType<S, P, MS, MD> = (
+  createSubscription: createSubscriptionType<S, P, MS, MD>,
+  merge: propsMergeType<S, P, MS, MD>,
+) => SubscriptionReact<subscriptionType<S, P>, propsMergeReturnType<P, MS, MD>>;
 
 /**
  *

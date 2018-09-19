@@ -1,5 +1,4 @@
 import { Consumer } from 'react';
-import { getElementWithoutSubscription, getElementWithSubscription } from './components';
 
 import {
   storeType,
@@ -9,7 +8,7 @@ import {
   mapDispatchToPropsType,
   mergePropsType,
   connectedType,
-} from './utils/types';
+} from './libs/types';
 
 /**
  * TS-Type Legende
@@ -32,14 +31,14 @@ export function createConnect<S>(
     mergeProps: mergePropsType<MS, MD, P> = options.mergeProps,
   ): connectedType<P, MS, MD> {
     if (mapStateToProps === null) {
-      return getElementWithoutSubscription<S, P, MS, MD>(Consumer, {
+      return options.createElementWithoutSubscription(Consumer, {
         ...options,
         mapDispatchToProps,
         mergeProps,
       });
     }
 
-    return getElementWithSubscription<S, P, MS, MD>(Consumer, {
+    return options.createElementWithSubscription(Consumer, {
       ...options,
       mapStateToProps,
       mapDispatchToProps,
