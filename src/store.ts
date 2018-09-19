@@ -53,12 +53,7 @@ export function createStore<S>(
       // filter only action
       filter<actionType>(options.actionFilter),
       // middleware
-      options.middlewareManager(
-        dispatch,
-        middlewares,
-        options.actionFilter,
-        options.middlewareHandler,
-      ),
+      options.middlewareManager(dispatch, middlewares, options.actionFilter, options.middlewareHandler),
       // change action to state type
       scan(options.reducerHandler(reducer), init),
       // error handling

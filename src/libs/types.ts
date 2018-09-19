@@ -185,17 +185,12 @@ export type mergePropsType<MS, MD, P> = (
 /**
  * @todo change type name
  */
-export type propsMergeType<S, P, MS, MD> = (
-  nextState: S,
-  nextProps: P,
-) => propsMergeReturnType<P, MS, MD>;
+export type propsMergeType<S, P, MS, MD> = (nextState: S, nextProps: P) => propsMergeReturnType<P, MS, MD>;
 
 /**
  *
  */
-export type propsMergeReturnType<T1, T2, T3> = T3 &
-  objectExcludeKEysType<T2, T3> &
-  objectExcludeKEysType<T1, T2 & T3>;
+export type propsMergeReturnType<T1, T2, T3> = T3 & objectExcludeKEysType<T2, T3> & objectExcludeKEysType<T1, T2 & T3>;
 
 /**
  *
@@ -219,11 +214,7 @@ export type mapStateToPropsWithCacheFactoryType<S, P, MS> = (
 /**
  *
  */
-export type mapStateToPropsWithCacheType<S, P, MS> = (
-  nextState: S,
-  nextProps: P,
-  hasDependsOnProps: boolean,
-) => MS;
+export type mapStateToPropsWithCacheType<S, P, MS> = (nextState: S, nextProps: P, hasDependsOnProps: boolean) => MS;
 
 /**
  *
@@ -275,17 +266,12 @@ export type propsFactoryType<S, P, MS, MD> = (
 /**
  *
  */
-export type propsFactoryDispatchType<S, P, MS, MD> = (
-  dispatch: dispatchType,
-) => propsFactoryUpdateType<S, P, MS, MD>;
+export type propsFactoryDispatchType<S, P, MS, MD> = (dispatch: dispatchType) => propsFactoryUpdateType<S, P, MS, MD>;
 
 /**
  *
  */
-export type propsFactoryUpdateType<S, P, MS, MD> = (
-  nextState: S,
-  nextProps: P,
-) => propsMergeReturnType<P, MS, MD>;
+export type propsFactoryUpdateType<S, P, MS, MD> = (nextState: S, nextProps: P) => propsMergeReturnType<P, MS, MD>;
 
 //////////////////////
 //
@@ -295,10 +281,7 @@ export type propsFactoryUpdateType<S, P, MS, MD> = (
 /**
  *
  */
-export type middlewareActionType = (
-  action: actionType,
-  dispatch: dispatchType,
-) => actionSubjectType;
+export type middlewareActionType = (action: actionType, dispatch: dispatchType) => actionSubjectType;
 
 /**
  *

@@ -64,12 +64,7 @@ describe('Check the function createStore()', () => {
 
     expect(reducerHandler).toHaveBeenCalledWith(reducer);
     expect(actionError).toHaveBeenCalledWith(errorStoreHandler, returnValue.dispatch);
-    expect(middlewareManager).toHaveBeenCalledWith(
-      returnValue.dispatch,
-      [],
-      actionFilter,
-      middlewareHandler,
-    );
+    expect(middlewareManager).toHaveBeenCalledWith(returnValue.dispatch, [], actionFilter, middlewareHandler);
   });
 
   test('subscription without updates', (done) => {

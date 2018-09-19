@@ -18,11 +18,7 @@ describe('Check the function mapStateToPropsWithCacheFactory()', () => {
     const arePropsEqual = jest.fn();
 
     // create callback function
-    const returnCallback = factory.mapStateToPropsWithCacheFactory(
-      mapStateToProps,
-      areStatesEqual,
-      arePropsEqual,
-    );
+    const returnCallback = factory.mapStateToPropsWithCacheFactory(mapStateToProps, areStatesEqual, arePropsEqual);
 
     expect(mapStateToProps).toHaveBeenCalledTimes(0);
     expect(areStatesEqual).toHaveBeenCalledTimes(0);
@@ -43,11 +39,7 @@ describe('Check the function mapStateToPropsWithCacheFactory()', () => {
     const arePropsEqual = jest.fn();
 
     // create callback function
-    const returnCallback = factory.mapStateToPropsWithCacheFactory(
-      mapStateToProps,
-      areStatesEqual,
-      arePropsEqual,
-    );
+    const returnCallback = factory.mapStateToPropsWithCacheFactory(mapStateToProps, areStatesEqual, arePropsEqual);
 
     const returnValue = returnCallback(state, props, true);
     expect(returnValue).toEqual(result);
@@ -87,11 +79,7 @@ describe('Check the function mapStateToPropsWithCacheFactory()', () => {
       const arePropsEqual = jest.fn(shallowEqual);
 
       // create callback function
-      const returnCallback = factory.mapStateToPropsWithCacheFactory(
-        mapStateToProps,
-        areStatesEqual,
-        arePropsEqual,
-      );
+      const returnCallback = factory.mapStateToPropsWithCacheFactory(mapStateToProps, areStatesEqual, arePropsEqual);
 
       // first call
       const returnValue1 = returnCallback(state1, props1, hasDepends);
@@ -123,10 +111,7 @@ describe('Check the function mapDispatchToPropsWithCacheFactory()', () => {
     const arePropsEqual = jest.fn();
 
     // create callback function
-    const returnCallback = factory.mapDispatchToPropsWithCacheFactory(
-      mapDispatchToProps,
-      arePropsEqual,
-    );
+    const returnCallback = factory.mapDispatchToPropsWithCacheFactory(mapDispatchToProps, arePropsEqual);
 
     expect(mapDispatchToProps).toHaveBeenCalledTimes(0);
     expect(arePropsEqual).toHaveBeenCalledTimes(0);
@@ -145,10 +130,7 @@ describe('Check the function mapDispatchToPropsWithCacheFactory()', () => {
     const arePropsEqual = jest.fn();
 
     // create callback function
-    const returnCallback = factory.mapDispatchToPropsWithCacheFactory(
-      mapDispatchToProps,
-      arePropsEqual,
-    );
+    const returnCallback = factory.mapDispatchToPropsWithCacheFactory(mapDispatchToProps, arePropsEqual);
 
     const returnValue = returnCallback(dispatch, props, true);
     expect(returnValue).toEqual(result);
@@ -180,10 +162,7 @@ describe('Check the function mapDispatchToPropsWithCacheFactory()', () => {
       const arePropsEqual = jest.fn(shallowEqual);
 
       // create callback function
-      const returnCallback = factory.mapDispatchToPropsWithCacheFactory(
-        mapDispatchToProps,
-        arePropsEqual,
-      );
+      const returnCallback = factory.mapDispatchToPropsWithCacheFactory(mapDispatchToProps, arePropsEqual);
 
       // first call
       const returnValue1 = returnCallback(dispatch, props1, hasDepends);

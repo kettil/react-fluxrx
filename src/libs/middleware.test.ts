@@ -309,12 +309,7 @@ describe('Check the function middlewareManager()', () => {
 
     const middlewares: any[] = [];
 
-    const returnCallback = middlewareManager(
-      dispatch,
-      middlewares,
-      <any>actionValidator,
-      middlewareHandler,
-    );
+    const returnCallback = middlewareManager(dispatch, middlewares, <any>actionValidator, middlewareHandler);
 
     expect(dispatch).toHaveBeenCalledTimes(0);
     expect(actionValidator).toHaveBeenCalledTimes(0);
@@ -333,12 +328,7 @@ describe('Check the function middlewareManager()', () => {
     const middlewares: any[] = [];
     const source$ = of(action);
 
-    const returnCallback = middlewareManager(
-      dispatch,
-      middlewares,
-      <any>actionValidator,
-      middlewareHandler,
-    );
+    const returnCallback = middlewareManager(dispatch, middlewares, <any>actionValidator, middlewareHandler);
 
     const returnValue = returnCallback(source$);
     expect(returnValue).toBeInstanceOf(Observable);
@@ -383,12 +373,7 @@ describe('Check the function middlewareManager()', () => {
 
     const middlewares: any[] = [middleware1, middleware2];
 
-    const returnCallback = middlewareManager(
-      dispatch,
-      middlewares,
-      <any>actionValidator,
-      middlewareHandler,
-    );
+    const returnCallback = middlewareManager(dispatch, middlewares, <any>actionValidator, middlewareHandler);
 
     const returnValue = returnCallback(ofAction1$);
     expect(returnValue).toBeInstanceOf(Observable);
@@ -399,20 +384,8 @@ describe('Check the function middlewareManager()', () => {
       expect(dispatch).toHaveBeenCalledTimes(0);
       expect(actionValidator).toHaveBeenCalledTimes(0);
       expect(middlewareHandler).toHaveBeenCalledTimes(2);
-      expect(middlewareHandler).toHaveBeenNthCalledWith(
-        1,
-        dispatch,
-        middleware1,
-        actionValidator,
-        ofAction1$,
-      );
-      expect(middlewareHandler).toHaveBeenNthCalledWith(
-        2,
-        dispatch,
-        middleware2,
-        actionValidator,
-        ofAction2$,
-      );
+      expect(middlewareHandler).toHaveBeenNthCalledWith(1, dispatch, middleware1, actionValidator, ofAction1$);
+      expect(middlewareHandler).toHaveBeenNthCalledWith(2, dispatch, middleware2, actionValidator, ofAction2$);
       expect(middleware1).toHaveBeenCalledTimes(0);
       expect(middleware2).toHaveBeenCalledTimes(0);
 

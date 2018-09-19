@@ -154,11 +154,7 @@ export function propsFactory<S, P, MS, MD>(
   return (dispatch: dispatchType): propsFactoryUpdateType<S, P, MS, MD> => {
     return (state: S, props: P) => {
       const stateMapped = mapStateToPropsWithCache(state, props, hasStateToPropsDependsOnProps);
-      const dispatchMapped = mapDispatchToPropsWithCache(
-        dispatch,
-        props,
-        hasDispatchToPropsDependsOnProps,
-      );
+      const dispatchMapped = mapDispatchToPropsWithCache(dispatch, props, hasDispatchToPropsDependsOnProps);
 
       return mergePropsWithCache(stateMapped, dispatchMapped, props);
     };

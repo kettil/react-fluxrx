@@ -57,32 +57,29 @@ describe('Check the function actionFlat()', () => {
     expect(returnValue).toBeInstanceOf(Observable);
   });
 
-  test.each(testTrue)(
-    'actionFlat(%s) return a expected actionType in a observable',
-    (action, expected, done) => {
-      const returnValue = store.actionFlat(action);
+  test.each(testTrue)('actionFlat(%s) return a expected actionType in a observable', (action, expected, done) => {
+    const returnValue = store.actionFlat(action);
 
-      expect(returnValue).toBeInstanceOf(Observable);
+    expect(returnValue).toBeInstanceOf(Observable);
 
-      const mockNext = jest.fn((action) => {
-        expect(action).toEqual(expected);
-        expect(store.actionFilter(action)).toBeTruthy();
-      });
-      const mockError = jest.fn();
-      const mockComplete = jest.fn().mockImplementation(() => {
-        expect(mockNext).toHaveBeenCalledTimes(1);
-        expect(mockError).toHaveBeenCalledTimes(0);
-        expect(mockComplete).toHaveBeenCalledTimes(1);
-        done();
-      });
+    const mockNext = jest.fn((action) => {
+      expect(action).toEqual(expected);
+      expect(store.actionFilter(action)).toBeTruthy();
+    });
+    const mockError = jest.fn();
+    const mockComplete = jest.fn().mockImplementation(() => {
+      expect(mockNext).toHaveBeenCalledTimes(1);
+      expect(mockError).toHaveBeenCalledTimes(0);
+      expect(mockComplete).toHaveBeenCalledTimes(1);
+      done();
+    });
 
-      returnValue.subscribe({
-        next: mockNext,
-        error: mockError,
-        complete: mockComplete,
-      });
-    },
-  );
+    returnValue.subscribe({
+      next: mockNext,
+      error: mockError,
+      complete: mockComplete,
+    });
+  });
 });
 
 /**

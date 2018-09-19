@@ -21,10 +21,7 @@ import {
  * @param Consumer
  * @param options
  */
-export function createConnect<S>(
-  Consumer: Consumer<storeType<S>>,
-  options: optionsConnectType<S, any, any, any>,
-) {
+export function createConnect<S>(Consumer: Consumer<storeType<S>>, options: optionsConnectType<S, any, any, any>) {
   return function connect<P = {}, MS = { state: S }, MD = { dispatch: dispatchType }>(
     mapStateToProps: null | mapStateToPropsType<S, P, MS> = options.mapStateToProps,
     mapDispatchToProps: mapDispatchToPropsType<P, MD> = options.mapDispatchToProps,

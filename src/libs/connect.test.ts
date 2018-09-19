@@ -58,18 +58,8 @@ describe('Check the function defaultMergeProps()', () => {
 
   const testFunction = (a: any) => a;
   const testTrue = [
-    [
-      { text: 'string1' },
-      { update: testFunction },
-      { mode: 1 },
-      { text: 'string1', update: testFunction, mode: 1 },
-    ],
-    [
-      { text: 'string1' },
-      { update: testFunction },
-      { text: 'string2' },
-      { text: 'string1', update: testFunction },
-    ],
+    [{ text: 'string1' }, { update: testFunction }, { mode: 1 }, { text: 'string1', update: testFunction, mode: 1 }],
+    [{ text: 'string1' }, { update: testFunction }, { text: 'string2' }, { text: 'string1', update: testFunction }],
   ];
 
   test.each(testTrue)(

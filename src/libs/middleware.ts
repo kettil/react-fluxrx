@@ -1,13 +1,7 @@
 import { Observable } from 'rxjs/internal/Observable';
 import { Subscriber } from 'rxjs/internal/Subscriber';
 
-import {
-  middlewareActionType,
-  dispatchType,
-  actionType,
-  actionValidatorType,
-  middlewareHandlerType,
-} from './types';
+import { middlewareActionType, dispatchType, actionType, actionValidatorType, middlewareHandlerType } from './types';
 
 /**
  *
@@ -22,12 +16,9 @@ export function middlewareManager(
   middlewareHandler: middlewareHandlerType,
 ) {
   return (source$: Observable<actionType>) =>
-    middlewares.reduce(
-      (prev$: Observable<actionType>, middleware: middlewareActionType): Observable<actionType> => {
-        return middlewareHandler(dispatch, middleware, actionValidator, prev$);
-      },
-      source$,
-    );
+    middlewares.reduce((prev$: Observable<actionType>, middleware: middlewareActionType): Observable<actionType> => {
+      return middlewareHandler(dispatch, middleware, actionValidator, prev$);
+    }, source$);
 }
 
 /**
