@@ -8,5 +8,5 @@ coverage
 docs
 
 # application
-app
+build
 tmp
