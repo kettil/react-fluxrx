@@ -2,15 +2,22 @@
 src
 
 # typescript
+tsconfig.build.json
 tsconfig.json
 
 # prettier
 .prettierignore
 .prettierrc
 
+# tslint
+tslint.json
+
 # jest
-coverage
+jest.ci.json
 jest.json
+# istanbul
+coverage
 
 # typedoc
+typedoc.json
 docs

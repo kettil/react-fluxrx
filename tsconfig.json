@@ -4,7 +4,7 @@
     "target": "ES2015",
     "module": "commonjs",
     "declaration": true,
-    "outDir": "./app",
+    "outDir": "./build",
     "lib": ["es6", "dom"],
     "jsx": "react",
     // "target": "es5",                       /* Specify ECMAScript target version: 'ES3' (default), 'ES5', 'ES2015', 'ES2016', 'ES2017','ES2018' or 'ESNEXT'. */
@@ -71,11 +71,6 @@
     // "experimentalDecorators": true,        /* Enables experimental support for ES7 decorators. */
     // "emitDecoratorMetadata": true,         /* Enables experimental support for emitting type metadata for decorators. */
   },
-  "include": [
-    "src/**/*",
-  ],
-  "exclude": [
-    "./node_modules",
-    "./app"
-  ]
+  "include": ["src/**/*"],
+  "exclude": ["./node_modules", "./build"]
 }

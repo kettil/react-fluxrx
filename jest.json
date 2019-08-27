@@ -1,0 +1,15 @@
+{
+  "globals": {
+    "ts-jest": {
+      "diagnostics": {
+        "warnOnly": true
+      }
+    }
+  },
+  "preset": "ts-jest",
+  "testMatch": ["**/*.test.{js,jsx,ts,tsx}"],
+  "collectCoverageFrom": ["src/**/*.{ts,tsx,js,jsx}"],
+  "coverageReporters": ["text", "lcov"],
+  "coverageDirectory": "coverage",
+  "modulePathIgnorePatterns": ["<rootDir>/build"]
+}
