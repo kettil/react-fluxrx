@@ -1,7 +1,5 @@
-import { Subscription } from 'rxjs/internal/Subscription';
-import { Observable } from 'rxjs/internal/Observable';
-import { ObservableInput } from 'rxjs/internal/types';
 import { Subscription as SubscriptionReact, SubscriptionConfig } from 'create-subscription';
+import { Observable, ObservableInput, Subscription } from 'rxjs';
 
 //////////////////////
 //

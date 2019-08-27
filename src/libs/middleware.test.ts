@@ -1,15 +1,13 @@
-import { middlewareHandler, middlewareManager } from './middleware';
+import { defaultMiddlewareHandler, middlewareManager } from './middleware';
 
-import { Observable } from 'rxjs/internal/Observable';
-import { of } from 'rxjs/internal/observable/of';
-import { throwError } from 'rxjs/internal/observable/throwError';
+import { Observable, of, throwError } from 'rxjs';
 
 import { actionType } from './types';
 
 /**
- * middlewareHandler()
+ * defaultMiddlewareHandler()
  */
-describe('Check the function middlewareHandler()', () => {
+describe('Check the function defaultMiddlewareHandler()', () => {
   test('return a observable', () => {
     // mocks
     const dispatch = jest.fn();
@@ -17,7 +15,7 @@ describe('Check the function middlewareHandler()', () => {
     const actionValidator = jest.fn();
     const source$ = of<actionType>();
 
-    const returnValue = middlewareHandler(dispatch, middleware, <any>actionValidator, source$);
+    const returnValue = defaultMiddlewareHandler(dispatch, middleware, actionValidator as any, source$);
 
     expect(dispatch).toHaveBeenCalledTimes(0);
     expect(middleware).toHaveBeenCalledTimes(0);
@@ -33,7 +31,7 @@ describe('Check the function middlewareHandler()', () => {
     const actionValidator = jest.fn().mockReturnValue(true);
     const source$ = of<actionType>();
 
-    const returnValue = middlewareHandler(dispatch, middleware, <any>actionValidator, source$);
+    const returnValue = defaultMiddlewareHandler(dispatch, middleware, actionValidator as any, source$);
 
     const mockNext = jest.fn();
     const mockError = jest.fn();
@@ -64,7 +62,7 @@ describe('Check the function middlewareHandler()', () => {
     const actionValidator = jest.fn().mockReturnValue(true);
     const source$ = throwError(message);
 
-    const returnValue = middlewareHandler(dispatch, middleware, <any>actionValidator, source$);
+    const returnValue = defaultMiddlewareHandler(dispatch, middleware, actionValidator as any, source$);
 
     const mockNext = jest.fn();
     const mockComplete = jest.fn();
@@ -98,7 +96,7 @@ describe('Check the function middlewareHandler()', () => {
     const actionValidator = jest.fn().mockReturnValue(true);
     const source$ = of(action);
 
-    const returnValue = middlewareHandler(dispatch, middleware, <any>actionValidator, source$);
+    const returnValue = defaultMiddlewareHandler(dispatch, middleware, actionValidator as any, source$);
 
     const mockNext = jest.fn();
     const mockError = jest.fn();
@@ -134,7 +132,7 @@ describe('Check the function middlewareHandler()', () => {
     const actionValidator = jest.fn().mockReturnValue(false);
     const source$ = of(action);
 
-    const returnValue = middlewareHandler(dispatch, middleware, <any>actionValidator, source$);
+    const returnValue = defaultMiddlewareHandler(dispatch, middleware, actionValidator as any, source$);
 
     const mockNext = jest.fn();
     const mockComplete = jest.fn();
@@ -169,7 +167,7 @@ describe('Check the function middlewareHandler()', () => {
     const actionValidator = jest.fn().mockReturnValue(true);
     const source$ = of(action);
 
-    const returnValue = middlewareHandler(dispatch, middleware, <any>actionValidator, source$);
+    const returnValue = defaultMiddlewareHandler(dispatch, middleware, actionValidator as any, source$);
 
     const mockNext = jest.fn();
     const mockError = jest.fn();
@@ -205,7 +203,7 @@ describe('Check the function middlewareHandler()', () => {
     const actionValidator = jest.fn().mockReturnValue(false);
     const source$ = of(action);
 
-    const returnValue = middlewareHandler(dispatch, middleware, <any>actionValidator, source$);
+    const returnValue = defaultMiddlewareHandler(dispatch, middleware, actionValidator as any, source$);
 
     const mockNext = jest.fn();
     const mockComplete = jest.fn();
@@ -240,7 +238,7 @@ describe('Check the function middlewareHandler()', () => {
     const actionValidator = jest.fn().mockReturnValue(true);
     const source$ = of(action);
 
-    const returnValue = middlewareHandler(dispatch, middleware, <any>actionValidator, source$);
+    const returnValue = defaultMiddlewareHandler(dispatch, middleware, actionValidator as any, source$);
 
     const mockNext = jest.fn();
     const mockComplete = jest.fn();
@@ -273,7 +271,7 @@ describe('Check the function middlewareHandler()', () => {
     const actionValidator = jest.fn().mockReturnValue(true);
     const source$ = of(action);
 
-    const returnValue = middlewareHandler(dispatch, middleware, <any>actionValidator, source$);
+    const returnValue = defaultMiddlewareHandler(dispatch, middleware, actionValidator as any, source$);
 
     const mockNext = jest.fn();
     const mockError = jest.fn();
@@ -309,7 +307,7 @@ describe('Check the function middlewareManager()', () => {
 
     const middlewares: any[] = [];
 
-    const returnCallback = middlewareManager(dispatch, middlewares, <any>actionValidator, middlewareHandler);
+    const returnCallback = middlewareManager(dispatch, middlewares, actionValidator as any, middlewareHandler);
 
     expect(dispatch).toHaveBeenCalledTimes(0);
     expect(actionValidator).toHaveBeenCalledTimes(0);
@@ -328,7 +326,7 @@ describe('Check the function middlewareManager()', () => {
     const middlewares: any[] = [];
     const source$ = of(action);
 
-    const returnCallback = middlewareManager(dispatch, middlewares, <any>actionValidator, middlewareHandler);
+    const returnCallback = middlewareManager(dispatch, middlewares, actionValidator as any, middlewareHandler);
 
     const returnValue = returnCallback(source$);
     expect(returnValue).toBeInstanceOf(Observable);
@@ -373,7 +371,7 @@ describe('Check the function middlewareManager()', () => {
 
     const middlewares: any[] = [middleware1, middleware2];
 
-    const returnCallback = middlewareManager(dispatch, middlewares, <any>actionValidator, middlewareHandler);
+    const returnCallback = middlewareManager(dispatch, middlewares, actionValidator as any, middlewareHandler);
 
     const returnValue = returnCallback(ofAction1$);
     expect(returnValue).toBeInstanceOf(Observable);

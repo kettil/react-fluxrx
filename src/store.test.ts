@@ -1,8 +1,6 @@
 import { createStore } from './store';
 
-import { of } from 'rxjs/internal/observable/of';
-import { Observable } from 'rxjs/internal/Observable';
-import { throwError } from 'rxjs/internal/observable/throwError';
+import { Observable, of, throwError } from 'rxjs';
 
 /**
  * createStore()
@@ -183,10 +181,10 @@ describe('Check the function createStore()', () => {
     expect(actionFlat).toHaveBeenNthCalledWith(2, action2, 1);
     expect(actionFlat).toHaveBeenNthCalledWith(3, action3, 2);
     expect(actionFilter).toHaveBeenNthCalledWith(1, action1, 0);
-    expect(actionFilter).toHaveBeenNthCalledWith(2, (<any>action2).value, 1);
+    expect(actionFilter).toHaveBeenNthCalledWith(2, (action2 as any).value, 1);
     expect(actionFilter).toHaveBeenNthCalledWith(3, action3, 2);
     expect(reducer).toHaveBeenNthCalledWith(1, init, action1, 0);
-    expect(reducer).toHaveBeenNthCalledWith(2, result1, (<any>action2).value, 1);
+    expect(reducer).toHaveBeenNthCalledWith(2, result1, (action2 as any).value, 1);
     expect(reducer).toHaveBeenNthCalledWith(3, result2, action3, 2);
     done();
   });
@@ -221,7 +219,7 @@ describe('Check the function createStore()', () => {
     // create callback function
     const returnValue = createStore(reducer, init, middlewares, options);
 
-    returnValue.dispatch(<any>action);
+    returnValue.dispatch(action as any);
 
     expect(returnValue.getState()).toEqual(init);
 

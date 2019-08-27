@@ -3,6 +3,7 @@
   "rules": {
     "object-literal-sort-keys": false,
     "interface-over-type-literal": false,
-    "linebreak-style": [true, "LF"]
+    "linebreak-style": [true, "LF"],
+    "no-submodule-imports": false
   }
 }

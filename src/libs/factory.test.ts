@@ -1,10 +1,11 @@
 import * as factory from './factory';
+
 import {
-  shallowEqual,
-  isStrictEqual,
-  defaultMapStateToProps,
   defaultMapDispatchToProps,
+  defaultMapStateToProps,
   defaultMergeProps,
+  isStrictEqual,
+  shallowEqual,
 } from './connect';
 
 /**
@@ -34,7 +35,7 @@ describe('Check the function mapStateToPropsWithCacheFactory()', () => {
     const result = { state: { i: 5, s: 'lorem', l: [1, 2, 3] } };
 
     // mocks
-    const mapStateToProps = jest.fn((state) => ({ state }));
+    const mapStateToProps = jest.fn((s) => ({ state: s }));
     const areStatesEqual = jest.fn();
     const arePropsEqual = jest.fn();
 
@@ -50,24 +51,25 @@ describe('Check the function mapStateToPropsWithCacheFactory()', () => {
     expect(mapStateToProps).toHaveBeenCalledWith(state, props);
   });
 
-  const state1 = { i: 5, s: 'lorem', l: [1, 2, 3] };
-  const state2 = { i: 8, s: 'ipsum', l: [1, 2, 5] };
-  const props1 = { o: { a: true }, f: false };
-  const props2 = { o: { a: false }, f: true };
-  const result1 = { i: 5, s: 'lorem', l: [1, 2, 3], o: { a: true }, f: false };
-  const result2 = { i: 8, s: 'ipsum', l: [1, 2, 5], o: { a: false }, f: true };
-  const result2_1 = { f: false, i: 8, l: [1, 2, 5], o: { a: true }, s: 'ipsum' };
-  const result2_2 = { f: true, i: 5, l: [1, 2, 3], o: { a: false }, s: 'lorem' };
+  const dState1 = { i: 5, s: 'lorem', l: [1, 2, 3] };
+  const dState2 = { i: 8, s: 'ipsum', l: [1, 2, 5] };
+  const dProps1 = { o: { a: true }, f: false };
+  const dProps2 = { o: { a: false }, f: true };
+  const dResult1 = { i: 5, s: 'lorem', l: [1, 2, 3], o: { a: true }, f: false };
+  const dResult2 = { i: 8, s: 'ipsum', l: [1, 2, 5], o: { a: false }, f: true };
+  const dResult2P1 = { f: false, i: 8, l: [1, 2, 5], o: { a: true }, s: 'ipsum' };
+  const dResult2P2 = { f: true, i: 5, l: [1, 2, 3], o: { a: false }, s: 'lorem' };
 
   const testTwoCalls = [
-    [false, state1, state2, props1, props2, props2, result1, result2, 2],
-    [false, state1, state2, props1, props1, props1, result1, result2_1, 2],
-    [false, state1, state1, props1, props2, props1, result1, result1, 1],
-    [false, state1, state1, props1, props1, props1, result1, result1, 1],
-    [true, state1, state2, props1, props2, props2, result1, result2, 2],
-    [true, state1, state2, props1, props1, props1, result1, result2_1, 2],
-    [true, state1, state1, props1, props2, props2, result1, result2_2, 2],
-    [true, state1, state1, props1, props1, props1, result1, result1, 1],
+    [false, dState1, dState1, dProps1, dProps2, dProps2, dResult1, dResult2, 2],
+    [false, dState1, dState1, dProps1, dProps1, dProps1, dResult1, dResult2P1, 2],
+    [false, dState1, dState2, dProps1, dProps2, dProps1, dResult1, dResult1, 1],
+    [false, dState1, dState2, dProps1, dProps1, dProps1, dResult1, dResult1, 1],
+    [true, dState1, dState1, dProps1, dProps2, dProps2, dResult1, dResult2, 2],
+    [true, dState1, dState1, dProps1, dProps1, dProps1, dResult1, dResult2P1, 2],
+    [true, dState1, dState2, dProps1, dProps2, dProps2, dResult1, dResult2P2, 2],
+    [true, dState1, dState2, dProps1, dProps1, dProps1, dResult1, dResult1, 1],
+    //*/
   ];
 
   test.each(testTwoCalls)(
@@ -126,7 +128,7 @@ describe('Check the function mapDispatchToPropsWithCacheFactory()', () => {
     const result = { dispatch, o: { a: true }, i: false };
 
     // mocks
-    const mapDispatchToProps = jest.fn((dispatch, props) => ({ ...props, dispatch }));
+    const mapDispatchToProps = jest.fn((fDispatch1, fProps) => ({ ...fProps, dispatch: fDispatch1 }));
     const arePropsEqual = jest.fn();
 
     // create callback function
@@ -141,16 +143,16 @@ describe('Check the function mapDispatchToPropsWithCacheFactory()', () => {
     expect(mapDispatchToProps).toHaveBeenCalledWith(dispatch, props);
   });
 
-  const props1 = { o: { a: 'true' }, f: 23 };
-  const props2 = { o: { a: 42 }, f: 'lorem' };
-  const result1 = { o: { a: 'true' }, f: 23 };
-  const result2 = { o: { a: 42 }, f: 'lorem' };
+  const dProps1 = { o: { a: 'true' }, f: 23 };
+  const dProps2 = { o: { a: 42 }, f: 'lorem' };
+  const dResult1 = { o: { a: 'true' }, f: 23 };
+  const dResult2 = { o: { a: 42 }, f: 'lorem' };
 
   const testTwoCalls = [
-    [false, props1, props2, props1, result1, result1, 1],
-    [false, props1, props1, props1, result1, result1, 1],
-    [true, props1, props2, props2, result1, result2, 2],
-    [true, props1, props1, props1, result1, result1, 1],
+    [false, dProps1, dProps2, dProps1, dResult1, dResult1, 1],
+    [false, dProps1, dProps1, dProps1, dResult1, dResult1, 1],
+    [true, dProps1, dProps2, dProps2, dResult1, dResult2, 2],
+    [true, dProps1, dProps1, dProps1, dResult1, dResult1, 1],
   ];
 
   test.each(testTwoCalls)(
@@ -158,7 +160,7 @@ describe('Check the function mapDispatchToPropsWithCacheFactory()', () => {
     (hasDepends, props1, props2, props2Call, result1, result2, mapCalls) => {
       // mocks
       const dispatch = jest.fn();
-      const mapDispatchToProps = jest.fn((dispatch, props) => ({ ...props, dispatch }));
+      const mapDispatchToProps = jest.fn((fDispatch1, fProps) => ({ ...fProps, dispatch: fDispatch1 }));
       const arePropsEqual = jest.fn(shallowEqual);
 
       // create callback function
@@ -212,7 +214,7 @@ describe('Check the function mergePropsWithCacheFactory()', () => {
 
   test('callback function return a expected object (one call)', () => {
     const stateMapped = { i: 5, s: 'lorem', l: [1, 2, 3] };
-    const dispatchMapped = { dispatch: (a: any) => {}, o: 'ipsum' };
+    const dispatchMapped = { dispatch: (a: any) => a, o: 'ipsum' };
     const props = { o: { a: true }, i: false };
     const result = { state: { i: 5, s: 'lorem', l: [1, 2, 3] } };
 
@@ -240,30 +242,30 @@ describe('Check the function mergePropsWithCacheFactory()', () => {
     expect(mergeProps).toHaveBeenCalledWith(stateMapped, dispatchMapped, props);
   });
 
-  const s1 = { a: 'lorem' };
-  const s2 = { a: 'ipsum' };
-  const d1 = { b: [1, 2, 3] };
-  const d2 = { b: [9, 8, 7] };
-  const p1 = { c: 23 };
-  const p2 = { c: 42 };
-  const r111 = { ...s1, ...d1, ...p1 };
-  const r112 = { ...s1, ...d1, ...p2 };
-  const r121 = { ...s1, ...d2, ...p1 };
-  const r122 = { ...s1, ...d2, ...p2 };
-  const r211 = { ...s2, ...d1, ...p1 };
-  const r212 = { ...s2, ...d1, ...p2 };
-  const r221 = { ...s2, ...d2, ...p1 };
-  const r222 = { ...s2, ...d2, ...p2 };
+  const eS1 = { a: 'lorem' };
+  const eS2 = { a: 'ipsum' };
+  const eD1 = { b: [1, 2, 3] };
+  const eD2 = { b: [9, 8, 7] };
+  const eP1 = { c: 23 };
+  const eP2 = { c: 42 };
+  const r111 = { ...eS1, ...eD1, ...eP1 };
+  const r112 = { ...eS1, ...eD1, ...eP2 };
+  const r121 = { ...eS1, ...eD2, ...eP1 };
+  const r122 = { ...eS1, ...eD2, ...eP2 };
+  const r211 = { ...eS2, ...eD1, ...eP1 };
+  const r212 = { ...eS2, ...eD1, ...eP2 };
+  const r221 = { ...eS2, ...eD2, ...eP1 };
+  const r222 = { ...eS2, ...eD2, ...eP2 };
 
   const testTwoCalls = [
-    [s1, s1, d1, d1, p1, p1, r111, r111, 1],
-    [s1, s1, d1, d1, p1, p2, r111, r112, 2],
-    [s1, s1, d1, d2, p1, p1, r111, r121, 2],
-    [s1, s1, d1, d2, p1, p2, r111, r122, 2],
-    [s1, s2, d1, d1, p1, p1, r111, r211, 2],
-    [s1, s2, d1, d1, p1, p2, r111, r212, 2],
-    [s1, s2, d1, d2, p1, p1, r111, r221, 2],
-    [s1, s2, d1, d2, p1, p2, r111, r222, 2],
+    [eS1, eS1, eD1, eD1, eP1, eP1, r111, r111, 1],
+    [eS1, eS1, eD1, eD1, eP1, eP2, r111, r112, 2],
+    [eS1, eS1, eD1, eD2, eP1, eP1, r111, r121, 2],
+    [eS1, eS1, eD1, eD2, eP1, eP2, r111, r122, 2],
+    [eS1, eS2, eD1, eD1, eP1, eP1, r111, r211, 2],
+    [eS1, eS2, eD1, eD1, eP1, eP2, r111, r212, 2],
+    [eS1, eS2, eD1, eD2, eP1, eP1, r111, r221, 2],
+    [eS1, eS2, eD1, eD2, eP1, eP2, r111, r222, 2],
   ];
 
   test.each(testTwoCalls)(

@@ -1,15 +1,15 @@
 import {
-  mapStateToPropsWithCacheType,
+  dispatchType,
+  equalType,
+  mapDispatchToPropsType,
   mapDispatchToPropsWithCacheType,
+  mapStateToPropsType,
+  mapStateToPropsWithCacheType,
+  mergePropsType,
   mergePropsWithCacheType,
   propsFactoryDispatchType,
   propsFactoryUpdateType,
   propsMergeReturnType,
-  dispatchType,
-  mapStateToPropsType,
-  mapDispatchToPropsType,
-  mergePropsType,
-  equalType,
 } from './types';
 
 /**

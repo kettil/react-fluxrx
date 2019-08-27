@@ -1,7 +1,6 @@
-import { Observable } from 'rxjs/internal/Observable';
-import { of } from 'rxjs/internal/observable/of';
+import { Observable, of } from 'rxjs';
 
-import { actionType, actionSubjectType, errorHandlerType, dispatchType, logType } from './types';
+import { actionSubjectType, actionType, dispatchType, errorHandlerType, logType } from './types';
 
 /**
  *

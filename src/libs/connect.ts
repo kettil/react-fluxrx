@@ -27,6 +27,7 @@ export function defaultMergeProps<MS, MD, P>(
   dispatchProps: MD,
   props: P,
 ): propsMergeReturnType<MS, MD, P> {
+  // tslint:disable-next-line:prefer-object-spread
   return Object.assign({}, props, stateProps, dispatchProps);
 }
 
@@ -90,7 +91,7 @@ export function shallowEqual(a: any, b: any): boolean {
     return false;
   }
 
-  for (let key of keysA) {
+  for (const key of keysA) {
     if (!hasProperty(b, key) || !isEqual(a[key], b[key])) {
       return false;
     }

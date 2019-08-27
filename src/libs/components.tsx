@@ -1,13 +1,13 @@
+import { Subscription as SubscriptionType } from 'create-subscription';
 import React, { ComponentType } from 'react';
-import { Subscription } from 'create-subscription';
 
 import {
-  optionsConnectType,
-  storeType,
-  propsMergeType,
-  subscriptionType,
   createSubscriptionType,
+  optionsConnectType,
   propsMergeReturnType,
+  propsMergeType,
+  storeType,
+  subscriptionType,
 } from './types';
 
 /**
@@ -19,9 +19,7 @@ export function createElementWithoutSubscription<S, P, MS, MD>(
   Consumer: ComponentType<React.ConsumerProps<storeType<S>>>,
   { mapDispatchToProps, mergeProps }: optionsConnectType<S, P, MS, MD>,
 ) {
-  return (Element: ComponentType<propsMergeReturnType<P, MS, MD>>): ComponentType<P> => (
-    ownProps,
-  ) => (
+  return (Element: ComponentType<propsMergeReturnType<P, MS, MD>>): ComponentType<P> => (ownProps) => (
     <Consumer>
       {(store) => {
         const props = mergeProps({} as MS, mapDispatchToProps(store.dispatch, ownProps), ownProps);
@@ -42,11 +40,7 @@ export function createElementWithSubscription<S, P, MS, MD>(
   options: optionsConnectType<S, P, MS, MD>,
 ) {
   const propsFactory = options.propsFactory(
-    options.mapStateToPropsWithCacheFactory(
-      options.mapStateToProps,
-      options.areStatesEqual,
-      options.arePropsEqual,
-    ),
+    options.mapStateToPropsWithCacheFactory(options.mapStateToProps, options.areStatesEqual, options.arePropsEqual),
     options.mapDispatchToPropsWithCacheFactory(options.mapDispatchToProps, options.arePropsEqual),
     options.mergePropsWithCacheFactory(
       options.mergeProps,
@@ -58,20 +52,14 @@ export function createElementWithSubscription<S, P, MS, MD>(
     options.mapDispatchToProps,
   );
 
-  return (Element: ComponentType<propsMergeReturnType<P, MS, MD>>): ComponentType<P> => (
-    ownProps,
-  ) => (
+  return (Element: ComponentType<propsMergeReturnType<P, MS, MD>>): ComponentType<P> => (ownProps) => (
     <Consumer>
       {(store) => {
         const Subscription = options.createSubscriptionWrapper(
           options.createSubscription,
           propsFactory(store.dispatch),
         );
-        return (
-          <Subscription source={{ store, ownProps }}>
-            {(props) => <Element {...props} />}
-          </Subscription>
-        );
+        return <Subscription source={{ store, ownProps }}>{(props) => <Element {...props} />}</Subscription>;
       }}
     </Consumer>
   );
@@ -84,7 +72,7 @@ export function createElementWithSubscription<S, P, MS, MD>(
 export function createSubscriptionWrapper<S, P, MS, MD>(
   createSubscription: createSubscriptionType<S, P, MS, MD>,
   merge: propsMergeType<S, P, MS, MD>,
-): Subscription<subscriptionType<S, P>, propsMergeReturnType<P, MS, MD>> {
+): SubscriptionType<subscriptionType<S, P>, propsMergeReturnType<P, MS, MD>> {
   // cache props object
   let nowProps: propsMergeReturnType<P, MS, MD>;
   // create subscription element

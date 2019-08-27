@@ -1,7 +1,8 @@
-import React, { createContext as defaultCreateContext } from 'react';
-import { createStore as defaultCreateStore } from './store';
-import { createConnect as defaultCreateConnect } from './connect';
 import { createSubscription as createSubscriptionReact } from 'create-subscription';
+import React, { createContext as defaultCreateContext } from 'react';
+
+import { createConnect as defaultCreateConnect } from './connect';
+import { createStore as defaultCreateStore } from './store';
 
 import * as components from './libs/components';
 import * as utilsConnect from './libs/connect';
@@ -10,7 +11,7 @@ import * as utilsMiddleware from './libs/middleware';
 import * as utilsReducers from './libs/reducers';
 import * as utilsStore from './libs/store';
 
-import { reducerType, optionsType, storeType, middlewareActionType } from './libs/types';
+import { middlewareActionType, optionsType, reducerType, storeType } from './libs/types';
 
 export * from './libs/types';
 
@@ -35,9 +36,10 @@ export default function<S>(
     createStore = defaultCreateStore,
     createConnect = defaultCreateConnect,
 
-    middlewareHandler = utilsMiddleware.middlewareHandler,
+    middlewareHandler = utilsMiddleware.defaultMiddlewareHandler,
     middlewareManager = utilsMiddleware.middlewareManager,
     reducerHandler = utilsReducers.reducerDefaultHandler,
+    // tslint:disable-next-line:no-console
     errorStoreHandler = utilsStore.errorStoreDefaultHandler(console.error),
 
     actionFilter = utilsStore.actionFilter,

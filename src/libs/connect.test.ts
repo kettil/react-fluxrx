@@ -27,7 +27,7 @@ describe('Check the function defaultMapStateToProps()', () => {
  */
 describe('Check the function defaultMapDispatchToProps()', () => {
   test('defaultMapStateToProps(<func>) return a object', () => {
-    const testFunction = (action: actionSubjectType) => {};
+    const testFunction = (action: actionSubjectType) => action;
 
     const returnValue = connect.defaultMapDispatchToProps(testFunction);
 
@@ -36,7 +36,7 @@ describe('Check the function defaultMapDispatchToProps()', () => {
   });
 
   test('defaultMapStateToProps(<func>) return a expected object', () => {
-    const testFunction = (action: actionSubjectType) => {};
+    const testFunction = (action: actionSubjectType) => action;
 
     const returnValue = connect.defaultMapDispatchToProps(testFunction);
 

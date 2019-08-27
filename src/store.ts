@@ -1,18 +1,18 @@
-import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
-import { Subject } from 'rxjs/internal/Subject';
+import { BehaviorSubject, Subject } from 'rxjs';
+
 import { catchError } from 'rxjs/internal/operators/catchError';
-import { mergeMap } from 'rxjs/internal/operators/mergeMap';
 import { filter } from 'rxjs/internal/operators/filter';
+import { mergeMap } from 'rxjs/internal/operators/mergeMap';
 import { scan } from 'rxjs/internal/operators/scan';
 
 import {
+  actionSubjectType,
+  actionType,
+  middlewareActionType,
   optionsStoreType,
   reducerType,
   storeType,
-  actionType,
-  actionSubjectType,
   subscribeType,
-  middlewareActionType,
 } from './libs/types';
 
 /**
@@ -59,7 +59,7 @@ export function createStore<S>(
       // error handling
       catchError<any, actionType>(options.actionError(options.errorStoreHandler, dispatch)),
     )
-    .subscribe(<any>state$);
+    .subscribe(state$ as any);
 
   return { subscribe, dispatch, getState };
 }

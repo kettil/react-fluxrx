@@ -1,7 +1,6 @@
-import { Observable } from 'rxjs/internal/Observable';
-import { Subscriber } from 'rxjs/internal/Subscriber';
+import { Observable, Subscriber } from 'rxjs';
 
-import { middlewareActionType, dispatchType, actionType, actionValidatorType, middlewareHandlerType } from './types';
+import { actionType, actionValidatorType, dispatchType, middlewareActionType, middlewareHandlerType } from './types';
 
 /**
  *
@@ -28,7 +27,7 @@ export function middlewareManager(
  * @param actionValidator
  * @param source$
  */
-export function middlewareHandler(
+export function defaultMiddlewareHandler(
   dispatch: dispatchType,
   middleware: middlewareActionType,
   actionValidator: actionValidatorType,
@@ -45,12 +44,12 @@ export function middlewareHandler(
         if (result instanceof Observable) {
           // result is a observable
           return result.subscribe(
-            (action: actionType) => {
+            (oAction: actionType) => {
               try {
-                if (!actionValidator(action)) {
+                if (!actionValidator(oAction)) {
                   throw new Error('The middleware "' + name + '" does not return a valid action');
                 }
-                subscriber$.next(action);
+                subscriber$.next(oAction);
               } catch (err) {
                 error(err);
               }

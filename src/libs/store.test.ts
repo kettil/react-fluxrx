@@ -1,9 +1,6 @@
 import * as store from './store';
 
-import { Observable } from 'rxjs/internal/Observable';
-import { of } from 'rxjs/internal/observable/of';
-
-import { dispatchType, actionSubjectType } from './types';
+import { Observable, of } from 'rxjs';
 
 /**
  * actionFilter()
@@ -32,7 +29,7 @@ describe('Check the function actionFilter()', () => {
     { payload: true },
     null,
     undefined,
-    () => {},
+    (a: any) => a,
   ];
 
   test.each(testFalse)('actionFilter(%s) is NOT true', (action) => {
@@ -62,9 +59,9 @@ describe('Check the function actionFlat()', () => {
 
     expect(returnValue).toBeInstanceOf(Observable);
 
-    const mockNext = jest.fn((action) => {
-      expect(action).toEqual(expected);
-      expect(store.actionFilter(action)).toBeTruthy();
+    const mockNext = jest.fn((nextAction) => {
+      expect(nextAction).toEqual(expected);
+      expect(store.actionFilter(nextAction)).toBeTruthy();
     });
     const mockError = jest.fn();
     const mockComplete = jest.fn().mockImplementation(() => {
@@ -87,8 +84,8 @@ describe('Check the function actionFlat()', () => {
  */
 describe('Check the function actionError()', () => {
   test('return a callback function', () => {
-    const errorHandler = (error: Error, dispatch: dispatchType) => {};
-    const dispatch = (action: actionSubjectType) => {};
+    const errorHandler = jest.fn();
+    const dispatch = jest.fn();
 
     const returnCallback = store.actionError(errorHandler, dispatch);
 
@@ -96,10 +93,12 @@ describe('Check the function actionError()', () => {
     // count the arguments from the
     // callback function
     expect(returnCallback.length).toBe(2);
+    expect(errorHandler).toHaveBeenCalledTimes(0);
+    expect(dispatch).toHaveBeenCalledTimes(0);
   });
 
   test('call the callback function)', () => {
-    const dispatch = (action: actionSubjectType) => {};
+    const dispatch = jest.fn();
     const action = { type: 'add', payload: 'a' };
     const action$ = of(action);
     const error = new Error('test error message');
@@ -116,6 +115,8 @@ describe('Check the function actionError()', () => {
     expect(mockErrorHandler).toHaveBeenCalledTimes(1);
     expect(mockErrorHandler).toHaveReturnedWith(undefined);
     expect(mockErrorHandler).toHaveBeenCalledWith(error, dispatch);
+    // dispatch
+    expect(dispatch).toHaveBeenCalledTimes(0);
 
     // result from callback
     expect(returnValue).toBe(action$);
@@ -143,7 +144,7 @@ describe('Check the function errorStoreDefaultHandler()', () => {
     const dispatch = jest.fn();
 
     const returnCallback = store.errorStoreDefaultHandler(log);
-    const returnValue = returnCallback(<any>error, dispatch);
+    const returnValue = returnCallback(error as any, dispatch);
 
     expect(log).toHaveBeenCalledTimes(1);
     expect(log).toHaveBeenCalledWith('Error: ' + error);
