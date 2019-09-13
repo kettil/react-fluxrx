@@ -1,23 +1,23 @@
-# node.js
+# folder
+bin
+coverage
+docs
 src
+tests
 
-# typescript
-tsconfig.build.json
-tsconfig.json
-
-# prettier
+# files
+.editorconfig
+.gitignore
+.gitlab-ci.yml
+.huskyrc
 .prettierignore
 .prettierrc
-
-# tslint
-tslint.json
-
-# jest
-jest.ci.json
+docker-compose.yml
+jest.ci.js
+jest.fu.js
+jest.in.js
 jest.json
-# istanbul
-coverage
-
-# typedoc
+tsconfig.build.json
+tsconfig.json
+tslint.json
 typedoc.json
-docs

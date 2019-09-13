@@ -1,20 +1,18 @@
-import { dispatchType, propsMergeReturnType } from './types';
+import { mergedObjects } from '../types';
 
 /**
  *
- * @param state
  */
-export function defaultMapStateToProps<S>(state: S): { state: S } {
-  return { state };
-}
+export const defaultMapStateToProps = (): any => {
+  return {};
+};
 
 /**
  *
- * @param dispatch
  */
-export function defaultMapDispatchToProps(dispatch: dispatchType): { dispatch: dispatchType } {
-  return { dispatch };
-}
+export const defaultMapDispatchToProps = (): any => {
+  return {};
+};
 
 /**
  *
@@ -22,14 +20,13 @@ export function defaultMapDispatchToProps(dispatch: dispatchType): { dispatch: d
  * @param dispatchProps
  * @param props
  */
-export function defaultMergeProps<MS, MD, P>(
-  stateProps: MS,
-  dispatchProps: MD,
-  props: P,
-): propsMergeReturnType<MS, MD, P> {
-  // tslint:disable-next-line:prefer-object-spread
-  return Object.assign({}, props, stateProps, dispatchProps);
-}
+export const defaultMergeProps = <MapState, MapDispatch, Props>(
+  stateProps: MapState,
+  dispatchProps: MapDispatch,
+  props: Props,
+): mergedObjects<Props, MapState, MapDispatch> => {
+  return { ...props, ...stateProps, ...dispatchProps };
+};
 
 /**
  *

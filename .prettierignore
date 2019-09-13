@@ -8,5 +8,8 @@ node_modules
 coverage
 docs
 
+# gitlab
+.gitlab-ci.yml
+
 # application
 build

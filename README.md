@@ -155,28 +155,3 @@ const mapDispatchToProps: mapDispatchToPropsType<{}, {}> = (dispatch, props) => 
 
 // ...
 ```
-
-## Links
-
-### Wichtig
-
-- https://github.com/ReactiveX/rxjs-tslint
-- http://rxmarbles.com/
-- https://github.com/GitbookIO/gitbook
-
-### Interessant
-
-- https://www.learnrxjs.io/operators/filtering/filter.html
-- https://reactjs.org/docs/react-component.html
-- https://reactjs.org/blog/2018/03/27/update-on-async-rendering.html#fetching-external-data
-- https://github.com/facebook/react/tree/master/packages/create-subscription
-
-### nicht interessant
-
-- https://hackernoon.com/react-typescript-rxjs-f50791aa596c
-- https://michalzalecki.com/use-rxjs-with-react/
-- https://github.com/ajwhite/rxjs-react-store/blob/master/README.md
-
-### KA
-
-- https://rxviz.com
