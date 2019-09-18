@@ -37,7 +37,9 @@ export const actionError = <State>(errorHandlers: Array<storeErrorHandlerType<St
     errorHandlers.forEach((errorHandler) => {
       try {
         errorHandler(err, store.dispatch, state);
-      } catch (err) {}
+      } catch (err) {
+        defaultErrorHandler(err);
+      }
     });
 
     // it is nothing
