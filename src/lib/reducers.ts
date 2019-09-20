@@ -19,7 +19,7 @@ export const combineReducers = <State>(reducers: reducersType<State, any>): redu
       if (typeof newSubState === 'undefined') {
         const type = typeof action.type === 'symbol' ? action.type.toString() : action.type;
 
-        throw new Error(`Action ${type} from Reducer ${key} returns an undefined value`);
+        throw new Error(`Action "${type}" from Reducer "${key}" returns an undefined value`);
       }
 
       nextState[key] = newSubState;
@@ -42,7 +42,7 @@ export function checkedReducers<State>(reducers: reducersType<State, any>) {
       throw new Error(`No reducer function provided for key "${key}"`);
     }
 
-    const init = reducer(undefined as any, { type: '', payload: '' });
+    const init = reducer(undefined, { type: '', payload: '' });
 
     // whether the reducer returns an initialized value
     if (typeof init === 'undefined') {

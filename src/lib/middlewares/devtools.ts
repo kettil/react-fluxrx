@@ -20,7 +20,7 @@ export const devTools = <State>(): middlewareType<State> => {
   let cachedState: State;
 
   return {
-    init: (state, dispatch, setState, updateDirectly) => {
+    init: (state, dispatch, updateDirectly) => {
       cachedState = state;
 
       devToolsInstance.init(state);

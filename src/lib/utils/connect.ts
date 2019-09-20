@@ -1,4 +1,5 @@
 import { mergedObjects } from '../types';
+import { hasProperty, isObject } from './helper';
 
 /**
  *
@@ -33,46 +34,28 @@ export const defaultMergeProps = <MapState, MapDispatch, Props>(
  * @param a
  * @param b
  */
-export function isStrictEqual(a: any, b: any): boolean {
+export const isStrictEqual = (a: any, b: any): boolean => {
   return a === b;
-}
+};
 
 /**
  *
  * @param a
  * @param b
  */
-export function isEqual(a: any, b: any): boolean {
+export const isEqual = (a: any, b: any): boolean => {
   if (isStrictEqual(a, b)) {
     return a !== 0 || b !== 0 || 1 / a === 1 / b;
   } else {
     return a !== a && b !== b;
   }
-}
-
-/**
- *
- * @param a
- */
-export function isObject(a: any): boolean {
-  return typeof a === 'object' && a !== null;
-}
-
-/**
- *
- * @param a
- * @param key
- */
-export function hasProperty(a: object, key: string): boolean {
-  return Object.prototype.hasOwnProperty.call(a, key);
-}
-
+};
 /**
  *
  * @param a
  * @param b
  */
-export function shallowEqual(a: any, b: any): boolean {
+export const shallowEqual = (a: any, b: any): boolean => {
   if (isEqual(a, b)) {
     return true;
   }
@@ -94,4 +77,4 @@ export function shallowEqual(a: any, b: any): boolean {
     }
   }
   return true;
-}
+};

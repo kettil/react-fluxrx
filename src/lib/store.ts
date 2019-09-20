@@ -5,7 +5,7 @@ import { catchError, mergeMap, scan, tap } from 'rxjs/operators';
 import middlewareUtils from './utils/middleware';
 import * as storeUtils from './utils/store';
 
-import { actionSubjectType, middlewareType, reducerType, storeSubscribeType, storeType } from './types';
+import { actionSubjectType, middlewareType, reducerType, storeType } from './types';
 
 /**
  *
@@ -25,10 +25,9 @@ export const createStore = <State>(
   // create a stream for the state
   const state$ = new BehaviorSubject(init);
 
-  const subscribe: storeType<State>['subscribe'] = (callback: storeSubscribeType<State>) => state$.subscribe(callback);
+  const subscribe: storeType<State>['subscribe'] = (callback) => state$.subscribe(callback);
   const dispatch: storeType<State>['dispatch'] = (action) => action$.next(action);
   const getState: storeType<State>['getState'] = () => state$.getValue();
-  const setState = (state: State) => dispatch({ type: storeUtils.updateStateAction, payload: state });
   const updateDirectly = (state: State) => state$.next(state);
 
   // store callbacks
@@ -38,7 +37,7 @@ export const createStore = <State>(
   const mwAction = storeUtils.reduceMiddlewares('action', middlewares);
   const mwError = storeUtils.reduceMiddlewares('error', middlewares);
 
-  mwInit.forEach((middleware) => middleware(getState(), dispatch, setState, updateDirectly));
+  mwInit.forEach((middleware) => middleware(getState(), dispatch, updateDirectly));
   if (mwError.length === 0) {
     mwError.push(storeUtils.defaultErrorHandler);
   }

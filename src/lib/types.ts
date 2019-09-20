@@ -10,7 +10,16 @@ export type actionType<PAYLOAD = any> = {
   payload: PAYLOAD;
 };
 
-export type actionSubjectType<PAYLOAD = any> = actionType<PAYLOAD> | Observable<actionType<PAYLOAD>>;
+export type actionSubjectShortType<PAYLOAD = any> =
+  | actionType<PAYLOAD>
+  | Promise<actionType<PAYLOAD>>
+  | Observable<actionType<PAYLOAD>>;
+
+export type actionSubjectType<PAYLOAD = any> =
+  | actionType<PAYLOAD>
+  | Array<actionType<PAYLOAD>>
+  | Promise<actionType<PAYLOAD>>
+  | Observable<actionType<PAYLOAD>>;
 
 export type withChildrenType<Props extends {}> = Props & { readonly children: React.ReactNode };
 
@@ -67,7 +76,6 @@ export type middlewareType<State> = {
 export type middlewareInitType<State, PAYLOAD = any> = (
   state: State,
   dispatch: storeDispatchType<PAYLOAD>,
-  setState: storeSubscribeType<State>,
   updateDirectly: storeSubscribeType<State>,
 ) => void;
 
@@ -76,7 +84,7 @@ export type middlewareActionType<State, PAYLOAD = any> = (
   state: State,
   dispatch: storeDispatchType<PAYLOAD>,
   reducer: reducerType<State>,
-) => actionSubjectType;
+) => actionSubjectShortType;
 
 export type middlewareErrorType<State> = storeErrorHandlerType<State>;
 

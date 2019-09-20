@@ -1,8 +1,8 @@
 import create from './lib/app';
 
-export { getUniqueActionType } from './lib/utils/store';
+export { actions, getUniqueActionType } from './lib/utils/store';
 export { combineReducers } from './lib/reducers';
-export { middlewares } from './lib/middlewars';
+export { middlewares } from './lib/middlewares';
 export * from './lib/types';
 
 /**

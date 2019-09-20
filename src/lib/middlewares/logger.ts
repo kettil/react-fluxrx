@@ -10,7 +10,7 @@ import { middlewareType } from '../types';
  */
 export const devTools = <State>(): middlewareType<State> => {
   return {
-    init: (state, dispatch, setState, updateDirectly) => {
+    init: (state, dispatch, updateDirectly) => {
       console.log('init', { state });
     },
 

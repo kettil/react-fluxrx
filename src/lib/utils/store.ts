@@ -1,6 +1,6 @@
-import { isObservable, Observable, of } from 'rxjs';
+import { from, isObservable, Observable, of } from 'rxjs';
 
-import { isObject } from './connect';
+import { isObject, isPromise } from './helper';
 
 import { actionSubjectType, actionType, middlewareType, reducerType, storeErrorHandlerType, storeType } from '../types';
 
@@ -8,8 +8,16 @@ import { actionSubjectType, actionType, middlewareType, reducerType, storeErrorH
  *
  * @param action
  */
-export const actionFlat = (action: actionSubjectType) => {
-  return isObservable(action) ? action : of(action);
+export const actionFlat = (action: actionSubjectType): Observable<actionType<any>> => {
+  if (isObservable(action)) {
+    return action;
+  }
+
+  if (isPromise(action)) {
+    return from(action);
+  }
+
+  return Array.isArray(action) ? of(...action) : of(action);
 };
 
 /**
@@ -66,7 +74,7 @@ export const reducerHandler = <State>(reducer: reducerType<State>): reducerType<
   state: State | undefined,
   action: actionType,
 ): State => {
-  if (action.type === updateStateAction) {
+  if (action.type === actions.fullUpdate) {
     return action.payload;
   }
 
@@ -102,4 +110,6 @@ export const getUniqueActionType = (id: string) => {
 /**
  *
  */
-export const updateStateAction = getUniqueActionType('UPDATE_STATE_ACTION');
+export const actions = {
+  fullUpdate: getUniqueActionType('FULL_UPDATE_ACTION'),
+};
