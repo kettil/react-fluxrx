@@ -1,4 +1,4 @@
-// tslint:disable-next-line:cyclomatic-complexity
+// tslint:disable:cyclomatic-complexity
 import { isStrictEqual, shallowEqual } from './utils/connect';
 
 import { mapDispatchToPropsType, mapStateToPropsType, mergedObjects, mergePropsType, storeDispatchType } from './types';
