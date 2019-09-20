@@ -4,7 +4,7 @@ import { map, mergeMap, tap } from 'rxjs/operators';
 
 import * as storeUtils from './store';
 
-import { actionType, middlewareActionType, reducerType, storeType, storeDispatchType } from '../types';
+import { actionType, middlewareActionType, reducerType, storeDispatchType, storeType } from '../types';
 
 /**
  *
