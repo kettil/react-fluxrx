@@ -8,7 +8,7 @@ import { middlewareType } from '../types';
  * @param reducer
  * @param setState
  */
-export const devTools = <State>(): middlewareType<State> => {
+export const logger = <State>(): middlewareType<State> => {
   return {
     init: (state, dispatch, updateDirectly) => {
       console.log('init', { state });
@@ -30,4 +30,4 @@ export const devTools = <State>(): middlewareType<State> => {
   };
 };
 
-export default devTools;
+export default logger;

@@ -133,7 +133,7 @@ describe('Check the store functions', () => {
   /**
    *
    */
-  test('it should output the two errors when actionError() is called and the middlewares are throwing errors', () => {
+  test('it should be output the two errors when actionError() is called and the middlewares are throwing errors', () => {
     jest.spyOn(console, 'error').mockImplementation();
 
     const getStateMock = jest.fn().mockReturnValue({ a: 42 });
