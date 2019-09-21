@@ -1,6 +1,6 @@
 import React from 'react';
 
-import connector from './connector';
+import connector from './Connector';
 import { defaultMapDispatchToProps, defaultMapStateToProps, defaultMergeProps } from './utils/connect';
 
 import {

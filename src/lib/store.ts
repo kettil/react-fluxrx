@@ -2,8 +2,9 @@ import { BehaviorSubject, Observable, Subject } from 'rxjs';
 // tslint:disable-next-line:no-submodule-imports
 import { catchError, mergeMap, scan, tap } from 'rxjs/operators';
 
+import { defaultErrorHandler } from './utils/helper';
 import middlewareUtils from './utils/middleware';
-import * as storeUtils from './utils/store';
+import { actionError, actionFlat, actionValidate, reduceMiddlewares, reducerHandler } from './utils/store';
 
 import { actionSubjectType, middlewareType, reducerType, storeType } from './types';
 
@@ -33,28 +34,28 @@ export const createStore = <State>(
   // store callbacks
   const store: storeType<State> = { getState, dispatch, subscribe };
 
-  const mwInit = storeUtils.reduceMiddlewares('init', middlewares);
-  const mwAction = storeUtils.reduceMiddlewares('action', middlewares);
-  const mwError = storeUtils.reduceMiddlewares('error', middlewares);
+  const mwInit = reduceMiddlewares('init', middlewares);
+  const mwAction = reduceMiddlewares('action', middlewares);
+  const mwError = reduceMiddlewares('error', middlewares);
 
   mwInit.forEach((middleware) => middleware(getState(), dispatch, updateDirectly));
   if (mwError.length === 0) {
-    mwError.push(storeUtils.defaultErrorHandler);
+    mwError.push(defaultErrorHandler);
   }
 
   // manipulates the stream and adds it to the state
   action$
     .pipe(
       // change inner streams to outer stream
-      mergeMap(storeUtils.actionFlat),
+      mergeMap(actionFlat),
       // validate the action
-      tap(storeUtils.actionValidate),
+      tap(actionValidate),
       // middleware
       middlewareUtils.manager(mwAction, store, reducer),
       // change action to state type
-      scan(storeUtils.reducerHandler(reducer), init),
+      scan(reducerHandler(reducer), init),
       // error handling
-      catchError<State, Observable<State>>(storeUtils.actionError(mwError, store)),
+      catchError<State, Observable<State>>(actionError(mwError, store)),
     )
     .subscribe(state$);
 

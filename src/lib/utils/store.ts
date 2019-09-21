@@ -1,6 +1,6 @@
 import { from, isObservable, Observable, of } from 'rxjs';
 
-import { isObject, isPromise } from './helper';
+import { defaultErrorHandler, getUniqueAction, isObject, isPromise } from './helper';
 
 import { actionSubjectType, actionType, middlewareType, reducerType, storeErrorHandlerType, storeType } from '../types';
 
@@ -57,17 +57,6 @@ export const actionError = <State>(errorHandlers: Array<storeErrorHandlerType<St
 
 /**
  *
- * @param err
- */
-export const defaultErrorHandler = (err: any) => {
-  if (process.env.NODE_ENV !== 'production') {
-    // tslint:disable-next-line:no-console
-    console.error(err);
-  }
-};
-
-/**
- *
  * @param reducer
  */
 export const reducerHandler = <State>(reducer: reducerType<State>): reducerType<State> => (
@@ -96,20 +85,7 @@ export const reduceMiddlewares = <State, K extends keyof middlewareType<State>>(
 
 /**
  *
- * @param id
- */
-export const getUniqueActionType = (id: string) => {
-  if (typeof Symbol === 'function') {
-    return Symbol(id);
-  }
-
-  // fallback
-  return `${id}_${Math.round(Math.random() * 1000)}`;
-};
-
-/**
- *
  */
 export const actions = {
-  fullUpdate: getUniqueActionType('FULL_UPDATE_ACTION'),
+  fullUpdate: getUniqueAction('FULL_UPDATE_ACTION'),
 };
