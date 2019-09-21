@@ -1,4 +1,4 @@
-import { devTools } from './devtools';
+import { devTools } from './devTools';
 
 const subscribe = jest.fn();
 const init = jest.fn();

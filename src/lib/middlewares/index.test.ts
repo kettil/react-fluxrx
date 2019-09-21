@@ -1,4 +1,4 @@
-import devTools from './devtools';
+import devTools from './devTools';
 import logger from './logger';
 
 import middlewares from './index';
