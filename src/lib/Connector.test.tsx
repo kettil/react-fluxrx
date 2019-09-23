@@ -8,7 +8,7 @@ const unsubscribe = jest.fn();
 const subscribe = jest.fn().mockReturnValue({ unsubscribe });
 const getState = jest.fn().mockReturnValue(initState);
 const mapStateToProps = jest.fn<any, any>((state, props) => ({ ...props, ...state }));
-const mapDispatchToProps = jest.fn<any, any>(() => ({ action: (a: number) => a * 2 }));
+const mapDispatchToProps = jest.fn<any, any>((_, props) => ({ action: (a: number) => a * 2 }));
 const mergeProps = jest.fn<any, any>((mapState, mapDispatch, props) => ({ ...mapDispatch, ...props, ...mapState }));
 
 import { connector } from './Connector';
