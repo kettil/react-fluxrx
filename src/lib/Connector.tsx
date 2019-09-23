@@ -26,17 +26,22 @@ export const connector = <State, Props, MapState, MapDispatch>(
 
   const Consumer = (ownProps: Props) => {
     const store = useContext(context);
-    const memoProps = useMemo(() => ownProps, [ownProps]);
     const createState = useMemo(
       () => selector.create(store.dispatch, mapStateToProps, mapDispatchToProps, mergeProps),
       [store],
     );
 
-    const [state, updateState] = useState(createState(store.getState(), memoProps));
+    const lastState = useMemo(() => createState(store.getState(), ownProps), [store.getState(), ownProps]);
+
+    const [state, updateState] = useState(lastState);
+
+    useEffect(() => {
+      updateState(lastState);
+    }, [lastState]);
 
     useEffect(() => {
       const subscription = store.subscribe((rawState) => {
-        const newState = createState(rawState, memoProps);
+        const newState = createState(rawState, ownProps);
 
         if (!isStrictEqual(state, newState)) {
           updateState(newState);
@@ -44,7 +49,7 @@ export const connector = <State, Props, MapState, MapDispatch>(
       });
 
       return () => subscription.unsubscribe();
-    }, [store]);
+    }, [store, ownProps]);
 
     const renderedWrappedComponent = useMemo(() => <WrappedComponent {...state} />, [state]);
 
@@ -52,9 +57,7 @@ export const connector = <State, Props, MapState, MapDispatch>(
   };
 
   Consumer.displayName = 'Context.Consumer';
-
   const Connect = memo(Consumer);
-
   Connect.displayName = displayName;
 
   return hoistNonReactStatic(Connect, WrappedComponent) as any;
