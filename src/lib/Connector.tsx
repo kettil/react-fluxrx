@@ -26,30 +26,47 @@ export const connector = <State, Props, MapState, MapDispatch>(
 
   const Consumer = (ownProps: Props) => {
     const store = useContext(context);
+    const storeState = store.getState();
+
     const createState = useMemo(
       () => selector.create(store.dispatch, mapStateToProps, mapDispatchToProps, mergeProps),
       [store],
     );
 
-    const lastState = useMemo(() => createState(store.getState(), ownProps), [store.getState(), ownProps]);
+    const subscript = useMemo(
+      () => ({
+        update: (_: State) => {
+          /* dummy function */
+        },
+      }),
+      [],
+    );
 
-    const [state, updateState] = useState(lastState);
+    const mapState = useMemo(() => createState(storeState, ownProps), [storeState, ownProps]);
+    const [state, updateState] = useState(mapState);
 
-    useEffect(() => {
-      updateState(lastState);
-    }, [lastState]);
+    // subscription updater
+    subscript.update = (subscribeState: State) => {
+      if (!isStrictEqual(storeState, subscribeState)) {
+        const nextState = createState(subscribeState, ownProps);
 
-    useEffect(() => {
-      const subscription = store.subscribe((rawState) => {
-        const newState = createState(rawState, ownProps);
-
-        if (!isStrictEqual(state, newState)) {
-          updateState(newState);
+        if (!isStrictEqual(state, nextState)) {
+          updateState(nextState);
         }
-      });
+      }
+    };
+
+    useEffect(() => {
+      // update the componentState only if props has changed
+      updateState(mapState);
+    }, [ownProps]);
+
+    useEffect(() => {
+      // update the componentState only if storeState has changed
+      const subscription = store.subscribe((subscribeState) => subscript.update(subscribeState));
 
       return () => subscription.unsubscribe();
-    }, [store, ownProps]);
+    }, [store]);
 
     const renderedWrappedComponent = useMemo(() => <WrappedComponent {...state} />, [state]);
 
