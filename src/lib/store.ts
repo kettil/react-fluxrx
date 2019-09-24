@@ -4,7 +4,7 @@ import { catchError, mergeMap, scan, tap } from 'rxjs/operators';
 
 import { defaultErrorHandler } from './utils/helper';
 import middlewareUtils from './utils/middleware';
-import { actionError, actionFlat, actionValidate, reduceMiddlewares, reducerHandler } from './utils/store';
+import { actionError, actionFlat, actionValidate, reduceMiddleware, reducerHandler } from './utils/store';
 
 import { actionSubjectType, middlewareType, reducerType, storeType } from './types';
 
@@ -12,13 +12,13 @@ import { actionSubjectType, middlewareType, reducerType, storeType } from './typ
  *
  * @param reducer
  * @param init
- * @param middlewares
+ * @param middleware
  * @param errorHandler
  */
 export const createStore = <State>(
   reducer: reducerType<State>,
   init: State,
-  middlewares: Array<middlewareType<State>> = [],
+  middleware: Array<middlewareType<State>> = [],
 ) => {
   // create a stream for the action
   const action$ = new Subject<actionSubjectType>();
@@ -34,13 +34,13 @@ export const createStore = <State>(
   // store callbacks
   const store: storeType<State> = { getState, dispatch, subscribe };
 
-  const mwInit = reduceMiddlewares('init', middlewares);
-  const mwAction = reduceMiddlewares('action', middlewares);
-  const mwError = reduceMiddlewares('error', middlewares);
+  const mwInits = reduceMiddleware('init', middleware);
+  const mwActions = reduceMiddleware('action', middleware);
+  const mwErrors = reduceMiddleware('error', middleware);
 
-  mwInit.forEach((middleware) => middleware(getState(), dispatch, updateDirectly));
-  if (mwError.length === 0) {
-    mwError.push(defaultErrorHandler);
+  mwInits.forEach((mwInit) => mwInit(getState(), dispatch, updateDirectly));
+  if (mwErrors.length === 0) {
+    mwErrors.push(defaultErrorHandler);
   }
 
   // manipulates the stream and adds it to the state
@@ -51,11 +51,11 @@ export const createStore = <State>(
       // validate the action
       tap(actionValidate),
       // middleware
-      middlewareUtils.manager(mwAction, store, reducer),
+      middlewareUtils.manager(mwActions, store, reducer),
       // change action to state type
       scan(reducerHandler(reducer), init),
       // error handling
-      catchError<State, Observable<State>>(actionError(mwError, store)),
+      catchError<State, Observable<State>>(actionError(mwErrors, store)),
     )
     .subscribe(state$);
 

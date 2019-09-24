@@ -1,7 +1,7 @@
 // tslint:disable:no-console
 import { isObservable, of } from 'rxjs';
 
-import { actionError, actionFlat, actions, actionValidate, reduceMiddlewares, reducerHandler } from './store';
+import { actionError, actionFlat, actions, actionValidate, reduceMiddleware, reducerHandler } from './store';
 
 /**
  *
@@ -133,7 +133,7 @@ describe('Check the store functions', () => {
   /**
    *
    */
-  test('it should be output the two errors when actionError() is called and the middlewares are throwing errors', () => {
+  test('it should be output the two errors when actionError() is called and the middleware are throwing errors', () => {
     jest.spyOn(console, 'error').mockImplementation();
 
     const getStateMock = jest.fn().mockReturnValue({ a: 42 });
@@ -218,7 +218,7 @@ describe('Check the store functions', () => {
   /**
    *
    */
-  test('it should be return only action middlewares when reduceMiddlewares() is called with the type "action"', () => {
+  test('it should be return only action middleware when reduceMiddleware() is called with the type "action"', () => {
     const init2 = jest.fn();
     const action1 = jest.fn();
     const action2 = jest.fn();
@@ -230,7 +230,7 @@ describe('Check the store functions', () => {
     const middelware2 = { init: init2, action: action2, error: error2 };
     const middelware3 = { action: action3 };
 
-    const result = reduceMiddlewares('action', [middelware1, middelware2, middelware3]);
+    const result = reduceMiddleware('action', [middelware1, middelware2, middelware3]);
 
     expect(result).toEqual([action1, action2, action3]);
   });

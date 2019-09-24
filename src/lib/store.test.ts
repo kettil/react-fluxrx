@@ -238,7 +238,7 @@ describe('Check the store', () => {
   /**
    *
    */
-  test('it should be that the default error handler is called when an incorrect action is passed without middlewares', (done) => {
+  test('it should be that the default error handler is called when an incorrect action is passed without middleware', (done) => {
     jest.spyOn(console, 'error').mockImplementation();
 
     expect.assertions(5);

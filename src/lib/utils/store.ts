@@ -72,13 +72,13 @@ export const reducerHandler = <State>(reducer: reducerType<State>): reducerType<
 
 /**
  *
- * @param middlewares
+ * @param middleware
  */
-export const reduceMiddlewares = <State, K extends keyof middlewareType<State>>(
+export const reduceMiddleware = <State, K extends keyof middlewareType<State>>(
   type: K,
-  middlewares: Array<middlewareType<State>>,
+  middleware: Array<middlewareType<State>>,
 ) => {
-  return middlewares.map((middleware) => middleware[type]).filter((funcs) => typeof funcs === 'function') as Array<
+  return middleware.map((mw) => mw[type]).filter((funcs) => typeof funcs === 'function') as Array<
     NonNullable<middlewareType<State>[K]>
   >;
 };

@@ -12,15 +12,11 @@ import { actionType, middlewareActionType, reducerType, storeDispatchType, store
 export class MiddlewareUtils {
   /**
    *
-   * @param middlewares
+   * @param middleware
    * @param store
    * @param reducer
    */
-  manager<State>(
-    middlewares: Array<middlewareActionType<State>>,
-    store: storeType<State>,
-    reducer: reducerType<State>,
-  ) {
+  manager<State>(middleware: Array<middlewareActionType<State>>, store: storeType<State>, reducer: reducerType<State>) {
     const state = store.getState();
 
     return (source$: Observable<actionType>) =>
@@ -28,10 +24,7 @@ export class MiddlewareUtils {
         mergeMap((action) =>
           action.withoutMiddleware === true
             ? of(action)
-            : middlewares.reduce(
-                (prev$, middleware) => this.handler(prev$, middleware, state, store.dispatch, reducer),
-                of(action),
-              ),
+            : middleware.reduce((prev$, mw) => this.handler(prev$, mw, state, store.dispatch, reducer), of(action)),
         ),
       );
   }

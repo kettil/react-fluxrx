@@ -15,9 +15,9 @@ export const create = <State>(
   reducer: reducerType<State>,
   init?: State,
   {
-    middlewares,
+    middleware,
   }: {
-    middlewares?: Array<middlewareType<State>>;
+    middleware?: Array<middlewareType<State>>;
   } = {},
 ) => {
   if (!init) {
@@ -25,7 +25,7 @@ export const create = <State>(
     init = reducer(undefined, { type: '', payload: undefined });
   }
 
-  const store = createStore(reducer, init, middlewares);
+  const store = createStore(reducer, init, middleware);
 
   // create a react context instance
   // https://reactjs.org/docs/context.html
