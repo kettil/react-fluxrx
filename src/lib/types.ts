@@ -5,21 +5,24 @@ import { Observable, Subscription } from 'rxjs';
 // Action
 //
 
-export type actionType<PAYLOAD = any> = {
+export type actionType<Payload = any> = {
   type: string | symbol;
-  payload: PAYLOAD;
+  payload: Payload;
+
+  sync?: boolean;
+  withoutMiddleware?: boolean;
 };
 
-export type actionSubjectShortType<PAYLOAD = any> =
-  | actionType<PAYLOAD>
-  | Promise<actionType<PAYLOAD>>
-  | Observable<actionType<PAYLOAD>>;
+export type actionSubjectShortType<Payload = any> =
+  | actionType<Payload>
+  | Promise<actionType<Payload>>
+  | Observable<actionType<Payload>>;
 
-export type actionSubjectType<PAYLOAD = any> =
-  | actionType<PAYLOAD>
-  | Array<actionType<PAYLOAD>>
-  | Promise<actionType<PAYLOAD>>
-  | Observable<actionType<PAYLOAD>>;
+export type actionSubjectType<Payload = any> =
+  | actionType<Payload>
+  | Array<actionType<Payload>>
+  | Promise<actionType<Payload>>
+  | Observable<actionType<Payload>>;
 
 export type withChildrenType<Props extends {}> = Props & { readonly children: React.ReactNode };
 
@@ -49,13 +52,13 @@ export type wrappedComponentType<Props, MapState, MapDispatch> =
 // Store
 //
 
-export type storeDispatchType<PAYLOAD = any> = (action: actionSubjectType<PAYLOAD>) => void;
+export type storeDispatchType<Payload = any> = (action: actionSubjectType<Payload>) => void;
 
 export type storeSubscribeType<State> = (state: State) => void;
 
-export type storeType<State, PAYLOAD = any> = {
+export type storeType<State, Payload = any> = {
   subscribe: (next: storeSubscribeType<State>) => Subscription;
-  dispatch: storeDispatchType<PAYLOAD>;
+  dispatch: storeDispatchType<Payload>;
   getState: () => State;
 };
 
@@ -73,16 +76,16 @@ export type middlewareType<State> = {
   error?: middlewareErrorType<State>;
 };
 
-export type middlewareInitType<State, PAYLOAD = any> = (
+export type middlewareInitType<State, Payload = any> = (
   state: State,
-  dispatch: storeDispatchType<PAYLOAD>,
+  dispatch: storeDispatchType<Payload>,
   updateDirectly: storeSubscribeType<State>,
 ) => void;
 
-export type middlewareActionType<State, PAYLOAD = any> = (
+export type middlewareActionType<State, Payload = any> = (
   action: actionType,
   state: State,
-  dispatch: storeDispatchType<PAYLOAD>,
+  dispatch: storeDispatchType<Payload>,
   reducer: reducerType<State>,
 ) => actionSubjectShortType;
 

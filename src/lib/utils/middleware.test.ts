@@ -157,4 +157,44 @@ describe('Check the middleware class', () => {
       },
     );
   });
+
+  /**
+   *
+   */
+  test('it should be return an observable when manager() is called without calling the middleware', (done) => {
+    expect.assertions(10);
+
+    const middleware1 = jest.fn().mockImplementation((action) => action);
+    const middleware2 = jest.fn().mockImplementation((action) => action);
+    const subscribe = jest.fn();
+    const getState = jest.fn().mockReturnValue({ todos: [] });
+
+    const middlewareUtils = new MiddlewareUtils();
+
+    const callback = middlewareUtils.manager([middleware1, middleware2], { dispatch, getState, subscribe }, reducer);
+
+    expect(typeof callback).toBe('function');
+    expect(callback.length).toBe(1);
+
+    const result = callback(of({ type: 'edit', payload: { id: 4, message: '...' }, withoutMiddleware: true }));
+
+    expect(isObservable(result)).toBe(true);
+
+    result.subscribe(
+      (action) => {
+        expect(action).toEqual({ type: 'edit', payload: { id: 4, message: '...' }, withoutMiddleware: true });
+      },
+      done,
+      () => {
+        expect(getState).toHaveBeenCalledTimes(1);
+        expect(subscribe).toHaveBeenCalledTimes(0);
+        expect(dispatch).toHaveBeenCalledTimes(0);
+        expect(reducer).toHaveBeenCalledTimes(0);
+        expect(middleware1).toHaveBeenCalledTimes(0);
+        expect(middleware2).toHaveBeenCalledTimes(0);
+
+        done();
+      },
+    );
+  });
 });
