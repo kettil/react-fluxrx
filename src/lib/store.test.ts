@@ -81,7 +81,7 @@ describe('Check the store', () => {
   test('it should be that the last state is passed when subscribing', (done) => {
     expect.assertions(11);
 
-    const store = createStore(reducer, state, middleware);
+    const store = createStore(reducer, state, middleware, 5);
 
     expect(store).toEqual({
       dispatch: expect.any(Function),

@@ -16,8 +16,10 @@ export const create = <State>(
   init?: State,
   {
     middlewares,
+    timeDebounce,
   }: {
     middlewares?: Array<middlewareType<State>>;
+    timeDebounce?: number;
   } = {},
 ) => {
   if (!init) {
@@ -25,7 +27,7 @@ export const create = <State>(
     init = reducer(undefined, { type: '', payload: undefined });
   }
 
-  const store = createStore(reducer, init, middlewares);
+  const store = createStore(reducer, init, middlewares, timeDebounce);
 
   // create a react context instance
   // https://reactjs.org/docs/context.html

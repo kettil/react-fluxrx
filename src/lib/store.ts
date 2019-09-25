@@ -1,6 +1,6 @@
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 // tslint:disable-next-line:no-submodule-imports
-import { catchError, mergeMap, scan, tap } from 'rxjs/operators';
+import { catchError, debounceTime, mergeMap, scan, tap } from 'rxjs/operators';
 
 import { defaultErrorHandler } from './utils/helper';
 import middlewareUtils from './utils/middleware';
@@ -19,14 +19,16 @@ export const createStore = <State>(
   reducer: reducerType<State>,
   init: State,
   middlewares: Array<middlewareType<State>> = [],
+  timeDebounce: number = 0,
 ) => {
   // create a stream for the action
   const action$ = new Subject<actionSubjectType>();
 
   // create a stream for the state
   const state$ = new BehaviorSubject(init);
+  const pipe$ = timeDebounce > 0 ? state$.pipe(debounceTime(timeDebounce)) : state$;
 
-  const subscribe: storeType<State>['subscribe'] = (callback) => state$.subscribe(callback);
+  const subscribe: storeType<State>['subscribe'] = (callback) => pipe$.subscribe(callback);
   const dispatch: storeType<State>['dispatch'] = (action) => action$.next(action);
   const getState: storeType<State>['getState'] = () => state$.getValue();
   const updateDirectly = (state: State) => state$.next(state);
