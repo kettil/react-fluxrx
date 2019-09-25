@@ -27,21 +27,12 @@ export const connector = <State, Props, MapState, MapDispatch>(
   const Consumer = (ownProps: Props) => {
     const store = useContext(context);
     const storeState = store.getState();
-
     const createState = useMemo(
       () => selector.create(store.dispatch, mapStateToProps, mapDispatchToProps, mergeProps),
       [store],
     );
 
-    const subscript = useMemo(
-      () => ({
-        update: (_: State) => {
-          /* dummy function */
-        },
-      }),
-      [],
-    );
-
+    const subscript = useMemo(() => ({}), []) as { update: (subscribeState: State) => void };
     const mapState = useMemo(() => createState(storeState, ownProps), [storeState, ownProps]);
     const [state, updateState] = useState(mapState);
 

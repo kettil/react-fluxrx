@@ -94,6 +94,33 @@ describe('Check the Connector function', () => {
   /**
    *
    */
+  test('it should be unsubscribe from Observable when the component is unmount', () => {
+    const ConnectorComponent = connector(
+      ({ message1 }) => <span>{message1}</span>,
+      context,
+      mapStateToProps,
+      mapDispatchToProps,
+      mergeProps,
+    );
+
+    let root: renderer.ReactTestRenderer;
+
+    expect(subject.observers.length).toBe(0);
+
+    renderer.act(() => {
+      root = renderer.create(<ConnectorComponent message1={'Moin'} isPorps={true} />);
+    });
+
+    expect(subject.observers.length).toBe(1);
+
+    root!.unmount();
+
+    expect(subject.observers.length).toBe(0);
+  });
+
+  /**
+   *
+   */
   describe('Create one Component', () => {
     /**
      *
@@ -216,6 +243,43 @@ describe('Check the Connector function', () => {
 
       expect(mapStateToProps).toHaveBeenCalledTimes(1);
       expect(mapStateToProps).toHaveBeenNthCalledWith(1, { isState: true }, { isPorps: true, message1: 'Moin' });
+      expect(mapDispatchToProps).toHaveBeenCalledTimes(1);
+      expect(mapDispatchToProps).toHaveBeenNthCalledWith(1, dispatch, { isPorps: true, message1: 'Moin' });
+      expect(mergeProps).toHaveBeenCalledTimes(1);
+      expect(mergeProps).toHaveBeenNthCalledWith(1, { ...resultMapStatePart1, message1: 'Moin' }, resultMapDispatch, {
+        isPorps: true,
+        message1: 'Moin',
+      });
+    });
+
+    /**
+     *
+     */
+    test('it should be updated the connector component when the equal state by the Context will be updated', () => {
+      const ConnectorComponent = connector(Component, context, mapStateToProps, mapDispatchToProps, mergeProps);
+
+      let root: renderer.ReactTestRenderer;
+
+      renderer.act(() => {
+        root = renderer.create(<ConnectorComponent message1={'Moin'} isPorps={true} />);
+      });
+
+      expect(root!.toJSON()).toMatchSnapshot();
+
+      renderer.act(() => {
+        subject.next({ ...initState });
+      });
+
+      expect(root!.toJSON()).toMatchSnapshot();
+
+      expect(dispatch).toHaveBeenCalledTimes(0);
+      expect(subscribe).toHaveBeenCalledTimes(1);
+      expect(subscribe).toHaveBeenCalledWith(expect.any(Function));
+      expect(getState).toHaveBeenCalledTimes(1);
+
+      expect(mapStateToProps).toHaveBeenCalledTimes(2);
+      expect(mapStateToProps).toHaveBeenNthCalledWith(1, { isState: true }, { isPorps: true, message1: 'Moin' });
+      expect(mapStateToProps).toHaveBeenNthCalledWith(2, { isState: true }, { isPorps: true, message1: 'Moin' });
       expect(mapDispatchToProps).toHaveBeenCalledTimes(1);
       expect(mapDispatchToProps).toHaveBeenNthCalledWith(1, dispatch, { isPorps: true, message1: 'Moin' });
       expect(mergeProps).toHaveBeenCalledTimes(1);

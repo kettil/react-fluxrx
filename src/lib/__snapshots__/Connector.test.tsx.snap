@@ -1,5 +1,17 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Check the Connector function Create one Component it should be updated the connector component when the equal state by the Context will be updated 1`] = `
+<span>
+  Moin
+</span>
+`;
+
+exports[`Check the Connector function Create one Component it should be updated the connector component when the equal state by the Context will be updated 2`] = `
+<span>
+  Moin
+</span>
+`;
+
 exports[`Check the Connector function Create one Component it should be updated the connector component when the exists state by the Context will be updated 1`] = `
 <span>
   Moin
