@@ -11,7 +11,7 @@ import { middlewareType, reducerType, storeType } from './types';
  * @param init
  * @param options
  */
-export const create = <State>(
+export const app = <State>(
   reducer: reducerType<State>,
   init?: State,
   {
@@ -51,4 +51,4 @@ export const create = <State>(
 /**
  *
  */
-export default create;
+export default app;
