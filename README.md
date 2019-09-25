@@ -1,157 +1,66 @@
-# rxFlux
+# fluxRx [BETA]
 
-## Beispiel
+fluxRx is a predictable state container for react apps. Asynchronous operations are native supported.
 
-```javascript
-// action/index.js
-export function addTodo(text) {
-  return {
-    type: 'add',
-    payload: text,
-  };
-}
+## Table of Contents
+
+- [Features](#features)
+- [Installation](#installation)
+- [Introduction](#introduction)
+- [Building](#building)
+- [Tests](#tests)
+- [Prettier and Lint](#prettier-and-lint)
+
+## Features
+
+- Support one or many state containers
+- Actions can synchronously or asynchronously
+- Multiple updates can be made per action
+- API similar to redux
+- Middleware system
+- Full TypeScript support
+- Support for [Redux DevTools](https://github.com/zalmoxisus/redux-devtools-extension)
+
+## Installation
+
+```bash
+npm install -P fluxrx
 ```
 
-```javascript
-// reducers/index.js
-import {
-  reducerType
-} from 'rxFlux';
+## Introduction
 
-export type stateType = {
-  list: string[];
-};
+...
 
-export default function reducer: reducerType<stateType> = (
-  state = { list: [] },
-  action,
-) {
-  switch (action.type) {
-    case 'add':
-      return {
-        list: [...state.list, action.payload],
-      };
-    default:
-      return state;
-  }
-};
-```
+## Building
 
-```javascript
-// flux.js
-import rxFlux, { reducerType } from 'rxFlux';
-import reducer, { stateType } from 'reducers/index';
+Compile the application from TypeScript to JavaScript.
 
-const flux = rxFlux(reducer);
+The following command is available:
 
-export const store = flux.store;
-export const connect = flux.connect;
-export const Provider = flux.Provider;
-```
+- `npm run build`
 
-```javascript
-// containers/index.js
-import { TodoList } from '../components/TodoList'
-import { addTodo } from '../action/index'
-import {
-  mergeProps,
-  mapStateToPropsType,
-  mapDispatchToPropsType
-} from 'rxFlux';
+  Builds the application
 
-import {
-  connect,
-  stateType
-} from '../flux'
+## Tests
 
-const mapStateToProps: mapStateToPropsType<stateType, {}, { texts: string[] }> = (state) => ({
-  texts: state.list,
-});
+**The following commands are available:**
 
-const mapDispatchToProps: mapDispatchToPropsType<{}, {}> = (dispatch, props) => ({
-  return {
-    onAdd: (text: any) => dispatch(text),
-  };
-});
+| Command              | Description                         |
+| -------------------- | ----------------------------------- |
+| `npm run test`       | Run all unit tests                  |
+| `npm run test:watch` | Watching mode from unit test        |
+| `npm run coverage`   | Creates a coverage report from test |
 
-const ItemsConnect = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-  mergeProps,
-)(Items);
-```
+## Prettier and Lint
 
-## Multiple Action
+Ensures that the code is formatted uniformly and that the coding standards are adhered to.
 
-```javascript
-// action/index.js
-import { merge } from 'rxjs/internal/observable/merge';
-import { ajax } from 'rxjs/internal/observable/dom/ajax'
-import { of } from 'rxjs/internal/observable/of';
+The following commands are available:
 
+- `npm run prettier`
 
-export function addTodo(text) {
-  return {
-    type: 'add',
-    payload: {
-      loading: false,
-      text: text,
-    },
-  };
-};
+  Changes the code formatting as defined in the Prettier setting.
 
-export function addTodoSave(text) {
-  const async$ = ajax({
-    url:  'https://example.com/api',
-    body: {text: text},
-  }).map((data) => {
-    return addTodo(data.text);
-  });
+- `npm run lint`
 
-  const sync$ = of({
-    type: 'save',
-    payload: {
-      loading: true,
-  });
-
-  return merge(sync$, async$);
-};
-```
-
-```javascript
-const g1$ = of({
-  type: 'add',
-  payload: '-- :-) 8 --',
-}) as rxComponents.actionType;
-const g2$ = of({
-  type: 'add',
-  payload: '-- :-) 9 --',
-}) as rxComponents.actionType;
-
-const g2_1$ = g2$.pipe(delay(2500));
-const g3$ = merge(g1$, g2_1$);
-```
-
-## Debounce
-
-```javascript
-// containers/index.js
-import { Subject } from 'rxjs/internal/Subject';
-import { debounceTime } from 'rxjs/internal/operators/debounceTime';
-
-// ...
-
-const mapDispatchToProps: mapDispatchToPropsType<{}, {}> = (dispatch, props) => ({
-  const debounce$ = new Subject();
-
-  debounce$.pipe(debounceTime(500)).subscribe(
-    (text) => dispatch(rAction(text))
-  );
-
-  return {
-    onAdd: (text: any) => debounce$.next(text),
-  };
-});
-
-// ...
-```
+  Checks if the lint rules are followed. It calls the prettier command first.
