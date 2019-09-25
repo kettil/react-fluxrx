@@ -1,5 +1,5 @@
 // export modified jest config
-module.exports = Object.assign({}, require('./jest.js'), {
+module.exports = Object.assign({}, require('./jest.json'), {
   // only text coverage
-  coverageReporters = ['text-summary', 'text'],
+  coverageReporters: ['text', 'text-summary'],
 });
