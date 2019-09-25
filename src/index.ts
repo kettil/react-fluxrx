@@ -5,7 +5,7 @@ export { combineReducers } from './lib/reducers';
 export { getUniqueAction } from './lib/utils/helper';
 export { actions } from './lib/utils/store';
 
-export * from './lib/types';
+export { createActionType, createReducerType, createStateType, dispatchType, UnpackedArray } from './lib/types';
 
 /**
  *

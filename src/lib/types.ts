@@ -2,15 +2,39 @@ import { ComponentType } from 'react';
 import { Observable, Subscription } from 'rxjs';
 
 //
+// User Types
+//
+
+export type createStateType<State> = State;
+
+export type createActionType<Payload, Type extends TypeAction> = actionSubjectType<
+  OptionalValues<UnpackedArray<Payload>>,
+  Type
+>;
+
+export type createReducerType<State, Type extends TypeAction> = reducerType<
+  State,
+  actionType<UnpackedArray<State>, Type>
+>;
+
+export type dispatchType = storeDispatchType;
+
+//
 // Action
 //
 
-export type actionType<Payload = any> = {
-  type: string | symbol;
+export type actionType<Payload = any, Type extends TypeAction = TypeAction> = {
+  type: Type;
   payload: Payload;
 
-  sync?: boolean;
   withoutMiddleware?: boolean;
+
+  // socket.io
+  sync?: boolean;
+
+  // ajax
+  url?: string;
+  args?: Record<string, any>;
 };
 
 export type actionSubjectShortType<Payload = any> =
@@ -18,13 +42,11 @@ export type actionSubjectShortType<Payload = any> =
   | Promise<actionType<Payload>>
   | Observable<actionType<Payload>>;
 
-export type actionSubjectType<Payload = any> =
-  | actionType<Payload>
-  | Array<actionType<Payload>>
-  | Promise<actionType<Payload>>
-  | Observable<actionType<Payload>>;
-
-export type withChildrenType<Props extends {}> = Props & { readonly children: React.ReactNode };
+export type actionSubjectType<Payload = any, Type extends TypeAction = TypeAction> =
+  | actionType<Payload, Type>
+  | Array<actionType<Payload, Type>>
+  | Promise<actionType<Payload, Type>>
+  | Observable<actionType<Payload, Type>>;
 
 //
 // Connect
@@ -67,6 +89,16 @@ export type storeSetStateType<State> = (state: State) => void;
 export type storeErrorHandlerType<State> = (err: any, dispatch: storeDispatchType, state: State) => void;
 
 //
+// Reducer
+//
+
+export type reducersType<State, Action extends actionType = any> = {
+  [K in keyof State]: reducerType<State[K], Action>;
+};
+
+export type reducerType<State, Action extends actionType = any> = (state: State | undefined, action: Action) => State;
+
+//
 // Middleware
 //
 
@@ -92,18 +124,12 @@ export type middlewareActionType<State, Payload = any> = (
 export type middlewareErrorType<State> = storeErrorHandlerType<State>;
 
 //
-// Reducer
-//
-
-export type reducersType<State, ACTION extends actionType = any> = {
-  [K in keyof State]: reducerType<State[K], ACTION>;
-};
-
-export type reducerType<State, ACTION extends actionType = any> = (state: State | undefined, action: ACTION) => State;
-
-//
 // Helper
 //
+
+export type TypeAction = string | symbol | EnumAction;
+
+export type EnumAction = {};
 
 export type MergedObjects<T1, T2, T3> = T3 & ObjectExcludeKeys<T2, T3> & ObjectExcludeKeys<T1, T2 & T3>;
 
