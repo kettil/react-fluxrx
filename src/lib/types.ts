@@ -31,7 +31,7 @@ export type withChildrenType<Props extends {}> = Props & { readonly children: Re
 //
 
 export type connectedType<Props, MapState, MapDispatch> = (
-  Element: ComponentType<mergedObjects<Props, MapState, MapDispatch>>,
+  Element: ComponentType<MergedObjects<Props, MapState, MapDispatch>>,
 ) => ComponentType<Props>;
 
 export type mapStateToPropsType<State, Props, MapState> = (state: State, ownProps: Props) => MapState;
@@ -42,11 +42,11 @@ export type mergePropsType<MapState, MapDispatch, Props> = (
   stateProps: MapState,
   dispatchProps: MapDispatch,
   ownProps: Props,
-) => mergedObjects<Props, MapState, MapDispatch>;
+) => MergedObjects<Props, MapState, MapDispatch>;
 
 export type wrappedComponentType<Props, MapState, MapDispatch> =
-  | React.ComponentType<mergedObjects<Props, MapState, MapDispatch>>
-  | React.ReactElement<mergedObjects<Props, MapState, MapDispatch>>;
+  | React.ComponentType<MergedObjects<Props, MapState, MapDispatch>>
+  | React.ReactElement<MergedObjects<Props, MapState, MapDispatch>>;
 
 //
 // Store
@@ -105,6 +105,10 @@ export type reducerType<State, ACTION extends actionType = any> = (state: State 
 // Helper
 //
 
-export type mergedObjects<T1, T2, T3> = T3 & objectExcludeKeysType<T2, T3> & objectExcludeKeysType<T1, T2 & T3>;
+export type MergedObjects<T1, T2, T3> = T3 & ObjectExcludeKeys<T2, T3> & ObjectExcludeKeys<T1, T2 & T3>;
 
-export type objectExcludeKeysType<T1, T2> = { [K in Exclude<keyof T1, keyof T2>]: T1[K] };
+export type ObjectExcludeKeys<T1, T2> = { [K in Exclude<keyof T1, keyof T2>]: T1[K] };
+
+export type UnpackedArray<T> = T extends Array<infer U> ? U : T;
+
+export type OptionalValues<T> = { [K in keyof T]?: T[K] };

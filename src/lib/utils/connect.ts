@@ -1,4 +1,4 @@
-import { mergedObjects } from '../types';
+import { MergedObjects } from '../types';
 import { hasProperty, isObject } from './helper';
 
 /**
@@ -25,7 +25,7 @@ export const defaultMergeProps = <MapState, MapDispatch, Props>(
   stateProps: MapState,
   dispatchProps: MapDispatch,
   props: Props,
-): mergedObjects<Props, MapState, MapDispatch> => {
+): MergedObjects<Props, MapState, MapDispatch> => {
   return { ...props, ...stateProps, ...dispatchProps };
 };
 

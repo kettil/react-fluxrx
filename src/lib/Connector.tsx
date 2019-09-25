@@ -5,7 +5,7 @@ import { isStrictEqual } from './utils/connect';
 
 import selector from './selector';
 
-import { mapDispatchToPropsType, mapStateToPropsType, mergedObjects, mergePropsType, storeType } from './types';
+import { mapDispatchToPropsType, mapStateToPropsType, MergedObjects, mergePropsType, storeType } from './types';
 
 /**
  *
@@ -16,7 +16,7 @@ import { mapDispatchToPropsType, mapStateToPropsType, mergedObjects, mergePropsT
  * @param mergeProps
  */
 export const connector = <State, Props, MapState, MapDispatch>(
-  WrappedComponent: React.ComponentType<mergedObjects<Props, MapState, MapDispatch>>,
+  WrappedComponent: React.ComponentType<MergedObjects<Props, MapState, MapDispatch>>,
   context: React.Context<storeType<State>>,
   mapStateToProps: mapStateToPropsType<State, Props, MapState>,
   mapDispatchToProps: mapDispatchToPropsType<Props, MapDispatch>,

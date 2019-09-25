@@ -6,7 +6,7 @@ import { defaultMapDispatchToProps, defaultMapStateToProps, defaultMergeProps } 
 import {
   mapDispatchToPropsType,
   mapStateToPropsType,
-  mergedObjects,
+  MergedObjects,
   mergePropsType,
   storeDispatchType,
   storeType,
@@ -28,7 +28,7 @@ export const createConnect = <State>(context: React.Context<storeType<State>>) =
 ) => {
   return (WrappedComponent: wrappedComponentType<Props, MapState, MapDispatch>) =>
     connector(
-      WrappedComponent as React.ComponentType<mergedObjects<Props, MapState, MapDispatch>>,
+      WrappedComponent as React.ComponentType<MergedObjects<Props, MapState, MapDispatch>>,
       context,
       mapStateToProps,
       mapDispatchToProps,
