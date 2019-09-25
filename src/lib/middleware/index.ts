@@ -4,7 +4,7 @@ import logger from './logger';
 /**
  *
  */
-export const middlewares = {
+export const middleware = {
   devTools,
   logger,
 };
@@ -12,4 +12,4 @@ export const middlewares = {
 /**
  *
  */
-export default middlewares;
+export default middleware;

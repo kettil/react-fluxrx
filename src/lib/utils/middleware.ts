@@ -1,4 +1,4 @@
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 // tslint:disable-next-line:no-submodule-imports
 import { map, mergeMap, tap } from 'rxjs/operators';
 
@@ -12,21 +12,20 @@ import { actionType, middlewareActionType, reducerType, storeDispatchType, store
 export class MiddlewareUtils {
   /**
    *
-   * @param middlewares
+   * @param middleware
    * @param store
    * @param reducer
    */
-  manager<State>(
-    middlewares: Array<middlewareActionType<State>>,
-    store: storeType<State>,
-    reducer: reducerType<State>,
-  ) {
+  manager<State>(middleware: Array<middlewareActionType<State>>, store: storeType<State>, reducer: reducerType<State>) {
     const state = store.getState();
 
     return (source$: Observable<actionType>) =>
-      middlewares.reduce(
-        (prev$, middleware) => this.handler(prev$, middleware, state, store.dispatch, reducer),
-        source$,
+      source$.pipe(
+        mergeMap((action) =>
+          action.withoutMiddleware === true
+            ? of(action)
+            : middleware.reduce((prev$, mw) => this.handler(prev$, mw, state, store.dispatch, reducer), of(action)),
+        ),
       );
   }
 
