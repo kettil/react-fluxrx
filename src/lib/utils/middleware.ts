@@ -17,16 +17,21 @@ export class MiddlewareUtils {
    * @param reducer
    */
   manager<State>(middleware: Array<middlewareActionType<State>>, store: storeType<State>, reducer: reducerType<State>) {
-    const state = store.getState();
+    return (source$: Observable<actionType>) => {
+      return source$.pipe(
+        mergeMap((action) => {
+          const action$ = of(action);
 
-    return (source$: Observable<actionType>) =>
-      source$.pipe(
-        mergeMap((action) =>
-          action.withoutMiddleware === true
-            ? of(action)
-            : middleware.reduce((prev$, mw) => this.handler(prev$, mw, state, store.dispatch, reducer), of(action)),
-        ),
+          if (action.withoutMiddleware === true) {
+            return action$;
+          }
+
+          const state = store.getState();
+
+          return middleware.reduce((prev$, mw) => this.handler(prev$, mw, state, store.dispatch, reducer), action$);
+        }),
       );
+    };
   }
 
   /**

@@ -1,5 +1,5 @@
 // tslint:disable:no-console
-import { isObservable, of } from 'rxjs';
+import { isObservable, of, Subject } from 'rxjs';
 
 import { MiddlewareUtils } from './middleware';
 
@@ -46,21 +46,29 @@ describe('Check the middleware class', () => {
 
       result.subscribe(
         (action) => {
-          expect(action).toEqual({ type: 'remove', payload: { message: '...' } });
+          try {
+            expect(action).toEqual({ type: 'remove', payload: { message: '...' } });
+          } catch (err) {
+            done(err);
+          }
         },
         done,
         () => {
-          expect(reducer).toHaveBeenCalledTimes(0);
-          expect(dispatch).toHaveBeenCalledTimes(0);
-          expect(middleware).toHaveBeenCalledTimes(1);
-          expect(middleware).toHaveBeenCalledWith(
-            { payload: { message: '...' }, type: 'remove' },
-            { todos: [] },
-            dispatch,
-            reducer,
-          );
+          try {
+            expect(reducer).toHaveBeenCalledTimes(0);
+            expect(dispatch).toHaveBeenCalledTimes(0);
+            expect(middleware).toHaveBeenCalledTimes(1);
+            expect(middleware).toHaveBeenCalledWith(
+              { payload: { message: '...' }, type: 'remove' },
+              { todos: [] },
+              dispatch,
+              reducer,
+            );
 
-          done();
+            done();
+          } catch (err) {
+            done(err);
+          }
         },
       );
     },
@@ -88,20 +96,24 @@ describe('Check the middleware class', () => {
     result.subscribe(
       () => done(new Error('No error was thrown')),
       (err) => {
-        expect(err).toBeInstanceOf(Error);
-        expect(err.message).toBe('Incorrect action structure ({"payload":{"message":"..."}})');
+        try {
+          expect(err).toBeInstanceOf(Error);
+          expect(err.message).toBe('Incorrect action structure ({"payload":{"message":"..."}})');
 
-        expect(reducer).toHaveBeenCalledTimes(0);
-        expect(dispatch).toHaveBeenCalledTimes(0);
-        expect(middleware).toHaveBeenCalledTimes(1);
-        expect(middleware).toHaveBeenCalledWith(
-          { type: 'remove', payload: { message: '...' } },
-          { todos: [] },
-          dispatch,
-          reducer,
-        );
+          expect(reducer).toHaveBeenCalledTimes(0);
+          expect(dispatch).toHaveBeenCalledTimes(0);
+          expect(middleware).toHaveBeenCalledTimes(1);
+          expect(middleware).toHaveBeenCalledWith(
+            { type: 'remove', payload: { message: '...' } },
+            { todos: [] },
+            dispatch,
+            reducer,
+          );
 
-        done();
+          done();
+        } catch (err) {
+          done(err);
+        }
       },
     );
   });
@@ -130,30 +142,38 @@ describe('Check the middleware class', () => {
 
     result.subscribe(
       (action) => {
-        expect(action).toEqual({ type: 'edit', payload: { id: 4, message: '...' } });
+        try {
+          expect(action).toEqual({ type: 'edit', payload: { id: 4, message: '...' } });
+        } catch (err) {
+          done(err);
+        }
       },
       done,
       () => {
-        expect(getState).toHaveBeenCalledTimes(1);
-        expect(subscribe).toHaveBeenCalledTimes(0);
-        expect(dispatch).toHaveBeenCalledTimes(0);
-        expect(reducer).toHaveBeenCalledTimes(0);
-        expect(middleware1).toHaveBeenCalledTimes(1);
-        expect(middleware1).toHaveBeenCalledWith(
-          { type: 'edit', payload: { id: 4, message: '...' } },
-          { todos: [] },
-          dispatch,
-          reducer,
-        );
-        expect(middleware2).toHaveBeenCalledTimes(1);
-        expect(middleware2).toHaveBeenCalledWith(
-          { type: 'edit', payload: { id: 4, message: '...' } },
-          { todos: [] },
-          dispatch,
-          reducer,
-        );
+        try {
+          expect(getState).toHaveBeenCalledTimes(1);
+          expect(subscribe).toHaveBeenCalledTimes(0);
+          expect(dispatch).toHaveBeenCalledTimes(0);
+          expect(reducer).toHaveBeenCalledTimes(0);
+          expect(middleware1).toHaveBeenCalledTimes(1);
+          expect(middleware1).toHaveBeenCalledWith(
+            { type: 'edit', payload: { id: 4, message: '...' } },
+            { todos: [] },
+            dispatch,
+            reducer,
+          );
+          expect(middleware2).toHaveBeenCalledTimes(1);
+          expect(middleware2).toHaveBeenCalledWith(
+            { type: 'edit', payload: { id: 4, message: '...' } },
+            { todos: [] },
+            dispatch,
+            reducer,
+          );
 
-        done();
+          done();
+        } catch (err) {
+          done(err);
+        }
       },
     );
   });
@@ -182,19 +202,86 @@ describe('Check the middleware class', () => {
 
     result.subscribe(
       (action) => {
-        expect(action).toEqual({ type: 'edit', payload: { id: 4, message: '...' }, withoutMiddleware: true });
+        try {
+          expect(action).toEqual({ type: 'edit', payload: { id: 4, message: '...' }, withoutMiddleware: true });
+        } catch (err) {
+          done(err);
+        }
       },
       done,
       () => {
-        expect(getState).toHaveBeenCalledTimes(1);
-        expect(subscribe).toHaveBeenCalledTimes(0);
-        expect(dispatch).toHaveBeenCalledTimes(0);
-        expect(reducer).toHaveBeenCalledTimes(0);
-        expect(middleware1).toHaveBeenCalledTimes(0);
-        expect(middleware2).toHaveBeenCalledTimes(0);
+        try {
+          expect(getState).toHaveBeenCalledTimes(0);
+          expect(subscribe).toHaveBeenCalledTimes(0);
+          expect(dispatch).toHaveBeenCalledTimes(0);
+          expect(reducer).toHaveBeenCalledTimes(0);
+          expect(middleware1).toHaveBeenCalledTimes(0);
+          expect(middleware2).toHaveBeenCalledTimes(0);
 
-        done();
+          done();
+        } catch (err) {
+          done(err);
+        }
       },
     );
+  });
+
+  /**
+   *
+   */
+  test('it should be call the getState() twice when manager() is called and trigger two actions', (done) => {
+    expect.assertions(12);
+
+    const middleware = jest.fn().mockImplementation((action) => action);
+    const subscribe = jest.fn();
+    const getState = jest
+      .fn()
+      .mockReturnValue({ todos: [] })
+      .mockReturnValueOnce({ todos: [], firstRun: true });
+
+    const middlewareUtils = new MiddlewareUtils();
+
+    const callback = middlewareUtils.manager([middleware], { dispatch, getState, subscribe }, reducer);
+
+    expect(typeof callback).toBe('function');
+    expect(callback.length).toBe(1);
+
+    const expected = { payload: { id: 4, message: '...' }, type: 'edit' };
+    const subject$ = new Subject<any>();
+
+    const result$ = callback(subject$);
+
+    expect(isObservable(result$)).toBe(true);
+
+    result$.subscribe(
+      (action) => {
+        try {
+          expect(action).toEqual(expected);
+        } catch (err) {
+          done(err);
+        }
+      },
+      done,
+      () => {
+        try {
+          expect(getState).toHaveBeenCalledTimes(2);
+          expect(subscribe).toHaveBeenCalledTimes(0);
+          expect(dispatch).toHaveBeenCalledTimes(0);
+          expect(reducer).toHaveBeenCalledTimes(0);
+          expect(middleware).toHaveBeenCalledTimes(2);
+          expect(middleware).toHaveBeenNthCalledWith(1, expected, { firstRun: true, todos: [] }, dispatch, reducer);
+          expect(middleware).toHaveBeenNthCalledWith(2, expected, { todos: [] }, dispatch, reducer);
+
+          done();
+        } catch (err) {
+          done(err);
+        }
+      },
+    );
+
+    subject$.next({ type: 'edit', payload: { id: 4, message: '...' } });
+    subject$.next({ type: 'edit', payload: { id: 4, message: '...' } });
+
+    subject$.complete();
   });
 });
