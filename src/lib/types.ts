@@ -9,12 +9,12 @@ import { AjaxRequest } from 'rxjs/ajax';
 
 export type createStateType<State> = State;
 
-export type createActionType<Payload extends Record<string, any>, Type extends TypeAction> = actionSubjectType<
+export type createActionType<Payload, Type extends TypeAction> = actionSubjectType<
   OptionalValues<UnpackedArray<Payload>>,
   Type
 >;
 
-export type createReducerType<State extends Record<string, any>, Type extends TypeAction> = reducerType<
+export type createReducerType<State, Type extends TypeAction> = reducerType<
   State,
   actionType<UnpackedArray<State>, Type>
 >;
@@ -25,7 +25,7 @@ export type dispatchType = storeDispatchType;
 // Action
 //
 
-export type actionType<Payload extends Record<string, any> = any, Type extends TypeAction = TypeAction> = {
+export type actionType<Payload = any, Type extends TypeAction = TypeAction> = {
   type: Type;
   payload: Payload;
 
@@ -48,12 +48,12 @@ export type actionType<Payload extends Record<string, any> = any, Type extends T
   ) => actionSubjectType<P, T>;
 };
 
-export type actionSubjectShortType<Payload extends Record<string, any> = any> =
+export type actionSubjectShortType<Payload = any> =
   | actionType<Payload>
   | Promise<actionType<Payload>>
   | Observable<actionType<Payload>>;
 
-export type actionSubjectType<Payload extends Record<string, any> = any, Type extends TypeAction = TypeAction> =
+export type actionSubjectType<Payload = any, Type extends TypeAction = TypeAction> =
   | actionType<Payload, Type>
   | Array<actionType<Payload, Type>>
   | Promise<actionType<Payload, Type>>
@@ -146,4 +146,4 @@ export type ObjectExcludeKeys<T1, T2> = { [K in Exclude<keyof T1, keyof T2>]: T1
 
 export type UnpackedArray<T> = T extends Array<infer U> ? U : T;
 
-export type OptionalValues<T> = { [K in keyof T]?: T[K] };
+export type OptionalValues<T> = T extends { [K in keyof T]: any } ? { [K in keyof T]?: T[K] } : T;
