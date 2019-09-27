@@ -1,5 +1,7 @@
+/* tslint:disable:no-submodule-imports */
 import { ComponentType } from 'react';
 import { Observable, Subscription } from 'rxjs';
+import { AjaxRequest } from 'rxjs/ajax';
 
 //
 // User Types
@@ -7,12 +9,12 @@ import { Observable, Subscription } from 'rxjs';
 
 export type createStateType<State> = State;
 
-export type createActionType<Payload, Type extends TypeAction> = actionSubjectType<
+export type createActionType<Payload extends Record<string, any>, Type extends TypeAction> = actionSubjectType<
   OptionalValues<UnpackedArray<Payload>>,
   Type
 >;
 
-export type createReducerType<State, Type extends TypeAction> = reducerType<
+export type createReducerType<State extends Record<string, any>, Type extends TypeAction> = reducerType<
   State,
   actionType<UnpackedArray<State>, Type>
 >;
@@ -23,26 +25,35 @@ export type dispatchType = storeDispatchType;
 // Action
 //
 
-export type actionType<Payload = any, Type extends TypeAction = TypeAction> = {
+export type actionType<Payload extends Record<string, any> = any, Type extends TypeAction = TypeAction> = {
   type: Type;
   payload: Payload;
 
+  // options
   withoutMiddleware?: boolean;
 
   // socket.io
   sync?: boolean;
 
   // ajax
-  url?: string;
-  args?: Record<string, any>;
+  ajaxUrlPath?: string;
+  ajaxMethod?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
+  ajaxData?: Record<string, any>;
+  ajaxRequest?: AjaxRequest;
+  ajaxSilentMode?: boolean;
+  ajaxResponse?: <D = any, P extends Record<string, any> = Payload, T extends TypeAction = Type>(
+    responseStatus: number,
+    responseData: Record<string, D>,
+    responseType: string,
+  ) => actionSubjectType<P, T>;
 };
 
-export type actionSubjectShortType<Payload = any> =
+export type actionSubjectShortType<Payload extends Record<string, any> = any> =
   | actionType<Payload>
   | Promise<actionType<Payload>>
   | Observable<actionType<Payload>>;
 
-export type actionSubjectType<Payload = any, Type extends TypeAction = TypeAction> =
+export type actionSubjectType<Payload extends Record<string, any> = any, Type extends TypeAction = TypeAction> =
   | actionType<Payload, Type>
   | Array<actionType<Payload, Type>>
   | Promise<actionType<Payload, Type>>
@@ -127,9 +138,7 @@ export type middlewareErrorType<State> = storeErrorHandlerType<State>;
 // Helper
 //
 
-export type TypeAction = string | symbol | EnumAction;
-
-export type EnumAction = {};
+export type TypeAction = string | symbol;
 
 export type MergedObjects<T1, T2, T3> = T3 & ObjectExcludeKeys<T2, T3> & ObjectExcludeKeys<T1, T2 & T3>;
 

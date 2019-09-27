@@ -3,10 +3,6 @@ import { middlewareType } from '../types';
 
 /**
  *
- * @param action
- * @param store
- * @param reducer
- * @param setState
  */
 export const logger = <State>(): middlewareType<State> => {
   return {

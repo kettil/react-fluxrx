@@ -95,27 +95,31 @@ describe('Check the store', () => {
 
     setTimeout(() => {
       store.subscribe((newState) => {
-        expect(newState).toEqual({
-          todos: [1, 3, 5],
-          users: { firstname: 'a', lastname: 'z' },
-          action: [{ lastname: 'q' }],
-        });
+        try {
+          expect(newState).toEqual({
+            todos: [1, 3, 5],
+            users: { firstname: 'a', lastname: 'z' },
+            action: [{ lastname: 'q' }],
+          });
 
-        expect(reducer).toHaveBeenCalledTimes(1);
-        expect(reducer).toHaveBeenCalledWith(
-          { todos: [1, 3, 5], users: { firstname: 'a', lastname: 'z' }, action: [] },
-          action,
-        );
+          expect(reducer).toHaveBeenCalledTimes(1);
+          expect(reducer).toHaveBeenCalledWith(
+            { todos: [1, 3, 5], users: { firstname: 'a', lastname: 'z' }, action: [] },
+            action,
+          );
 
-        expect(middlewareInit2).toHaveBeenCalledTimes(1);
-        expect(middlewareInit2).toHaveBeenCalledWith(state, store.dispatch, expect.any(Function));
-        expect(middlewareAction1).toHaveBeenCalledTimes(1);
-        expect(middlewareAction1).toHaveBeenCalledWith(action, state, store.dispatch, reducer);
-        expect(middlewareAction2).toHaveBeenCalledTimes(1);
-        expect(middlewareAction2).toHaveBeenCalledWith(action, state, store.dispatch, reducer);
-        expect(middlewareError1).toHaveBeenCalledTimes(0);
+          expect(middlewareInit2).toHaveBeenCalledTimes(1);
+          expect(middlewareInit2).toHaveBeenCalledWith(state, store.dispatch, expect.any(Function));
+          expect(middlewareAction1).toHaveBeenCalledTimes(1);
+          expect(middlewareAction1).toHaveBeenCalledWith(action, state, store.dispatch, expect.any(Function));
+          expect(middlewareAction2).toHaveBeenCalledTimes(1);
+          expect(middlewareAction2).toHaveBeenCalledWith(action, state, store.dispatch, expect.any(Function));
+          expect(middlewareError1).toHaveBeenCalledTimes(0);
 
-        done();
+          done();
+        } catch (err) {
+          done(err);
+        }
       });
     }, 100);
   });

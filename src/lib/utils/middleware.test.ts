@@ -284,4 +284,75 @@ describe('Check the middleware class', () => {
 
     subject$.complete();
   });
+
+  /**
+   *
+   */
+  test('it should be call the getState() twice when manager() is called and trigger five actions', (done) => {
+    expect.assertions(16);
+
+    const middleware = jest.fn().mockImplementation((action) => action);
+    const subscribe = jest.fn();
+    const getState = jest
+      .fn()
+      .mockReturnValue({ todos: [] })
+      .mockReturnValueOnce({ todos: [], firstRun: true })
+      .mockReturnValueOnce({ todos: [], secondRun: true });
+
+    const middlewareUtils = new MiddlewareUtils();
+
+    const callback = middlewareUtils.manager([middleware], { dispatch, getState, subscribe }, reducer);
+
+    expect(typeof callback).toBe('function');
+    expect(callback.length).toBe(1);
+
+    const expected = { payload: { id: 4, message: '...' }, type: 'edit' };
+    const subject$ = new Subject<any>();
+
+    const result$ = callback(subject$);
+
+    expect(isObservable(result$)).toBe(true);
+
+    let i = 0;
+    result$.subscribe(
+      (action) => {
+        try {
+          if (i === 1 || i === 2) {
+            expect(action).toEqual({ ...expected, withoutMiddleware: true });
+          } else {
+            expect(action).toEqual(expected);
+          }
+
+          i += 1;
+        } catch (err) {
+          done(err);
+        }
+      },
+      done,
+      () => {
+        try {
+          expect(getState).toHaveBeenCalledTimes(3);
+          expect(subscribe).toHaveBeenCalledTimes(0);
+          expect(dispatch).toHaveBeenCalledTimes(0);
+          expect(reducer).toHaveBeenCalledTimes(0);
+          expect(middleware).toHaveBeenCalledTimes(3);
+          expect(middleware).toHaveBeenNthCalledWith(1, expected, { firstRun: true, todos: [] }, dispatch, reducer);
+          expect(middleware).toHaveBeenNthCalledWith(2, expected, { secondRun: true, todos: [] }, dispatch, reducer);
+          expect(middleware).toHaveBeenNthCalledWith(3, expected, { todos: [] }, dispatch, reducer);
+
+          done();
+        } catch (err) {
+          done(err);
+        }
+      },
+    );
+
+    subject$.next({ type: 'edit', payload: { id: 4, message: '...' } });
+    subject$.next({ type: 'edit', payload: { id: 4, message: '...' }, withoutMiddleware: true });
+    subject$.next({ type: 'edit', payload: { id: 4, message: '...' }, withoutMiddleware: true });
+    subject$.next({ type: 'edit', payload: { id: 4, message: '...' } });
+    subject$.next({ type: 'edit', payload: { id: 4, message: '...' } });
+
+    subject$.complete();
+  });
 });

@@ -23,13 +23,20 @@ export const actionFlat = (action: actionSubjectType): Observable<actionType<any
 /**
  *
  * @param action
+ * @param withReturn
  */
-export const actionValidate = (action: actionType) => {
+export const actionValidate = (action: any, withReturn = false): action is actionType => {
   const types = ['string', 'symbol'];
 
-  if (!isObject(action) || types.indexOf(typeof action.type) === -1 || typeof action.payload === 'undefined') {
+  if (!isObject(action) || types.indexOf(typeof action.type) === -1 || !isObject(action.payload)) {
+    if (withReturn === true) {
+      return false;
+    }
+
     throw new Error(`Incorrect action structure (${JSON.stringify(action)})`);
   }
+
+  return true;
 };
 
 /**
@@ -63,11 +70,16 @@ export const reducerHandler = <State>(reducer: reducerType<State>): reducerType<
   state: State | undefined,
   action: actionType,
 ): State => {
-  if (action.type === actions.fullUpdate) {
-    return action.payload;
-  }
+  switch (action.type) {
+    case actions.fullUpdate:
+      return action.payload;
 
-  return reducer(state, action);
+    case actions.ignoreAction:
+      return state!;
+
+    default:
+      return reducer(state, action);
+  }
 };
 
 /**
@@ -88,4 +100,5 @@ export const reduceMiddleware = <State, K extends keyof middlewareType<State>>(
  */
 export const actions = {
   fullUpdate: getUniqueAction('FULL_UPDATE_ACTION'),
+  ignoreAction: getUniqueAction('IGNORE_ACTION'),
 };

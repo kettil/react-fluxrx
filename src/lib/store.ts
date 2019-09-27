@@ -45,6 +45,8 @@ export const createStore = <State>(
     mwErrors.push(defaultErrorHandler);
   }
 
+  const handlerReducer = reducerHandler(reducer);
+
   // manipulates the stream and adds it to the state
   action$
     .pipe(
@@ -53,9 +55,9 @@ export const createStore = <State>(
       // validate the action
       tap(actionValidate),
       // middleware
-      middlewareUtils.manager(mwActions, store, reducer),
+      middlewareUtils.manager(mwActions, store, handlerReducer),
       // change action to state type
-      scan(reducerHandler(reducer), init),
+      scan(handlerReducer, init),
       // error handling
       catchError<State, Observable<State>>(actionError(mwErrors, store)),
     )

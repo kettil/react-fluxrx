@@ -66,10 +66,13 @@ describe('Check the store functions', () => {
     });
   });
 
+  const testActionValidateSuccess: Array<[any]> = [['qwerty'], [Symbol('test')]];
+  const testActionValidateFailed: Array<[any]> = [['action'], [{ type: 5, payload: 'test' }], [{ type: 'a' }]];
+
   /**
    *
    */
-  test.each<[any]>([['qwerty'], [Symbol('test')]])(
+  test.each(testActionValidateSuccess)(
     'it should no error is thrown when actionValidate() is called with a correct action (%p)',
     (type) => {
       actionValidate({ type, payload: { a: 1 } });
@@ -79,7 +82,19 @@ describe('Check the store functions', () => {
   /**
    *
    */
-  test.each<[any]>([['action'], [{ type: 5, payload: 'test' }], [{ type: 'a' }]])(
+  test.each(testActionValidateSuccess)(
+    'it should no error is thrown when actionValidate() is called with a correct action and return value (%p)',
+    (type) => {
+      const result = actionValidate({ type, payload: { a: 1 } }, true);
+
+      expect(result).toBe(true);
+    },
+  );
+
+  /**
+   *
+   */
+  test.each(testActionValidateFailed)(
     'it should be throw an error when actionValidate() is called with a corrupted action (%p)',
     (action) => {
       expect.assertions(2);
@@ -89,6 +104,18 @@ describe('Check the store functions', () => {
         expect(err).toBeInstanceOf(Error);
         expect(err.message).toBe(`Incorrect action structure (${JSON.stringify(action)})`);
       }
+    },
+  );
+
+  /**
+   *
+   */
+  test.each(testActionValidateFailed)(
+    'it should be throw an error when actionValidate() is called with a corrupted action and return value (%p)',
+    (action) => {
+      const result = actionValidate(action, true);
+
+      expect(result).toBe(false);
     },
   );
 
@@ -200,7 +227,7 @@ describe('Check the store functions', () => {
   /**
    *
    */
-  test('it should be return the payload when reducerHandler() and his callback is called with the special action type', () => {
+  test('it should be return the payload when reducerHandler() and his callback is called with the special action type "fullUpdate"', () => {
     const reducer = jest.fn();
 
     const callback = reducerHandler(reducer);
@@ -208,9 +235,33 @@ describe('Check the store functions', () => {
     expect(typeof callback).toBe('function');
     expect(callback.length).toBe(2);
 
-    const result = callback({ todos: [] }, { type: actions.fullUpdate, payload: { message: '...' } });
+    const state = { message: '...' };
 
+    const result = callback({ todos: [] }, { type: actions.fullUpdate, payload: state });
+
+    expect(result).toBe(state);
     expect(result).toEqual({ message: '...' });
+
+    expect(reducer).toHaveBeenCalledTimes(0);
+  });
+
+  /**
+   *
+   */
+  test('it should be return the payload when reducerHandler() and his callback is called with the special action type "ignoreAction"', () => {
+    const reducer = jest.fn();
+
+    const callback = reducerHandler(reducer);
+
+    expect(typeof callback).toBe('function');
+    expect(callback.length).toBe(2);
+
+    const state = { todos: [] };
+
+    const result = callback(state, { type: actions.ignoreAction, payload: { message: '...' } });
+
+    expect(result).toBe(state);
+    expect(result).toEqual({ todos: [] });
 
     expect(reducer).toHaveBeenCalledTimes(0);
   });
@@ -239,6 +290,6 @@ describe('Check the store functions', () => {
    *
    */
   test('checks the keys of the object with the special action types', () => {
-    expect(Object.keys(actions)).toEqual(['fullUpdate']);
+    expect(Object.keys(actions)).toEqual(['fullUpdate', 'ignoreAction']);
   });
 });

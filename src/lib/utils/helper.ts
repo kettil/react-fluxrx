@@ -18,7 +18,7 @@ export const isPromise = (obj: any): obj is Promise<any> => {
  *
  * @param obj
  */
-export const isObject = (obj: any): boolean => {
+export const isObject = (obj: any): obj is { [k: string]: any } => {
   return typeof obj === 'object' && obj !== null;
 };
 

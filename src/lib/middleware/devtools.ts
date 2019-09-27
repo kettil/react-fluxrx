@@ -2,10 +2,6 @@ import { middlewareType } from '../types';
 
 /**
  *
- * @param action
- * @param store
- * @param reducer
- * @param setState
  */
 export const devTools = <State>(): middlewareType<State> => {
   const devToolsObject = typeof window !== 'undefined' && (window as any).__REDUX_DEVTOOLS_EXTENSION__;
