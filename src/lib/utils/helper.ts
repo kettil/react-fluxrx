@@ -1,5 +1,25 @@
 /**
  *
+ * @param type
+ */
+export const isActionType = <Type>(type: any): type is Type => {
+  const types = ['string', 'symbol'];
+
+  return types.indexOf(typeof type) >= 0;
+};
+
+/**
+ *
+ * @param payload
+ */
+export const isActionPayload = <Payload>(payload: any): payload is Payload => {
+  const types = ['number', 'string'];
+
+  return types.indexOf(typeof payload) >= 0 || isObject(payload) || Array.isArray(payload);
+};
+
+/**
+ *
  * @param obj
  */
 export const isPromise = (obj: any): obj is Promise<any> => {

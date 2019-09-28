@@ -1,10 +1,54 @@
 // tslint:disable:no-console
-import { defaultErrorHandler, getUniqueAction, hasProperty, isObject, isPromise } from './helper';
+import {
+  defaultErrorHandler,
+  getUniqueAction,
+  hasProperty,
+  isActionPayload,
+  isActionType,
+  isObject,
+  isPromise,
+} from './helper';
 
 /**
  *
  */
 describe('Check the helper functions', () => {
+  /**
+   *
+   */
+  test.each<[any]>([['a'], [Symbol('b')]])('isActionType(%s) is true', (value) => {
+    const result = isActionType(value);
+
+    expect(result).toBe(true);
+  });
+
+  /**
+   *
+   */
+  test.each<[any]>([[[]], [{}], [undefined], [null]])('isActionType(%s) is false', (value) => {
+    const result = isActionType(value);
+
+    expect(result).toBe(false);
+  });
+
+  /**
+   *
+   */
+  test.each<[any]>([['a'], [13], [{ a: 1 }], [[7]]])('isActionPayload(%s) is true', (value) => {
+    const result = isActionPayload(value);
+
+    expect(result).toBe(true);
+  });
+
+  /**
+   *
+   */
+  test.each<[any]>([[Symbol('b')], [null], [undefined]])('isActionPayload(%s) is false', (value) => {
+    const result = isActionPayload(value);
+
+    expect(result).toBe(false);
+  });
+
   const testObjectTrue: Array<[any]> = [[{ a: 5, m: 'test' }]];
   const testObjectFalse: Array<[any]> = [[1], [0], ['test'], [null], [undefined], [NaN], [true], [false]];
 

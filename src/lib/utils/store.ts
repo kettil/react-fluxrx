@@ -1,6 +1,6 @@
 import { from, isObservable, Observable, of } from 'rxjs';
 
-import { defaultErrorHandler, getUniqueAction, isObject, isPromise } from './helper';
+import { defaultErrorHandler, getUniqueAction, isActionPayload, isActionType, isObject, isPromise } from './helper';
 
 import { actionSubjectType, actionType, middlewareType, reducerType, storeErrorHandlerType, storeType } from '../types';
 
@@ -26,17 +26,15 @@ export const actionFlat = (action: actionSubjectType): Observable<actionType<any
  * @param withReturn
  */
 export const actionValidate = (action: any, withReturn = false): action is actionType => {
-  const types = ['string', 'symbol'];
-
-  if (!isObject(action) || types.indexOf(typeof action.type) === -1 || !isObject(action.payload)) {
-    if (withReturn === true) {
-      return false;
-    }
-
-    throw new Error(`Incorrect action structure (${JSON.stringify(action)})`);
+  if (isObject(action) && isActionType(action.type) && isActionPayload(action.payload)) {
+    return true;
   }
 
-  return true;
+  if (withReturn === true) {
+    return false;
+  }
+
+  throw new Error(`Incorrect action structure (${JSON.stringify(action)})`);
 };
 
 /**
