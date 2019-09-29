@@ -1,6 +1,6 @@
 {
   "name": "fluxrx",
-  "version": "0.0.1",
+  "version": "0.0.0",
   "description": "fluxRx is a predictable state container for react apps",
   "main": "build/index.js",
   "types": "build/index.d.ts",
@@ -22,7 +22,7 @@
     "deploy:minor": "npm run deploy:pre && npm version minor -m 'Release of version v%s' && npm run deploy:post",
     "deploy:patch": "npm run deploy:pre && npm version patch -m 'Release of version v%s' && npm run deploy:post",
     "deploy:pre": "npm run lint && npm run test:ci && npm run build",
-    "deploy:post": "git push && git push --tags && npm publish"
+    "deploy:post": "npm publish && git push && git push --tags"
   },
   "keywords": [
     "RxJS",
