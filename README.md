@@ -1,6 +1,7 @@
 # fluxRx [BETA]
 
-fluxRx is a predictable state container for react apps. Asynchronous operations are native supported.
+fluxRx is a predictable state container for react apps.
+It combines the idea behind [flux](https://facebook.github.io/flux/)/[redux](https://www.npmjs.com/package/redux) and [RxJS](https://www.npmjs.com/package/rxjs).
 
 ## Table of Contents
 
@@ -16,7 +17,8 @@ fluxRx is a predictable state container for react apps. Asynchronous operations 
 - Support one or many state containers
 - Actions can synchronously or asynchronously
 - Multiple updates can be made per action
-- API similar to redux
+- API similar to redux (e.g. you can use [reselect](https://github.com/reduxjs/reselect))
+- Simple integration of e.g. [debounce](https://www.learnrxjs.io/operators/filtering/debounce.html) or [throttle](https://www.learnrxjs.io/operators/filtering/throttle.html) per action
 - Middleware system
 - Full TypeScript support
 - Support for [Redux DevTools](https://github.com/zalmoxisus/redux-devtools-extension)
