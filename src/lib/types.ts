@@ -7,17 +7,17 @@ import { AjaxRequest } from 'rxjs/ajax';
 // User Types
 //
 
-export type createStateType<State> = State;
-
-export type createActionType<State, Payload, Type extends TypeAction> = actionSubjectType<
-  State,
+export type createActionType<GlobalState, Payload, Type extends TypeAction> = actionSubjectType<
+  GlobalState,
   OptionalValues<UnpackedArray<Payload>>,
   Type
 >;
 
-export type createReducerType<State, Type extends TypeAction> = reducerType<
-  State,
-  actionType<State, UnpackedArray<State>, Type>
+export type createStateType<LocalState> = LocalState;
+
+export type createReducerType<LocalState, Type extends TypeAction> = reducerType<
+  LocalState,
+  actionType<LocalState, UnpackedArray<LocalState>, Type>
 >;
 
 export type dispatchType = storeDispatchType;
@@ -40,7 +40,7 @@ export type actionType<State = any, Payload = any, Type extends TypeAction = Typ
   ajaxUrlPath?: string;
   ajaxMethod?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
   ajaxData?: Record<string, any>;
-  ajaxRequest?: (state: State) => Record<string, any>;
+  ajaxRequest?: (state: State) => Record<string, any> | void;
   ajaxOptions?: AjaxRequest;
   ajaxSilentMode?: boolean;
   ajaxResponse?: <Data = unknown, P extends Record<string, any> = Payload, T extends TypeAction = Type>(
