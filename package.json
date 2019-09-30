@@ -1,7 +1,7 @@
 {
-  "name": "fluxrx",
-  "version": "0.0.0",
-  "description": "fluxRx is a predictable state container for react apps",
+  "name": "react-fluxrx",
+  "version": "0.0.1",
+  "description": "react-fluxRx is a predictable state container for react apps",
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "scripts": {
@@ -38,10 +38,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/kettil/fluxrx"
+    "url": "https://github.com/kettil/react-fluxrx"
   },
   "bugs": {
-    "url": "https://github.com/kettil/fluxrx/issues/new"
+    "url": "https://github.com/kettil/react-fluxrx/issues/new"
   },
   "devDependencies": {
     "@types/jest": "^24.0.0",

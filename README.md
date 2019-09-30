@@ -1,6 +1,6 @@
-# fluxRx [BETA]
+# react-fluxRx [BETA]
 
-fluxRx is a predictable state container for react apps.
+react-fluxRx is a predictable state container for react apps.
 It combines the idea behind [flux](https://facebook.github.io/flux/)/[redux](https://www.npmjs.com/package/redux) and [RxJS](https://www.npmjs.com/package/rxjs).
 
 ## Table of Contents
@@ -26,7 +26,7 @@ It combines the idea behind [flux](https://facebook.github.io/flux/)/[redux](htt
 ## Installation
 
 ```bash
-npm install -P fluxrx
+npm install -P react-fluxrx
 ```
 
 ## Introduction
