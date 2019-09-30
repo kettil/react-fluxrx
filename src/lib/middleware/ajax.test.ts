@@ -211,12 +211,12 @@ describe('Check the ajax middleware', () => {
 
         // ajax
         ajaxUrlPath: '/api/todos',
-        ajaxData: {
+        ajaxRequest: () => ({
           item: {
             completed: false,
             text: 'new',
           },
-        },
+        }),
         ajaxResponse: (responseData: Record<string, any>, responseStatus: number, responseType: string) => {
           expect(responseStatus).toBe(200);
           expect(responseData).toEqual({ item: { completed: false, id: 7, text: 'new' }, status: 'ok' });
@@ -235,12 +235,7 @@ describe('Check the ajax middleware', () => {
         type: 'load',
         payload: { showLoader: true },
         ajaxUrlPath: '/api/todos',
-        ajaxData: {
-          item: {
-            completed: false,
-            text: 'new',
-          },
-        },
+        ajaxRequest: expect.any(Function),
         ajaxResponse: expect.any(Function),
       });
 
