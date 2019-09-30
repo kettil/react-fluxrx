@@ -43,7 +43,7 @@ export const ajax = <State>(url: string, actionWhitelist?: TypeAction[]): middle
             }
 
             if (next) {
-              return next(response.status, data, response.responseType);
+              return next(data, response.status, response.responseType);
             }
 
             if (actionValidate(data.action, true) && typeof data.action.type !== 'symbol') {
