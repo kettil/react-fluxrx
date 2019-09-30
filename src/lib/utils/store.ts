@@ -8,7 +8,7 @@ import { actionSubjectType, actionType, middlewareType, reducerType, storeErrorH
  *
  * @param action
  */
-export const actionFlat = (action: actionSubjectType): Observable<actionType<any>> => {
+export const actionFlat = (action: actionSubjectType): Observable<actionType> => {
   if (isObservable(action)) {
     return action;
   }
@@ -66,7 +66,7 @@ export const actionError = <State>(errorHandlers: Array<storeErrorHandlerType<St
  */
 export const reducerHandler = <State>(reducer: reducerType<State>): reducerType<State> => (
   state: State | undefined,
-  action: actionType,
+  action: actionType<State>,
 ): State => {
   switch (action.type) {
     case actions.fullUpdate:

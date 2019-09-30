@@ -7,7 +7,7 @@ import { actionType, reducersType, reducerType } from './types';
 export const combineReducers = <State>(reducers: reducersType<State, any>): reducerType<State, any> => {
   checkedReducers(reducers);
 
-  return (state: State | undefined, action: actionType): State => {
+  return (state: State | undefined, action: actionType<State>): State => {
     const nextState: { [K in keyof State]?: State[K] } = {};
     let hasChange = false;
 

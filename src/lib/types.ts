@@ -9,14 +9,15 @@ import { AjaxRequest } from 'rxjs/ajax';
 
 export type createStateType<State> = State;
 
-export type createActionType<Payload, Type extends TypeAction> = actionSubjectType<
+export type createActionType<State, Payload, Type extends TypeAction> = actionSubjectType<
+  State,
   OptionalValues<UnpackedArray<Payload>>,
   Type
 >;
 
 export type createReducerType<State, Type extends TypeAction> = reducerType<
   State,
-  actionType<UnpackedArray<State>, Type>
+  actionType<State, UnpackedArray<State>, Type>
 >;
 
 export type dispatchType = storeDispatchType;
@@ -25,7 +26,7 @@ export type dispatchType = storeDispatchType;
 // Action
 //
 
-export type actionType<Payload = any, Type extends TypeAction = TypeAction> = {
+export type actionType<State = any, Payload = any, Type extends TypeAction = TypeAction> = {
   type: Type;
   payload: Payload;
 
@@ -39,25 +40,26 @@ export type actionType<Payload = any, Type extends TypeAction = TypeAction> = {
   ajaxUrlPath?: string;
   ajaxMethod?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
   ajaxData?: Record<string, any>;
-  ajaxRequest?: AjaxRequest;
+  ajaxRequest?: (state: State) => Record<string, any>;
+  ajaxOptions?: AjaxRequest;
   ajaxSilentMode?: boolean;
   ajaxResponse?: <Data = unknown, P extends Record<string, any> = Payload, T extends TypeAction = Type>(
     responseData: Data,
     responseStatus: number,
     responseType: string,
-  ) => actionSubjectType<P, T>;
+  ) => actionSubjectType<State, P, T>;
 };
 
-export type actionSubjectShortType<Payload = any> =
-  | actionType<Payload>
-  | Promise<actionType<Payload>>
-  | Observable<actionType<Payload>>;
+export type actionSubjectShortType<State = any, Payload = any> =
+  | actionType<State, Payload>
+  | Promise<actionType<State, Payload>>
+  | Observable<actionType<State, Payload>>;
 
-export type actionSubjectType<Payload = any, Type extends TypeAction = TypeAction> =
-  | actionType<Payload, Type>
-  | Array<actionType<Payload, Type>>
-  | Promise<actionType<Payload, Type>>
-  | Observable<actionType<Payload, Type>>;
+export type actionSubjectType<State = any, Payload = any, Type extends TypeAction = TypeAction> =
+  | actionType<State, Payload, Type>
+  | Array<actionType<State, Payload, Type>>
+  | Promise<actionType<State, Payload, Type>>
+  | Observable<actionType<State, Payload, Type>>;
 
 //
 // Connect
@@ -85,19 +87,19 @@ export type wrappedComponentType<Props, MapState, MapDispatch> =
 // Store
 //
 
-export type storeDispatchType<Payload = any> = (action: actionSubjectType<Payload>) => void;
+export type storeDispatchType<State = any, Payload = any> = (action: actionSubjectType<State, Payload>) => void;
 
 export type storeSubscribeType<State> = (state: State) => void;
 
 export type storeType<State, Payload = any> = {
   subscribe: (next: storeSubscribeType<State>) => Subscription;
-  dispatch: storeDispatchType<Payload>;
+  dispatch: storeDispatchType<State, Payload>;
   getState: () => State;
 };
 
 export type storeSetStateType<State> = (state: State) => void;
 
-export type storeErrorHandlerType<State> = (err: any, dispatch: storeDispatchType, state: State) => void;
+export type storeErrorHandlerType<State> = (err: any, dispatch: storeDispatchType<State>, state: State) => void;
 
 //
 // Reducer
@@ -121,14 +123,14 @@ export type middlewareType<State> = {
 
 export type middlewareInitType<State, Payload = any> = (
   state: State,
-  dispatch: storeDispatchType<Payload>,
+  dispatch: storeDispatchType<State, Payload>,
   updateDirectly: storeSubscribeType<State>,
 ) => void;
 
 export type middlewareActionType<State, Payload = any> = (
   action: actionType,
   state: State,
-  dispatch: storeDispatchType<Payload>,
+  dispatch: storeDispatchType<State, Payload>,
   reducer: reducerType<State>,
 ) => actionSubjectShortType;
 

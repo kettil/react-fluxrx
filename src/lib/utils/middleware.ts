@@ -17,7 +17,7 @@ export class MiddlewareUtils {
    * @param reducer
    */
   manager<State>(middleware: Array<middlewareActionType<State>>, store: storeType<State>, reducer: reducerType<State>) {
-    return (source$: Observable<actionType>) => {
+    return (source$: Observable<actionType<State>>) => {
       return source$.pipe(
         mergeMap((action) => {
           const action$ = of(action);
@@ -42,7 +42,7 @@ export class MiddlewareUtils {
    * @param reducer
    */
   handler<State>(
-    source$: Observable<actionType>,
+    source$: Observable<actionType<State>>,
     middleware: middlewareActionType<State>,
     state: State,
     dispatch: storeDispatchType,

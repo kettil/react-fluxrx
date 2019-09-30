@@ -22,7 +22,7 @@ export const createStore = <State>(
   timeDebounce: number = 0,
 ) => {
   // create a stream for the action
-  const action$ = new Subject<actionSubjectType>();
+  const action$ = new Subject<actionSubjectType<State>>();
 
   // create a stream for the state
   const state$ = new BehaviorSubject(init);
