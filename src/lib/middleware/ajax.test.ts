@@ -217,7 +217,7 @@ describe('Check the ajax middleware', () => {
             text: 'new',
           },
         },
-        ajaxResponse: (responseStatus: number, responseData: Record<string, any>, responseType: string) => {
+        ajaxResponse: (responseData: Record<string, any>, responseStatus: number, responseType: string) => {
           expect(responseStatus).toBe(200);
           expect(responseData).toEqual({ item: { completed: false, id: 7, text: 'new' }, status: 'ok' });
           expect(responseType).toBe('json');
