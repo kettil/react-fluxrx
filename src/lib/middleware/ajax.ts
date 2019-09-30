@@ -54,7 +54,7 @@ export const ajax = <State>(url: string, actionWhitelist?: TypeAction[]): middle
               return data.action;
             }
 
-            throw new AjaxError('No response handler', response.xhr, request);
+            return empty();
           }),
           mergeMap(actionFlat),
         );

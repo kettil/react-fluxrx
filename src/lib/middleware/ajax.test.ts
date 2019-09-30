@@ -454,32 +454,23 @@ describe('Check the ajax middleware', () => {
     /**
      *
      */
-    test('it should be throw an error when action() is called and without response handler', (done) => {
-      expect.assertions(12);
+    test('it should be nothing when action() is called and without response handler', (done) => {
+      expect.assertions(10);
 
       const reducer = jest.fn();
       const dispatch = jest.fn((action$: Observable<any>) =>
         action$.subscribe(
           () => {
-            done(new Error('Call without error (next)'));
+            done(new Error('Do not call next callback'));
           },
-          (err: Error) => {
-            try {
-              expect(err).toBeInstanceOf(AjaxError);
-              expect(err.message).toBe('No response handler');
-
-              expect(xhr.requests.length).toBe(1);
-              expect(xhr.requests[0].method).toBe('GET');
-              expect(xhr.requests[0].requestHeaders).toEqual({ 'Content-Type': 'application/json;charset=utf-8' });
-              expect(xhr.requests[0].requestBody).toBeUndefined();
-
-              done();
-            } catch (err) {
-              done(err);
-            }
-          },
+          done,
           () => {
-            done(new Error('Call without error (complete)'));
+            expect(xhr.requests.length).toBe(1);
+            expect(xhr.requests[0].method).toBe('GET');
+            expect(xhr.requests[0].requestHeaders).toEqual({ 'Content-Type': 'application/json;charset=utf-8' });
+            expect(xhr.requests[0].requestBody).toBeUndefined();
+
+            done();
           },
         ),
       );

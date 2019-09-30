@@ -41,8 +41,8 @@ export type actionType<Payload = any, Type extends TypeAction = TypeAction> = {
   ajaxData?: Record<string, any>;
   ajaxRequest?: AjaxRequest;
   ajaxSilentMode?: boolean;
-  ajaxResponse?: <D = any, P extends Record<string, any> = Payload, T extends TypeAction = Type>(
-    responseData: Record<string, D>,
+  ajaxResponse?: <Data = unknown, P extends Record<string, any> = Payload, T extends TypeAction = Type>(
+    responseData: Data,
     responseStatus: number,
     responseType: string,
   ) => actionSubjectType<P, T>;
