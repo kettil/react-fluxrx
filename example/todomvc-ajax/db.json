@@ -1,0 +1,14 @@
+{
+  "todos": [
+    {
+      "id": 0,
+      "text": "Use react-fluxRx",
+      "completed": false
+    },
+    {
+      "id": 1,
+      "completed": true,
+      "text": "completed todo"
+    }
+  ]
+}
