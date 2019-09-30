@@ -1,6 +1,6 @@
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 // tslint:disable-next-line:no-submodule-imports
-import { catchError, debounceTime, mergeMap, scan, tap } from 'rxjs/operators';
+import { catchError, debounceTime, distinctUntilChanged, mergeMap, scan, tap } from 'rxjs/operators';
 
 import { defaultErrorHandler } from './utils/helper';
 import middlewareUtils from './utils/middleware';
@@ -58,6 +58,8 @@ export const createStore = <State>(
       middlewareUtils.manager(mwActions, store, handlerReducer),
       // change action to state type
       scan(handlerReducer, init),
+      // only emit when the current state is different than the last
+      distinctUntilChanged(),
       // error handling
       catchError<State, Observable<State>>(actionError(mwErrors, store)),
     )
