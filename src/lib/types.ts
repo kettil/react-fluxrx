@@ -7,18 +7,14 @@ import { AjaxRequest } from 'rxjs/ajax';
 // User Types
 //
 
-export type createActionType<GlobalState, Payload, Type extends TypeAction> = actionSubjectType<
+export type createActionType<GlobalState, Payload> = actionSubjectType<
   GlobalState,
-  OptionalValues<UnpackedArray<Payload>>,
-  Type
+  OptionalValues<UnpackedArray<Payload>>
 >;
 
 export type createStateType<LocalState> = LocalState;
 
-export type createReducerType<LocalState, Type extends TypeAction> = reducerType<
-  LocalState,
-  actionType<LocalState, UnpackedArray<LocalState>, Type>
->;
+export type createReducerType<LocalState> = reducerType<LocalState, actionType<LocalState, UnpackedArray<LocalState>>>;
 
 export type dispatchType = storeDispatchType;
 
@@ -26,8 +22,8 @@ export type dispatchType = storeDispatchType;
 // Action
 //
 
-export type actionType<State = any, Payload = any, Type extends TypeAction = TypeAction> = {
-  type: Type;
+export type actionType<State = any, Payload = any> = {
+  type: TypeAction;
   payload: Payload;
 
   // options
@@ -43,11 +39,11 @@ export type actionType<State = any, Payload = any, Type extends TypeAction = Typ
   ajaxRequest?: (state: State) => Record<string, any> | void;
   ajaxOptions?: AjaxRequest;
   ajaxSilentMode?: boolean;
-  ajaxResponse?: <Data = unknown, P extends Record<string, any> = Payload, T extends TypeAction = Type>(
-    responseData: Data,
+  ajaxResponse?: (
+    responseData: unknown,
     responseStatus: number,
     responseType: string,
-  ) => actionSubjectType<State, P, T>;
+  ) => actionSubjectType | actionSubjectType[];
 };
 
 export type actionSubjectShortType<State = any, Payload = any> =
@@ -55,11 +51,11 @@ export type actionSubjectShortType<State = any, Payload = any> =
   | Promise<actionType<State, Payload>>
   | Observable<actionType<State, Payload>>;
 
-export type actionSubjectType<State = any, Payload = any, Type extends TypeAction = TypeAction> =
-  | actionType<State, Payload, Type>
-  | Array<actionType<State, Payload, Type>>
-  | Promise<actionType<State, Payload, Type>>
-  | Observable<actionType<State, Payload, Type>>;
+export type actionSubjectType<State = any, Payload = any> =
+  | actionType<State, Payload>
+  | Array<actionType<State, Payload>>
+  | Promise<actionType<State, Payload>>
+  | Observable<actionType<State, Payload>>;
 
 //
 // Connect
