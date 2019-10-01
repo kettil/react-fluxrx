@@ -68,12 +68,12 @@ export const reducerHandler = <State>(reducer: reducerType<State>): reducerType<
   state: State | undefined,
   action: actionType<State>,
 ): State => {
-  switch (action.type) {
-    case actions.fullUpdate:
-      return action.payload;
-
-    case actions.ignoreAction:
+  switch (true) {
+    case action.type === actions.ignoreAction:
       return state!;
+
+    case action.type === actions.fullUpdate:
+      return action.payload;
 
     default:
       return reducer(state, action);
