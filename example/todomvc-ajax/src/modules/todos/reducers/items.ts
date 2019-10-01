@@ -33,17 +33,6 @@ export const reducer: reducerTodosItemsType = (state = initialState, action) => 
         todo.id === action.payload.id ? { ...todo, completed: action.payload.completed } : todo,
       );
 
-    case actionTypes.COMPLETE_ALL:
-      const areAllMarked = state.every((todo) => todo.completed);
-
-      return state.map((todo) => ({
-        ...todo,
-        completed: !areAllMarked,
-      }));
-
-    case actionTypes.COMPLETE_CLEAR_COMPLETED:
-      return state.filter((todo) => todo.completed === false);
-
     default:
       return state;
   }

@@ -9,6 +9,11 @@
       "id": 1,
       "completed": true,
       "text": "completed todo"
+    },
+    {
+      "text": "...",
+      "completed": false,
+      "id": 2
     }
   ]
 }

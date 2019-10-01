@@ -42,11 +42,11 @@ export type stateTodosType = {
   visibility: constants;
 };
 
-export type actionTodosItemType = createActionType<stateType, stateTodosType['items'], actionTypes>;
-export type actionTodosVisibilityType = createActionType<stateType, stateTodosType['visibility'], actionTypes>;
+export type actionTodosItemType = createActionType<stateType, stateTodosType['items']>;
+export type actionTodosVisibilityType = createActionType<stateType, stateTodosType['visibility']>;
 
 export type stateTodosItemsType = createStateType<stateTodosType['items']>;
 export type stateTodosVisibilityType = createStateType<stateTodosType['visibility']>;
 
-export type reducerTodosItemsType = createReducerType<stateTodosType['items'], actionTypes>;
-export type reducerTodosVisibilityType = createReducerType<stateTodosType['visibility'], actionTypes>;
+export type reducerTodosItemsType = createReducerType<stateTodosType['items']>;
+export type reducerTodosVisibilityType = createReducerType<stateTodosType['visibility']>;
