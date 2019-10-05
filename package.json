@@ -14,7 +14,7 @@
     "coverage": "npm run coverage:clean && npm run test",
     "coverage:clean": "rm -rf ./coverage",
     "lint": "npm run prettier && npm run lint:check",
-    "lint:check": "tslint --project ./tsconfig.json --config ./tslint.json --format codeFrame",
+    "lint:check": "tslint --project ./tsconfig.json --config ./tslint.json --format codeFrame --fix",
     "lint:ci": "tslint --project ./tsconfig.json --config ./tslint.json --format codeFrame",
     "prettier": "prettier --config './.prettierrc' --write '.huskyrc' '.prettierrc' './**/*.{ts,tsx,js,jsx,json,md,scss,yml,html}'",
     "prettier:ci": "prettier --config './.prettierrc' --list-different '.huskyrc' '.prettierrc' './**/*.{ts,tsx,js,jsx,json,md,scss,yml,html}'",
