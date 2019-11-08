@@ -1,4 +1,4 @@
-// tslint:disable:no-console
+/* tslint:disable:no-console no-null-keyword */
 import {
   defaultErrorHandler,
   getUniqueAction,

@@ -1,5 +1,4 @@
 /* tslint:disable:no-submodule-imports */
-import { ComponentType } from 'react';
 import { Observable, Subscription } from 'rxjs';
 import { AjaxRequest } from 'rxjs/ajax';
 
@@ -7,10 +6,7 @@ import { AjaxRequest } from 'rxjs/ajax';
 // User Types
 //
 
-export type createActionType<GlobalState, Payload> = actionSubjectType<
-  GlobalState,
-  OptionalValues<UnpackedArray<Payload>>
->;
+export type createActionType<GlobalState, Payload> = actionSubjectType<GlobalState, Partial<UnpackedArray<Payload>>>;
 
 export type createStateType<LocalState> = LocalState;
 
@@ -61,23 +57,25 @@ export type actionSubjectType<State = any, Payload = any> =
 // Connect
 //
 
-export type connectedType<Props, MapState, MapDispatch> = (
-  Element: ComponentType<MergedObjects<Props, MapState, MapDispatch>>,
-) => ComponentType<Props>;
-
 export type mapStateToPropsType<State, Props, MapState> = (state: State, ownProps: Props) => MapState;
 
 export type mapDispatchToPropsType<Props, MapDispatch> = (dispatch: storeDispatchType, ownProps: Props) => MapDispatch;
 
-export type mergePropsType<MapState, MapDispatch, Props> = (
-  stateProps: MapState,
-  dispatchProps: MapDispatch,
-  ownProps: Props,
-) => MergedObjects<Props, MapState, MapDispatch>;
+export type ComponentConnected<MapState, MapDispatch, ConnectedProps, ComponentProps> = (
+  props: RequiredProps<MapState, MapDispatch, ComponentProps> &
+    PartialProps<MapState, MapDispatch, ComponentProps> &
+    ConnectedProps,
+) => JSX.Element;
 
-export type wrappedComponentType<Props, MapState, MapDispatch> =
-  | React.ComponentType<MergedObjects<Props, MapState, MapDispatch>>
-  | React.ReactElement<MergedObjects<Props, MapState, MapDispatch>>;
+export type RequiredProps<MapState, MapDispatch, Props> = {
+  [K in Exclude<keyof Props, keyof MapState | keyof MapDispatch> &
+    NonNullable<FilterRequired<Props>[keyof FilterRequired<Props>]>]: Props[K];
+};
+
+export type PartialProps<MapState, MapDispatch, Props> = {
+  [K in Exclude<keyof Props, keyof MapState | keyof MapDispatch> &
+    NonNullable<FilterPartial<Props>[keyof FilterPartial<Props>]>]?: Props[K];
+};
 
 //
 // Store
@@ -138,10 +136,20 @@ export type middlewareErrorType<State> = storeErrorHandlerType<State>;
 
 export type TypeAction = string | symbol;
 
-export type MergedObjects<T1, T2, T3> = T3 & ObjectExcludeKeys<T2, T3> & ObjectExcludeKeys<T1, T2 & T3>;
-
 export type ObjectExcludeKeys<T1, T2> = { [K in Exclude<keyof T1, keyof T2>]: T1[K] };
+
+export type ExtractProps<T> = T extends new (props: infer U1) => any
+  ? U1
+  : T extends (props: infer U2) => any
+  ? U2
+  : {};
 
 export type UnpackedArray<T> = T extends Array<infer U> ? U : T;
 
-export type OptionalValues<T> = T extends { [K in keyof T]: any } ? { [K in keyof T]?: T[K] } : T;
+export type FilterRequired<T> = {
+  [K in keyof T]: Extract<T[K], undefined> extends never ? K : undefined;
+};
+
+export type FilterPartial<T> = {
+  [K in keyof T]: Extract<T[K], undefined> extends never ? undefined : K;
+};

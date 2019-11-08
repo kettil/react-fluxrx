@@ -4,6 +4,7 @@ export { middleware } from './lib/middleware';
 export { combineReducers } from './lib/reducers';
 export { getUniqueAction } from './lib/utils/helper';
 export { actionFlat, actions, actionValidate } from './lib/utils/store';
+export { bindActions } from './lib/utils/connect';
 
 export { createActionType, createReducerType, createStateType, dispatchType, UnpackedArray } from './lib/types';
 

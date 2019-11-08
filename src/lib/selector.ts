@@ -1,7 +1,7 @@
 // tslint:disable:cyclomatic-complexity
-import { isStrictEqual, shallowEqual } from './utils/connect';
+import { isStrictEqual, mergeProps, shallowEqual } from './utils/connect';
 
-import { mapDispatchToPropsType, mapStateToPropsType, MergedObjects, mergePropsType, storeDispatchType } from './types';
+import { mapDispatchToPropsType, mapStateToPropsType, storeDispatchType } from './types';
 
 export class Selector {
   /**
@@ -11,19 +11,18 @@ export class Selector {
    * @param mapDispatchToProps
    * @param mergeProps
    */
-  create<State, Props, MapState, MapDispatch>(
+  create<State, Props, MapState, MapDispatch, ComponentProps>(
     dispatch: storeDispatchType,
     mapStateToProps: mapStateToPropsType<State, Props, MapState>,
     mapDispatchToProps: mapDispatchToPropsType<Props, MapDispatch>,
-    mergeProps: mergePropsType<MapState, MapDispatch, Props>,
   ) {
     let cachedState: State;
     let cachedProps: Props;
     let cachedMapState: MapState;
     let cachedMapDispatch: MapDispatch;
-    let cachedMerge: MergedObjects<Props, MapState, MapDispatch>;
+    let cachedMerge: ComponentProps;
 
-    return (state: State, props: Props): MergedObjects<Props, MapState, MapDispatch> => {
+    return (state: State, props: Props): ComponentProps => {
       const isStateChanged = cachedState === undefined || !isStrictEqual(cachedState, state);
       const isPropsChanged = cachedProps === undefined || !shallowEqual(cachedProps, props);
       let isMapStateChanged = false;

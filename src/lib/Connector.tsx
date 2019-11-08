@@ -1,34 +1,36 @@
 import hoistNonReactStatic from 'hoist-non-react-statics';
 import React, { memo, useContext, useEffect, useMemo, useState } from 'react';
 
+import selector from './selector';
 import { isStrictEqual } from './utils/connect';
 
-import selector from './selector';
+import { ComponentConnected, mapDispatchToPropsType, mapStateToPropsType, storeType } from './types';
 
-import { mapDispatchToPropsType, mapStateToPropsType, MergedObjects, mergePropsType, storeType } from './types';
-
-/**
- *
- * @param WrappedComponent
- * @param context
- * @param mapStateToProps
- * @param mapDispatchToProps
- * @param mergeProps
- */
-export const connector = <State, Props, MapState, MapDispatch>(
-  WrappedComponent: React.ComponentType<MergedObjects<Props, MapState, MapDispatch>>,
+export const connector = <
+  Component extends React.ComponentType<ComponentProps>,
+  ComponentProps = {},
+  State = {},
+  ConnectedProps = {},
+  MapState = {},
+  MapDispatch = {}
+>(
+  Component: Component,
   context: React.Context<storeType<State>>,
-  mapStateToProps: mapStateToPropsType<State, Props, MapState>,
-  mapDispatchToProps: mapDispatchToPropsType<Props, MapDispatch>,
-  mergeProps: mergePropsType<MapState, MapDispatch, Props>,
-): React.ComponentType<Props> => {
-  const displayName = WrappedComponent.displayName || WrappedComponent.name || 'Component';
+  mapStateToProps: mapStateToPropsType<State, ConnectedProps, MapState>,
+  mapDispatchToProps: mapDispatchToPropsType<ConnectedProps, MapDispatch>,
+) => {
+  const displayName = Component.displayName || Component.name || 'Component';
 
-  const Consumer = (ownProps: Props) => {
+  const Consumer = (ownProps: ConnectedProps) => {
     const store = useContext(context);
     const storeState = store.getState();
     const createState = useMemo(
-      () => selector.create(store.dispatch, mapStateToProps, mapDispatchToProps, mergeProps),
+      () =>
+        selector.create<State, ConnectedProps, MapState, MapDispatch, ComponentProps>(
+          store.dispatch,
+          mapStateToProps,
+          mapDispatchToProps,
+        ),
       [store],
     );
 
@@ -59,7 +61,7 @@ export const connector = <State, Props, MapState, MapDispatch>(
       return () => subscription.unsubscribe();
     }, [store]);
 
-    const renderedWrappedComponent = useMemo(() => <WrappedComponent {...state} />, [state]);
+    const renderedWrappedComponent = useMemo(() => <Component {...(state as any)} />, [state]);
 
     return renderedWrappedComponent;
   };
@@ -68,7 +70,12 @@ export const connector = <State, Props, MapState, MapDispatch>(
   const Connect = memo(Consumer);
   Connect.displayName = displayName;
 
-  return hoistNonReactStatic(Connect, WrappedComponent) as any;
+  return (hoistNonReactStatic(Connect, Component) as any) as ComponentConnected<
+    MapState,
+    MapDispatch,
+    ConnectedProps,
+    ComponentProps
+  >;
 };
 
 /**

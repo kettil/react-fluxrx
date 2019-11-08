@@ -2,7 +2,6 @@ const addMock = jest.fn();
 const dispatch = jest.fn();
 const mapStateToProps = jest.fn((s) => ({ todos: s.todos }));
 const mapDispatchToProps = jest.fn(() => ({ add: addMock }));
-const mergeProps = jest.fn((a, b, c) => ({ ...b, ...a, ...c }));
 
 import { Selector } from './selector';
 
@@ -34,7 +33,7 @@ describe('Check the class Selector', () => {
      *
      */
     test('it should be return a callback function when create() is called', () => {
-      const callback = selector.create(dispatch, mapStateToProps, mapDispatchToProps, mergeProps);
+      const callback = selector.create(dispatch, mapStateToProps, mapDispatchToProps);
 
       expect(callback).toBeInstanceOf(Function);
       expect(callback.length).toBe(2);
@@ -42,14 +41,13 @@ describe('Check the class Selector', () => {
       expect(dispatch).toHaveBeenCalledTimes(0);
       expect(mapStateToProps).toHaveBeenCalledTimes(0);
       expect(mapDispatchToProps).toHaveBeenCalledTimes(0);
-      expect(mergeProps).toHaveBeenCalledTimes(0);
     });
 
     /**
      *
      */
     test('it should be return mapped object when callback() is called', () => {
-      const callback = selector.create(dispatch, mapStateToProps, mapDispatchToProps, mergeProps);
+      const callback = selector.create(dispatch, mapStateToProps, mapDispatchToProps);
 
       expect(callback).toBeInstanceOf(Function);
 
@@ -58,14 +56,13 @@ describe('Check the class Selector', () => {
       expect(result).toEqual({ todos: [], add: addMock, filter: 'all' });
 
       expect(dispatch).toHaveBeenCalledTimes(0);
-      expect(mergeProps).toHaveBeenCalledTimes(1);
     });
 
     /**
      *
      */
     test('it should be return mapped object when callback() twice is called with different props', () => {
-      const callback = selector.create(dispatch, mapStateToProps, mapDispatchToProps, mergeProps);
+      const callback = selector.create(dispatch, mapStateToProps, mapDispatchToProps);
 
       expect(callback).toBeInstanceOf(Function);
 
@@ -88,17 +85,13 @@ describe('Check the class Selector', () => {
 
       expect(mapDispatchToProps).toHaveBeenCalledTimes(1);
       expect(mapDispatchToProps).toHaveBeenNthCalledWith(1, dispatch, { filter: 'all' });
-
-      expect(mergeProps).toHaveBeenCalledTimes(2);
-      expect(mergeProps).toHaveBeenNthCalledWith(1, { todos }, { add: addMock }, { filter: 'all' });
-      expect(mergeProps).toHaveBeenNthCalledWith(2, { todos }, { add: addMock }, { filter: 'completed' });
     });
 
     /**
      *
      */
     test('it should be return mapped object when callback() twice is called with same state and props', () => {
-      const callback = selector.create(dispatch, mapStateToProps, mapDispatchToProps, mergeProps);
+      const callback = selector.create(dispatch, mapStateToProps, mapDispatchToProps);
 
       expect(callback).toBeInstanceOf(Function);
 
@@ -118,15 +111,13 @@ describe('Check the class Selector', () => {
       expect(mapStateToProps).toHaveBeenNthCalledWith(1, { todos: [1, 3, 4], users: [] }, { filter: 'all' });
       expect(mapDispatchToProps).toHaveBeenCalledTimes(1);
       expect(mapDispatchToProps).toHaveBeenCalledWith(dispatch, { filter: 'all' });
-      expect(mergeProps).toHaveBeenCalledTimes(1);
-      expect(mergeProps).toHaveBeenCalledWith({ todos: [1, 3, 4] }, { add: addMock }, { filter: 'all' });
     });
 
     /**
      *
      */
     test('it should be return mapped object when callback() twice is called with same state and different props', () => {
-      const callback = selector.create(dispatch, mapStateToProps, mapDispatchToProps, mergeProps);
+      const callback = selector.create(dispatch, mapStateToProps, mapDispatchToProps);
 
       expect(callback).toBeInstanceOf(Function);
 
@@ -146,9 +137,6 @@ describe('Check the class Selector', () => {
       expect(mapStateToProps).toHaveBeenNthCalledWith(1, { todos: [1, 3, 4], users: [] }, { filter: 'all' });
       expect(mapDispatchToProps).toHaveBeenCalledTimes(1);
       expect(mapDispatchToProps).toHaveBeenCalledWith(dispatch, { filter: 'all' });
-      expect(mergeProps).toHaveBeenCalledTimes(2);
-      expect(mergeProps).toHaveBeenNthCalledWith(1, { todos: [1, 3, 4] }, { add: addMock }, { filter: 'all' });
-      expect(mergeProps).toHaveBeenNthCalledWith(2, { todos: [1, 3, 4] }, { add: addMock }, { filter: 'completed' });
     });
   });
 

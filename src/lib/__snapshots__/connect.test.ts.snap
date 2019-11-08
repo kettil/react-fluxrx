@@ -2,7 +2,6 @@
 
 exports[`Check the connect function it should be return a connected component when createConnect() and his callbacks is called 1`] = `
 <div>
-  Hello 
-  World
+  Hello World
 </div>
 `;

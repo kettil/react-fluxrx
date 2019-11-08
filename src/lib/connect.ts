@@ -1,42 +1,25 @@
 import React from 'react';
 
 import connector from './Connector';
-import { defaultMapDispatchToProps, defaultMapStateToProps, defaultMergeProps } from './utils/connect';
+import { defaultMapDispatchToProps, defaultMapStateToProps } from './utils/connect';
 
-import {
-  mapDispatchToPropsType,
-  mapStateToPropsType,
-  MergedObjects,
-  mergePropsType,
-  storeDispatchType,
-  storeType,
-  wrappedComponentType,
-} from './types';
+import { ComponentConnected, ExtractProps, mapDispatchToPropsType, mapStateToPropsType, storeType } from './types';
 
-/**
- *
- * @param context
- */
-export const createConnect = <State>(context: React.Context<storeType<State>>) => <
-  Props = {},
-  MapState = { state: State },
-  MapDispatch = { dispatch: storeDispatchType }
->(
-  mapStateToProps: mapStateToPropsType<State, Props, MapState> = defaultMapStateToProps,
-  mapDispatchToProps: mapDispatchToPropsType<Props, MapDispatch> = defaultMapDispatchToProps,
-  mergeProps: mergePropsType<MapState, MapDispatch, Props> = defaultMergeProps,
-) => {
-  return (WrappedComponent: wrappedComponentType<Props, MapState, MapDispatch>) =>
-    connector(
-      WrappedComponent as React.ComponentType<MergedObjects<Props, MapState, MapDispatch>>,
-      context,
-      mapStateToProps,
-      mapDispatchToProps,
-      mergeProps,
-    );
+export const createConnect = <State>(context: React.Context<storeType<State>>) => {
+  return <ConnectedProps extends Record<any, any>, MapState = {}, MapDispatch = {}>(
+    mapStateToProps: mapStateToPropsType<State, ConnectedProps, MapState> = defaultMapStateToProps,
+    mapDispatchToProps: mapDispatchToPropsType<ConnectedProps, MapDispatch> = defaultMapDispatchToProps,
+  ) => {
+    return <Component extends React.ComponentType<ComponentProps>, ComponentProps = ExtractProps<Component>>(
+      Component: Component,
+    ): ComponentConnected<MapState, MapDispatch, ConnectedProps, ComponentProps> =>
+      connector<Component, ComponentProps, State, ConnectedProps, MapState, MapDispatch>(
+        Component,
+        context,
+        mapStateToProps,
+        mapDispatchToProps,
+      );
+  };
 };
 
-/**
- *
- */
 export default createConnect;

@@ -1,48 +1,40 @@
-import { MergedObjects } from '../types';
 import { hasProperty, isObject } from './helper';
 
-/**
- *
- */
+import { actionSubjectType, storeDispatchType } from '../types';
+
 export const defaultMapStateToProps = (): any => {
   return {};
 };
 
-/**
- *
- */
 export const defaultMapDispatchToProps = (): any => {
   return {};
 };
 
-/**
- *
- * @param stateProps
- * @param dispatchProps
- * @param props
- */
-export const defaultMergeProps = <MapState, MapDispatch, Props>(
+export const mergeProps = <MapState, MapDispatch, ConnectedProps, ComponentProps>(
   stateProps: MapState,
   dispatchProps: MapDispatch,
-  props: Props,
-): MergedObjects<Props, MapState, MapDispatch> => {
-  return { ...props, ...stateProps, ...dispatchProps };
+  props: ConnectedProps,
+) => {
+  return ({ ...props, ...stateProps, ...dispatchProps } as any) as ComponentProps;
 };
 
-/**
- *
- * @param a
- * @param b
- */
+export const bindActions = <State, T extends Record<any, (...args: any[]) => actionSubjectType<State, any>>>(
+  objs: T,
+  dispatch: storeDispatchType<State, any>,
+): T => {
+  const data: any = {};
+
+  Object.keys(objs).forEach((key) => {
+    data[key] = (...args: any[]) => dispatch(objs[key](...args));
+  });
+
+  return data as T;
+};
+
 export const isStrictEqual = (a: any, b: any): boolean => {
   return a === b;
 };
 
-/**
- *
- * @param a
- * @param b
- */
 export const isEqual = (a: any, b: any): boolean => {
   if (isStrictEqual(a, b)) {
     return a !== 0 || b !== 0 || 1 / a === 1 / b;
@@ -50,11 +42,7 @@ export const isEqual = (a: any, b: any): boolean => {
     return a !== a && b !== b;
   }
 };
-/**
- *
- * @param a
- * @param b
- */
+
 export const shallowEqual = (a: any, b: any): boolean => {
   if (isEqual(a, b)) {
     return true;
@@ -76,5 +64,6 @@ export const shallowEqual = (a: any, b: any): boolean => {
       return false;
     }
   }
+
   return true;
 };

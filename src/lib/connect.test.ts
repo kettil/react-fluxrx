@@ -25,17 +25,17 @@ describe('Check the connect function', () => {
     const connect = createConnect(context);
     expect(connect).toBeInstanceOf(Function);
 
-    const callback = connect<{ message: string }>();
+    const callback = connect();
     expect(callback).toBeInstanceOf(Function);
     expect(callback.length).toBe(1);
 
-    const Component = ({ message }: { message: string }) => <div>Hello {message}</div>;
+    const Component = () => React.createElement('div', undefined, 'Hello World');
     const ConnectComponent = callback(Component);
 
     let root: renderer.ReactTestRenderer;
 
     renderer.act(() => {
-      root = renderer.create(<ConnectComponent message={'World'} />);
+      root = renderer.create(React.createElement(ConnectComponent, {}, undefined));
     });
 
     expect(root!.toJSON()).toMatchSnapshot();
