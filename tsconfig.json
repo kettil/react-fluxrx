@@ -2,7 +2,7 @@
   "compilerOptions": {
     /* Basic Options */
     "target": "ES2017",
-    "module": "commonjs",
+    "module": "es2015",
     "declaration": true,
     "outDir": "./build",
     "lib": ["dom", "es2017"],

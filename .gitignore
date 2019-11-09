@@ -8,6 +8,7 @@ coverage
 docs
 
 # application
+example/*/.module
 build
 tmp
 .env
