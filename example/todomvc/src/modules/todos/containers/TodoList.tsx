@@ -1,4 +1,4 @@
-import { dispatchType } from 'react-fluxrx';
+import { dispatchType, bindActions } from 'react-fluxrx';
 
 import { connect, stateType } from '../../../fluxRx';
 import * as actions from '../actions';
@@ -19,11 +19,7 @@ const mapStateToProps = (state: stateType) => ({
  * @param dispatch
  */
 const mapDispatchToProps = (dispatch: dispatchType) => {
-  return {
-    completeTodo: (id: number) => dispatch(actions.completeTodo(id)),
-    deleteTodo: (id: number) => dispatch(actions.deleteTodo(id)),
-    editTodo: (id: number, text: string) => dispatch(actions.editTodo(id, text)),
-  };
+  return bindActions(actions, dispatch);
 };
 
 /**
