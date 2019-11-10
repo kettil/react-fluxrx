@@ -117,14 +117,14 @@ describe('Check the ajax middleware', () => {
               'Content-Type': 'application/json;charset=utf-8',
               Accept: 'application/json',
             });
-            expect(xhr.requests[0].requestBody).toBeUndefined();
+            expect(xhr.requests[0].requestBody).toBe('{"autrh":true}');
 
             done();
           },
         ),
       );
 
-      const result = ajax({ url: 'https://localhost' });
+      const result = ajax({ url: 'https://localhost', ajaxBody: () => ({ autrh: true }) });
       expect(result).toEqual({ action: expect.any(Function) });
 
       const callback = result.action as (...args: any[]) => void;
@@ -289,7 +289,7 @@ describe('Check the ajax middleware', () => {
               expect(xhr.requests[0].method).toBe('GET');
               expect(xhr.requests[0].requestHeaders).toEqual({
                 'Content-Type': 'application/json;charset=utf-8',
-                Accept: 'application/json',
+                Accept: 'application/ld+json',
               });
               expect(xhr.requests[0].requestBody).toBeUndefined();
 
@@ -301,7 +301,7 @@ describe('Check the ajax middleware', () => {
         ),
       );
 
-      const result = ajax({ url: 'https://localhost' });
+      const result = ajax({ url: 'https://localhost', ajaxRequest: { headers: { Accept: 'application/ld+json' } } });
       expect(result).toEqual({ action: expect.any(Function) });
 
       const callback = result.action as (...args: any[]) => void;
