@@ -9,28 +9,29 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "preinstall": "../../bin/example-build.sh"
   },
   "keywords": [],
   "author": "Kjell Dießel <development@kettil.de>",
   "license": "MIT",
   "devDependencies": {
     "@types/classnames": "^2.2.9",
-    "@types/node": "^12.7.8",
-    "@types/react": "^16.9.4",
-    "@types/react-dom": "^16.9.0",
-    "@types/react-router-dom": "^5.0.0",
-    "typescript": "^3.6.3"
+    "@types/node": "^12.12.7",
+    "@types/react": "^16.9.11",
+    "@types/react-dom": "^16.9.4",
+    "@types/react-router-dom": "^5.1.2",
+    "typescript": "^3.7.2"
   },
   "dependencies": {
     "classnames": "^2.2.6",
-    "react": "^16.10.1",
-    "react-dom": "^16.10.1",
-    "react-fluxrx": "^0.1.0",
+    "react": "^16.11.0",
+    "react-dom": "^16.11.0",
+    "react-fluxrx": "file:.module",
     "react-router-dom": "^5.1.2",
-    "react-scripts": "^3.1.2",
+    "react-scripts": "^3.2.0",
     "reselect": "^4.0.0",
-    "todomvc-app-css": "^2.2.0"
+    "todomvc-app-css": "^2.3.0"
   },
   "browserslist": [
     ">0.2%",
