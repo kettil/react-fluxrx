@@ -1,6 +1,6 @@
 import fluxRx, { middleware } from 'react-fluxrx';
 
-import { reducer, stateType } from './modules/reducer';
+import { reducer, stateType as state } from './modules/reducer';
 
 const initState = undefined;
 
@@ -9,7 +9,7 @@ const flux = fluxRx<stateType>(reducer, initState, {
   timeDebounce: 5,
 });
 
-export type stateType = stateType;
+export type stateType = state;
 
 export const store = flux.store;
 export const connect = flux.connect;

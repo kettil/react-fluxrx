@@ -49,7 +49,7 @@ describe('Check the ajax middleware', () => {
    *
    */
   test('it should be return the middleware object when logger() is called', () => {
-    const result = ajax('https://localhost');
+    const result = ajax({ url: 'https://localhost' });
 
     expect(result).toEqual({
       action: expect.any(Function),
@@ -63,7 +63,7 @@ describe('Check the ajax middleware', () => {
     const dispatch = jest.fn();
     const reducer = jest.fn();
 
-    const result = ajax('https://localhost');
+    const result = ajax({ url: 'https://localhost' });
 
     expect(result).toEqual({
       action: expect.any(Function),
@@ -113,7 +113,10 @@ describe('Check the ajax middleware', () => {
           () => {
             expect(xhr.requests.length).toBe(1);
             expect(xhr.requests[0].method).toBe('GET');
-            expect(xhr.requests[0].requestHeaders).toEqual({ 'Content-Type': 'application/json;charset=utf-8' });
+            expect(xhr.requests[0].requestHeaders).toEqual({
+              'Content-Type': 'application/json;charset=utf-8',
+              Accept: 'application/json',
+            });
             expect(xhr.requests[0].requestBody).toBeUndefined();
 
             done();
@@ -121,7 +124,7 @@ describe('Check the ajax middleware', () => {
         ),
       );
 
-      const result = ajax('https://localhost');
+      const result = ajax({ url: 'https://localhost' });
       expect(result).toEqual({ action: expect.any(Function) });
 
       const callback = result.action as (...args: any[]) => void;
@@ -132,9 +135,11 @@ describe('Check the ajax middleware', () => {
         payload: { showLoader: true },
 
         // ajax
-        ajaxUrlPath: '/api/todos',
-        ajaxMethod: 'GET',
-        ajaxSilentMode: true,
+        ajax: {
+          path: '/api/todos',
+          method: 'GET',
+          silent: true,
+        },
       };
 
       const value = callback(action, {}, dispatch, reducer);
@@ -142,9 +147,11 @@ describe('Check the ajax middleware', () => {
       expect(value).toEqual({
         type: 'load',
         payload: { showLoader: true },
-        ajaxUrlPath: '/api/todos',
-        ajaxMethod: 'GET',
-        ajaxSilentMode: true,
+        ajax: {
+          path: '/api/todos',
+          method: 'GET',
+          silent: true,
+        },
       });
 
       expect(reducer).toHaveBeenCalledTimes(0);
@@ -181,7 +188,10 @@ describe('Check the ajax middleware', () => {
             try {
               expect(xhr.requests.length).toBe(1);
               expect(xhr.requests[0].method).toBe('POST');
-              expect(xhr.requests[0].requestHeaders).toEqual({ 'Content-Type': 'application/json;charset=utf-8' });
+              expect(xhr.requests[0].requestHeaders).toEqual({
+                'Content-Type': 'application/json;charset=utf-8',
+                Accept: 'application/json',
+              });
               expect(xhr.requests[0].requestBody).toBe(
                 JSON.stringify({
                   item: {
@@ -199,7 +209,7 @@ describe('Check the ajax middleware', () => {
         ),
       );
 
-      const result = ajax('https://localhost');
+      const result = ajax({ url: 'https://localhost' });
       expect(result).toEqual({ action: expect.any(Function) });
 
       const callback = result.action as (...args: any[]) => void;
@@ -210,22 +220,24 @@ describe('Check the ajax middleware', () => {
         payload: { showLoader: true },
 
         // ajax
-        ajaxUrlPath: '/api/todos',
-        ajaxRequest: () => ({
-          item: {
-            completed: false,
-            text: 'new',
-          },
-        }),
-        ajaxResponse: (responseData: Record<string, any>, responseStatus: number, responseType: string) => {
-          expect(responseStatus).toBe(200);
-          expect(responseData).toEqual({ item: { completed: false, id: 7, text: 'new' }, status: 'ok' });
-          expect(responseType).toBe('json');
+        ajax: {
+          path: '/api/todos',
+          data: () => ({
+            item: {
+              completed: false,
+              text: 'new',
+            },
+          }),
+          response: (responseData: Record<string, any>, responseStatus: number, responseType: string) => {
+            expect(responseStatus).toBe(200);
+            expect(responseData).toEqual({ item: { completed: false, id: 7, text: 'new' }, status: 'ok' });
+            expect(responseType).toBe('json');
 
-          return {
-            type: 'add',
-            payload: responseData.item,
-          };
+            return {
+              type: 'add',
+              payload: responseData.item,
+            };
+          },
         },
       };
 
@@ -234,9 +246,11 @@ describe('Check the ajax middleware', () => {
       expect(value).toEqual({
         type: 'load',
         payload: { showLoader: true },
-        ajaxUrlPath: '/api/todos',
-        ajaxRequest: expect.any(Function),
-        ajaxResponse: expect.any(Function),
+        ajax: {
+          path: '/api/todos',
+          data: expect.any(Function),
+          response: expect.any(Function),
+        },
       });
 
       expect(reducer).toHaveBeenCalledTimes(0);
@@ -273,7 +287,10 @@ describe('Check the ajax middleware', () => {
             try {
               expect(xhr.requests.length).toBe(1);
               expect(xhr.requests[0].method).toBe('GET');
-              expect(xhr.requests[0].requestHeaders).toEqual({ 'Content-Type': 'application/json;charset=utf-8' });
+              expect(xhr.requests[0].requestHeaders).toEqual({
+                'Content-Type': 'application/json;charset=utf-8',
+                Accept: 'application/json',
+              });
               expect(xhr.requests[0].requestBody).toBeUndefined();
 
               done();
@@ -284,7 +301,7 @@ describe('Check the ajax middleware', () => {
         ),
       );
 
-      const result = ajax('https://localhost');
+      const result = ajax({ url: 'https://localhost' });
       expect(result).toEqual({ action: expect.any(Function) });
 
       const callback = result.action as (...args: any[]) => void;
@@ -295,8 +312,10 @@ describe('Check the ajax middleware', () => {
         payload: { showLoader: true },
 
         // ajax
-        ajaxUrlPath: '/api/action/todos/5',
-        ajaxMethod: 'GET',
+        ajax: {
+          path: '/api/action/todos/5',
+          method: 'GET',
+        },
       };
 
       const value = callback(action, {}, dispatch, reducer);
@@ -304,8 +323,10 @@ describe('Check the ajax middleware', () => {
       expect(value).toEqual({
         type: 'load',
         payload: { showLoader: true },
-        ajaxUrlPath: '/api/action/todos/5',
-        ajaxMethod: 'GET',
+        ajax: {
+          path: '/api/action/todos/5',
+          method: 'GET',
+        },
       });
 
       expect(reducer).toHaveBeenCalledTimes(0);
@@ -342,7 +363,10 @@ describe('Check the ajax middleware', () => {
             try {
               expect(xhr.requests.length).toBe(1);
               expect(xhr.requests[0].method).toBe('GET');
-              expect(xhr.requests[0].requestHeaders).toEqual({ 'Content-Type': 'application/json;charset=utf-8' });
+              expect(xhr.requests[0].requestHeaders).toEqual({
+                'Content-Type': 'application/json;charset=utf-8',
+                Accept: 'application/json',
+              });
               expect(xhr.requests[0].requestBody).toBeUndefined();
 
               done();
@@ -353,7 +377,7 @@ describe('Check the ajax middleware', () => {
         ),
       );
 
-      const result = ajax('https://localhost', ['add']);
+      const result = ajax({ url: 'https://localhost', actionWhitelist: ['add'] });
       expect(result).toEqual({ action: expect.any(Function) });
 
       const callback = result.action as (...args: any[]) => void;
@@ -364,8 +388,10 @@ describe('Check the ajax middleware', () => {
         payload: { showLoader: true },
 
         // ajax
-        ajaxUrlPath: '/api/action/todos/5',
-        ajaxMethod: 'GET',
+        ajax: {
+          path: '/api/action/todos/5',
+          method: 'GET',
+        },
       };
 
       const value = callback(action, {}, dispatch, reducer);
@@ -373,8 +399,10 @@ describe('Check the ajax middleware', () => {
       expect(value).toEqual({
         type: 'load',
         payload: { showLoader: true },
-        ajaxUrlPath: '/api/action/todos/5',
-        ajaxMethod: 'GET',
+        ajax: {
+          path: '/api/action/todos/5',
+          method: 'GET',
+        },
       });
 
       expect(reducer).toHaveBeenCalledTimes(0);
@@ -402,7 +430,10 @@ describe('Check the ajax middleware', () => {
 
               expect(xhr.requests.length).toBe(1);
               expect(xhr.requests[0].method).toBe('GET');
-              expect(xhr.requests[0].requestHeaders).toEqual({ 'Content-Type': 'application/json;charset=utf-8' });
+              expect(xhr.requests[0].requestHeaders).toEqual({
+                'Content-Type': 'application/json;charset=utf-8',
+                Accept: 'application/json',
+              });
               expect(xhr.requests[0].requestBody).toBeUndefined();
 
               done();
@@ -416,7 +447,7 @@ describe('Check the ajax middleware', () => {
         ),
       );
 
-      const result = ajax('https://localhost', ['remove']);
+      const result = ajax({ url: 'https://localhost', actionWhitelist: ['remove'] });
       expect(result).toEqual({ action: expect.any(Function) });
 
       const callback = result.action as (...args: any[]) => void;
@@ -427,8 +458,10 @@ describe('Check the ajax middleware', () => {
         payload: { showLoader: true },
 
         // ajax
-        ajaxUrlPath: '/api/action/todos/5',
-        ajaxMethod: 'GET',
+        ajax: {
+          path: '/api/action/todos/5',
+          method: 'GET',
+        },
       };
 
       const value = callback(action, {}, dispatch, reducer);
@@ -436,8 +469,10 @@ describe('Check the ajax middleware', () => {
       expect(value).toEqual({
         type: 'load',
         payload: { showLoader: true },
-        ajaxUrlPath: '/api/action/todos/5',
-        ajaxMethod: 'GET',
+        ajax: {
+          path: '/api/action/todos/5',
+          method: 'GET',
+        },
       });
 
       expect(reducer).toHaveBeenCalledTimes(0);
@@ -462,7 +497,10 @@ describe('Check the ajax middleware', () => {
           () => {
             expect(xhr.requests.length).toBe(1);
             expect(xhr.requests[0].method).toBe('GET');
-            expect(xhr.requests[0].requestHeaders).toEqual({ 'Content-Type': 'application/json;charset=utf-8' });
+            expect(xhr.requests[0].requestHeaders).toEqual({
+              'Content-Type': 'application/json;charset=utf-8',
+              Accept: 'application/json',
+            });
             expect(xhr.requests[0].requestBody).toBeUndefined();
 
             done();
@@ -470,7 +508,7 @@ describe('Check the ajax middleware', () => {
         ),
       );
 
-      const result = ajax('https://localhost');
+      const result = ajax({ url: 'https://localhost' });
       expect(result).toEqual({ action: expect.any(Function) });
 
       const callback = result.action as (...args: any[]) => void;
@@ -481,8 +519,10 @@ describe('Check the ajax middleware', () => {
         payload: { showLoader: true },
 
         // ajax
-        ajaxUrlPath: '/api/todos?page=7',
-        ajaxMethod: 'GET',
+        ajax: {
+          path: '/api/todos?page=7',
+          method: 'GET',
+        },
       };
 
       const value = callback(action, {}, dispatch, reducer);
@@ -490,8 +530,11 @@ describe('Check the ajax middleware', () => {
       expect(value).toEqual({
         type: 'load',
         payload: { showLoader: true },
-        ajaxUrlPath: '/api/todos?page=7',
-        ajaxMethod: 'GET',
+
+        ajax: {
+          path: '/api/todos?page=7',
+          method: 'GET',
+        },
       });
 
       expect(reducer).toHaveBeenCalledTimes(0);
@@ -519,7 +562,10 @@ describe('Check the ajax middleware', () => {
 
               expect(xhr.requests.length).toBe(1);
               expect(xhr.requests[0].method).toBe('GET');
-              expect(xhr.requests[0].requestHeaders).toEqual({ 'Content-Type': 'application/json;charset=utf-8' });
+              expect(xhr.requests[0].requestHeaders).toEqual({
+                'Content-Type': 'application/json;charset=utf-8',
+                Accept: 'application/json',
+              });
               expect(xhr.requests[0].requestBody).toBeUndefined();
 
               done();
@@ -533,7 +579,7 @@ describe('Check the ajax middleware', () => {
         ),
       );
 
-      const result = ajax('https://localhost');
+      const result = ajax({ url: 'https://localhost' });
       expect(result).toEqual({ action: expect.any(Function) });
 
       const callback = result.action as (...args: any[]) => void;
@@ -544,8 +590,10 @@ describe('Check the ajax middleware', () => {
         payload: { showLoader: true },
 
         // ajax
-        ajaxUrlPath: '/api/todoss',
-        ajaxMethod: 'GET',
+        ajax: {
+          path: '/api/todoss',
+          method: 'GET',
+        },
       };
 
       const value = callback(action, {}, dispatch, reducer);
@@ -553,8 +601,11 @@ describe('Check the ajax middleware', () => {
       expect(value).toEqual({
         type: 'load',
         payload: { showLoader: true },
-        ajaxUrlPath: '/api/todoss',
-        ajaxMethod: 'GET',
+
+        ajax: {
+          path: '/api/todoss',
+          method: 'GET',
+        },
       });
 
       expect(reducer).toHaveBeenCalledTimes(0);

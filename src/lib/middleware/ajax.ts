@@ -3,7 +3,6 @@ import { empty } from 'rxjs';
 import { ajax as rxAjax, AjaxError, AjaxRequest } from 'rxjs/ajax';
 import { map, mergeMap } from 'rxjs/operators';
 
-import { isObject } from '../utils/helper';
 import { actionFlat, actionValidate } from '../utils/store';
 
 import { middlewareType, TypeAction } from '../types';
@@ -12,46 +11,59 @@ import { middlewareType, TypeAction } from '../types';
  *
  * @param url
  */
-export const ajax = <State>(url: string, actionWhitelist?: TypeAction[]): middlewareType<State> => {
+export const ajax = <State>({
+  url,
+  actionWhitelist,
+  ajaxRequest = {},
+  ajaxBody = {},
+}: {
+  url: string;
+  actionWhitelist?: TypeAction[];
+  ajaxRequest?: AjaxRequest;
+  ajaxBody?: Record<string, any> | ((state: State) => Record<string, any> | void);
+}): middlewareType<State> => {
   return {
     action: (action, state, dispatch, reducer) => {
-      if (typeof action.ajaxUrlPath === 'string' && (isObject(action.ajaxData) || action.ajaxData === undefined)) {
-        const path = action.ajaxUrlPath;
-        const body = typeof action.ajaxRequest === 'function' ? action.ajaxRequest(state) : action.ajaxData;
-        const next = action.ajaxResponse;
-        const method = action.ajaxMethod || 'POST';
-        const silent = action.ajaxSilentMode === true;
-        const options = action.ajaxOptions || {};
+      if (typeof action.ajax === 'object' && typeof action.ajax.path === 'string') {
+        const { path, data = {}, response: next, method = 'POST', silent = false, options = {} } = action.ajax;
+
+        const body: AjaxRequest['body'] = {
+          ...(typeof ajaxBody === 'function' ? ajaxBody(state) : ajaxBody),
+          ...(typeof data === 'function' ? data(state) : data),
+        };
 
         const params: AjaxRequest = {
+          ...ajaxRequest,
           ...options,
           url: url + path,
-          body,
+          body: Object.keys(body).length > 0 ? body : undefined,
           method,
           headers: {
             'Content-Type': 'application/json; charset=UTF-8',
+            Accept: 'application/json',
+            ...(ajaxRequest.headers || {}),
             ...(options.headers || {}),
           },
         };
 
         const observable = rxAjax(params).pipe(
-          map((response) => {
-            const data = response.response || {};
+          map((ajaxResponse) => {
+            const response = ajaxResponse.response || {};
 
-            if (silent) {
+            if (silent === true) {
               return empty();
             }
 
             if (next) {
-              return next(data, response.status, response.responseType);
+              return next(response, ajaxResponse.status, ajaxResponse.responseType);
             }
 
-            if (actionValidate(data.action, true) && typeof data.action.type !== 'symbol') {
-              if (Array.isArray(actionWhitelist) && actionWhitelist.indexOf(data.action.type) === -1) {
-                throw new AjaxError(`Action type ${data.action.type} is not allowed`, response.xhr, params);
+            if (actionValidate(response.action, true) && typeof response.action.type !== 'symbol') {
+              if (Array.isArray(actionWhitelist) && actionWhitelist.indexOf(response.action.type) === -1) {
+                throw new AjaxError(`Action type ${response.action.type} is not allowed`, ajaxResponse.xhr, params);
               }
 
-              return data.action;
+              return response.action;
             }
 
             return empty();

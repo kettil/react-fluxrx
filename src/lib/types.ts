@@ -29,17 +29,14 @@ export type actionType<State = any, Payload = any> = {
   sync?: boolean;
 
   // ajax
-  ajaxUrlPath?: string;
-  ajaxMethod?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
-  ajaxData?: Record<string, any>;
-  ajaxRequest?: (state: State) => Record<string, any> | void;
-  ajaxOptions?: AjaxRequest;
-  ajaxSilentMode?: boolean;
-  ajaxResponse?: (
-    responseData: unknown,
-    responseStatus: number,
-    responseType: string,
-  ) => actionSubjectType | actionSubjectType[];
+  ajax?: {
+    path: string;
+    method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
+    data?: Record<string, any> | ((state: State) => Record<string, any> | void);
+    options?: AjaxRequest;
+    silent?: boolean;
+    response?: (data: unknown, status: number, type: string) => actionSubjectType | actionSubjectType[];
+  };
 };
 
 export type actionSubjectShortType<State = any, Payload = any> =

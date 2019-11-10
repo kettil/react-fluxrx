@@ -24,10 +24,12 @@ export const addTodo = (text: string): actionTodosItemType => {
     type: 'loading',
     payload: {},
 
-    ajaxMethod: 'POST',
-    ajaxUrlPath: '/todos',
-    ajaxData: { text, completed: false },
-    ajaxResponse: (data: any) => loadTodo(data.id, data.text, data.completed),
+    ajax: {
+      method: 'POST',
+      path: '/todos',
+      data: { text, completed: false },
+      response: (data: any) => loadTodo(data.id, data.text, data.completed),
+    },
   };
 };
 
@@ -39,8 +41,10 @@ export const deleteTodo = (id: number): actionTodosItemType => ({
   type: actionTypes.TODO_DELETE,
   payload: { id },
 
-  ajaxMethod: 'DELETE',
-  ajaxUrlPath: '/todos/' + id,
+  ajax: {
+    method: 'DELETE',
+    path: `/todos/${id}`,
+  },
 });
 
 /**
@@ -52,9 +56,11 @@ export const editTodo = (id: number, text: string): actionTodosItemType => ({
   type: actionTypes.TODO_EDIT,
   payload: { id, text },
 
-  ajaxMethod: 'PATCH',
-  ajaxUrlPath: '/todos/' + id,
-  ajaxData: { text },
+  ajax: {
+    method: 'PATCH',
+    path: '/todos/' + id,
+    data: { text },
+  },
 });
 
 /**
@@ -65,9 +71,11 @@ export const completeTodo = (id: number, completed: boolean): actionTodosItemTyp
   type: actionTypes.COMPLETE_TODO,
   payload: { id, completed },
 
-  ajaxMethod: 'PATCH',
-  ajaxUrlPath: '/todos/' + id,
-  ajaxData: { completed },
+  ajax: {
+    method: 'PATCH',
+    path: '/todos/' + id,
+    data: { completed },
+  },
 });
 
 /**
@@ -77,14 +85,15 @@ export const completeAllTodos = (): actionTodosItemType => ({
   type: 'loading',
   payload: {},
 
-  ajaxMethod: 'GET',
-  ajaxUrlPath: '/todos',
+  ajax: {
+    method: 'GET',
+    path: '/todos',
+    response: (data: any) => {
+      const todos: stateTodosItemsType = data;
+      const areAllMarked = todos.every((todo) => todo.completed);
 
-  ajaxResponse: (data: any) => {
-    const todos: stateTodosItemsType = data;
-    const areAllMarked = todos.every((todo) => todo.completed);
-
-    return todos.map((todo) => completeTodo(todo.id, !areAllMarked));
+      return todos.map((todo) => completeTodo(todo.id, !areAllMarked));
+    },
   },
 });
 
@@ -95,12 +104,14 @@ export const clearCompleted = (): actionTodosItemType => ({
   type: 'loading',
   payload: {},
 
-  ajaxMethod: 'GET',
-  ajaxUrlPath: '/todos?completed=true',
-  ajaxResponse: (data: any) => {
-    const todos: stateTodosItemsType = data;
+  ajax: {
+    method: 'GET',
+    path: '/todos?completed=true',
+    response: (data: any) => {
+      const todos: stateTodosItemsType = data;
 
-    return todos.map((d) => deleteTodo(d.id));
+      return todos.map((d) => deleteTodo(d.id));
+    },
   },
 });
 
