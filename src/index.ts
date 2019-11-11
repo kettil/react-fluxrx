@@ -6,7 +6,7 @@ export { getUniqueAction } from './lib/utils/helper';
 export { actionFlat, actions, actionValidate } from './lib/utils/store';
 export { bindActions } from './lib/utils/connect';
 
-export { createActionType, createReducerType, createStateType, dispatchType, UnpackedArray } from './lib/types';
+export { dispatchType, UnpackedArray, ActionReturnType } from './lib/types';
 
 /**
  *
