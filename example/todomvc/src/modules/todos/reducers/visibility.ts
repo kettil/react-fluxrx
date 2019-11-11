@@ -1,19 +1,15 @@
-import { actionTypes, constants, stateTodosVisibilityType, reducerTodosVisibilityType } from '../types';
+import { actionType } from '../actions';
 
-/**
- *
- */
-const initialState: stateTodosVisibilityType = constants.SHOW_ALL;
+export type stateType = { filter: 'all' | 'completed' | 'active' };
 
-/**
- *
- * @param state
- * @param action
- */
-export const reducer: reducerTodosVisibilityType = (state = initialState, action) => {
+const initialState: stateType = { filter: 'all' };
+
+export const reducer = (state = initialState, action: actionType): stateType => {
   switch (action.type) {
-    case actionTypes.SET_VISIBILITY:
-      return action.payload;
+    case 'todos/SET_VISIBILITY':
+      return {
+        filter: action.payload.filter,
+      };
 
     default:
       return state;

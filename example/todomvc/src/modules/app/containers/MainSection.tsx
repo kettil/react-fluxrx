@@ -1,8 +1,8 @@
 import { dispatchType } from 'react-fluxrx';
 
 import { connect, stateType } from '../../../fluxRx';
-import { todosAction, todosSelectors } from '../../todos';
-
+import * as todosAction from '../../todos/actions';
+import * as todosSelectors from '../../todos/selectors';
 import MainSection from '../components/MainSection';
 
 /**

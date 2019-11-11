@@ -1,9 +1,12 @@
-import { actionTypes, stateTodosItemsType, reducerTodosItemsType } from '../types';
+import { actionType } from '../actions';
 
-/**
- *
- */
-const initialState: stateTodosItemsType = [
+export type stateType = Array<{
+  text: string;
+  completed: boolean;
+  id: number;
+}>;
+
+const initialState: stateType = [
   {
     text: 'Use react-fluxRx',
     completed: false,
@@ -11,14 +14,9 @@ const initialState: stateTodosItemsType = [
   },
 ];
 
-/**
- *
- * @param state
- * @param action
- */
-export const reducer: reducerTodosItemsType = (state = initialState, action) => {
+export const reducer = (state = initialState, action: actionType): stateType => {
   switch (action.type) {
-    case actionTypes.TODO_ADD:
+    case 'todos/TODO_ADD':
       return [
         ...state,
         {
@@ -28,16 +26,16 @@ export const reducer: reducerTodosItemsType = (state = initialState, action) => 
         },
       ];
 
-    case actionTypes.TODO_DELETE:
+    case 'todos/TODO_DELETE':
       return state.filter((todo) => todo.id !== action.payload.id);
 
-    case actionTypes.TODO_EDIT:
+    case 'todos/TODO_EDIT':
       return state.map((todo) => (todo.id === action.payload.id ? { ...todo, text: action.payload.text } : todo));
 
-    case actionTypes.COMPLETE_TODO:
+    case 'todos/COMPLETE_TODO':
       return state.map((todo) => (todo.id === action.payload.id ? { ...todo, completed: !todo.completed } : todo));
 
-    case actionTypes.COMPLETE_ALL:
+    case 'todos/COMPLETE_ALL':
       const areAllMarked = state.every((todo) => todo.completed);
 
       return state.map((todo) => ({
@@ -45,7 +43,7 @@ export const reducer: reducerTodosItemsType = (state = initialState, action) => 
         completed: !areAllMarked,
       }));
 
-    case actionTypes.COMPLETE_CLEAR_COMPLETED:
+    case 'todos/COMPLETE_CLEAR_COMPLETED':
       return state.filter((todo) => todo.completed === false);
 
     default:
@@ -53,7 +51,4 @@ export const reducer: reducerTodosItemsType = (state = initialState, action) => 
   }
 };
 
-/**
- *
- */
 export default reducer;

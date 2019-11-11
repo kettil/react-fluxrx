@@ -1,11 +1,11 @@
 import { combineReducers } from 'react-fluxrx';
 
-import todos from './todos/reducers';
+import items from './items';
+import visibility from './visibility';
 
 export const reducer = combineReducers({
-  todos,
+  items,
+  visibility,
 });
 
 export default reducer;
-
-export type stateType = ReturnType<typeof reducer>;
