@@ -1,125 +1,103 @@
-import { actionTodosItemType, actionTypes, actionTodosVisibilityType, constants, stateTodosItemsType } from './types';
+import { ActionReturnType } from 'react-fluxrx';
 
-/**
- *
- * @param text
- */
-export const loadTodo = (id: number, text: string, completed: boolean): actionTodosItemType => {
-  return {
-    type: actionTypes.TODO_ADD,
+import { stateType as itemsStateType } from './reducers/items';
+import { stateType as visibilityStateType } from './reducers/visibility';
+
+export type actionType = ActionReturnType<typeof import('./actions')>;
+
+export const insertTodo = (id: number, text: string, completed: boolean) =>
+  ({
+    type: 'todos/TODO_ADD',
     payload: {
       id,
       text,
       completed,
     },
-  };
-};
+  } as const);
 
-/**
- *
- * @param text
- */
-export const addTodo = (text: string): actionTodosItemType => {
-  return {
-    type: 'loading',
+export const addTodo = (text: string) =>
+  ({
+    type: 'todos/LOADING',
     payload: {},
 
     ajax: {
       method: 'POST',
       path: '/todos',
       data: { text, completed: false },
-      response: (data: any) => loadTodo(data.id, data.text, data.completed),
+      response: (data: any) => insertTodo(data.id, data.text, data.completed),
     },
-  };
-};
+  } as const);
 
-/**
- *
- * @param id
- */
-export const deleteTodo = (id: number): actionTodosItemType => ({
-  type: actionTypes.TODO_DELETE,
-  payload: { id },
+export const deleteTodo = (id: number) =>
+  ({
+    type: 'todos/TODO_DELETE',
+    payload: { id },
 
-  ajax: {
-    method: 'DELETE',
-    path: `/todos/${id}`,
-  },
-});
-
-/**
- *
- * @param id
- * @param text
- */
-export const editTodo = (id: number, text: string): actionTodosItemType => ({
-  type: actionTypes.TODO_EDIT,
-  payload: { id, text },
-
-  ajax: {
-    method: 'PATCH',
-    path: '/todos/' + id,
-    data: { text },
-  },
-});
-
-/**
- *
- * @param id
- */
-export const completeTodo = (id: number, completed: boolean): actionTodosItemType => ({
-  type: actionTypes.COMPLETE_TODO,
-  payload: { id, completed },
-
-  ajax: {
-    method: 'PATCH',
-    path: '/todos/' + id,
-    data: { completed },
-  },
-});
-
-/**
- *
- */
-export const completeAllTodos = (): actionTodosItemType => ({
-  type: 'loading',
-  payload: {},
-
-  ajax: {
-    method: 'GET',
-    path: '/todos',
-    response: (data: any) => {
-      const todos: stateTodosItemsType = data;
-      const areAllMarked = todos.every((todo) => todo.completed);
-
-      return todos.map((todo) => completeTodo(todo.id, !areAllMarked));
+    ajax: {
+      method: 'DELETE',
+      path: `/todos/${id}`,
     },
-  },
-});
+  } as const);
 
-/**
- *
- */
-export const clearCompleted = (): actionTodosItemType => ({
-  type: 'loading',
-  payload: {},
+export const editTodo = (id: number, text: string) =>
+  ({
+    type: 'todos/TODO_EDIT',
+    payload: { id, text },
 
-  ajax: {
-    method: 'GET',
-    path: '/todos?completed=true',
-    response: (data: any) => {
-      const todos: stateTodosItemsType = data;
-
-      return todos.map((d) => deleteTodo(d.id));
+    ajax: {
+      method: 'PATCH',
+      path: '/todos/' + id,
+      data: { text },
     },
-  },
-});
+  } as const);
 
-/**
- *
- * @param filter
- */
-export const setVisibility = (filter: constants): actionTodosVisibilityType => ({
-  type: actionTypes.SET_VISIBILITY,
-  payload: filter,
-});
+export const completeTodo = (id: number, completed: boolean) =>
+  ({
+    type: 'todos/COMPLETE_TODO',
+    payload: { id, completed },
+
+    ajax: {
+      method: 'PATCH',
+      path: '/todos/' + id,
+      data: { completed },
+    },
+  } as const);
+
+export const completeAllTodos = () =>
+  ({
+    type: 'todos/LOADING',
+    payload: {},
+
+    ajax: {
+      method: 'GET',
+      path: '/todos',
+      response: (data: any) => {
+        const todos: itemsStateType = data;
+        const areAllMarked = todos.every((todo) => todo.completed);
+
+        return todos.map((todo) => completeTodo(todo.id, !areAllMarked));
+      },
+    },
+  } as const);
+
+export const clearCompleted = () =>
+  ({
+    type: 'todos/LOADING',
+    payload: {},
+
+    ajax: {
+      method: 'GET',
+      path: '/todos?completed=true',
+      response: (data: any) => {
+        const todos: itemsStateType = data;
+
+        return todos.map((d) => deleteTodo(d.id));
+      },
+    },
+  } as const);
+
+export const setVisibility = (filter: visibilityStateType['filter']) =>
+  ({
+    type: 'todos/SET_VISIBILITY',
+    payload: { filter },
+  } as const);

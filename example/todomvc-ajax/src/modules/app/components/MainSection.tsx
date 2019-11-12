@@ -1,7 +1,6 @@
 import React from 'react';
 
 import Footer from './Footer';
-
 import TodoList from '../../todos/containers/TodoList';
 
 type props = {
