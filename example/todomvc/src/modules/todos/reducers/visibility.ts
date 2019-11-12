@@ -16,7 +16,4 @@ export const reducer = (state = initialState, action: actionType): stateType => 
   }
 };
 
-/**
- *
- */
 export default reducer;
