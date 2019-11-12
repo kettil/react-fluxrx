@@ -9,9 +9,7 @@ const mapStateToProps = (state: stateType) => ({
   filteredTodos: getFilteredTodos(state),
 });
 
-const mapDispatchToProps = (dispatch: dispatchType) => {
-  return bindActions(actions, dispatch);
-};
+const mapDispatchToProps = (dispatch: dispatchType) => bindActions(actions, dispatch);
 
 const TodoListConnected = connect(
   mapStateToProps,
