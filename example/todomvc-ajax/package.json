@@ -30,6 +30,7 @@
   },
   "dependencies": {
     "classnames": "^2.2.6",
+    "isomorphic-unfetch": "^3.0.0",
     "react": "^16.11.0",
     "react-dom": "^16.11.0",
     "react-fluxrx": "file:.module",

@@ -1,65 +1,47 @@
-import { actionTodosItemType, actionTypes, actionTodosVisibilityType, constants } from './types';
+import { ActionReturnType } from 'react-fluxrx';
 
-/**
- *
- * @param text
- */
-export const addTodo = (text: string): actionTodosItemType => {
-  return {
-    type: actionTypes.TODO_ADD,
+import { stateType as visibilityStateType } from './reducers/visibility';
+
+export type actionType = ActionReturnType<typeof import('./actions')>;
+
+export const addTodo = (text: string) =>
+  ({
+    type: 'todos/TODO_ADD',
     payload: { text },
-  };
-};
+  } as const);
 
-/**
- *
- * @param id
- */
-export const deleteTodo = (id: number): actionTodosItemType => ({
-  type: actionTypes.TODO_DELETE,
-  payload: { id },
-});
+export const deleteTodo = (id: number) =>
+  ({
+    type: 'todos/TODO_DELETE',
+    payload: { id },
+  } as const);
 
-/**
- *
- * @param id
- * @param text
- */
-export const editTodo = (id: number, text: string): actionTodosItemType => ({
-  type: actionTypes.TODO_EDIT,
-  payload: { id, text },
-});
+export const editTodo = (id: number, text: string) =>
+  ({
+    type: 'todos/TODO_EDIT',
+    payload: { id, text },
+  } as const);
 
-/**
- *
- * @param id
- */
-export const completeTodo = (id: number): actionTodosItemType => ({
-  type: actionTypes.COMPLETE_TODO,
-  payload: { id },
-});
+export const completeTodo = (id: number) =>
+  ({
+    type: 'todos/COMPLETE_TODO',
+    payload: { id },
+  } as const);
 
-/**
- *
- */
-export const completeAllTodos = (): actionTodosItemType => ({
-  type: actionTypes.COMPLETE_ALL,
-  payload: {},
-});
+export const completeAllTodos = () =>
+  ({
+    type: 'todos/COMPLETE_ALL',
+    payload: {},
+  } as const);
 
-/**
- *
- */
-export const clearCompleted = (): actionTodosItemType => ({
-  type: actionTypes.COMPLETE_CLEAR_COMPLETED,
-  payload: {},
-});
+export const clearCompleted = () =>
+  ({
+    type: 'todos/COMPLETE_CLEAR_COMPLETED',
+    payload: {},
+  } as const);
 
-/**
- *
- * @param filter
- */
-export const setVisibility = (filter: constants): actionTodosVisibilityType => ({
-  type: actionTypes.SET_VISIBILITY,
-  payload: filter,
-});
+export const setVisibility = (filter: visibilityStateType['filter']) =>
+  ({
+    type: 'todos/SET_VISIBILITY',
+    payload: { filter },
+  } as const);

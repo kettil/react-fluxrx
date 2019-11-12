@@ -6,13 +6,12 @@ import { AjaxRequest } from 'rxjs/ajax';
 // User Types
 //
 
-export type createActionType<GlobalState, Payload> = actionSubjectType<GlobalState, Partial<UnpackedArray<Payload>>>;
-
-export type createStateType<LocalState> = LocalState;
-
-export type createReducerType<LocalState> = reducerType<LocalState, actionType<LocalState, UnpackedArray<LocalState>>>;
-
 export type dispatchType = storeDispatchType;
+
+export type ActionReturnType<T extends Record<string, any>> = {
+  [K in keyof T]: ReturnType<T[K]>;
+}[keyof T] &
+  actionType;
 
 //
 // Action
@@ -132,8 +131,6 @@ export type middlewareErrorType<State> = storeErrorHandlerType<State>;
 //
 
 export type TypeAction = string | symbol;
-
-export type ObjectExcludeKeys<T1, T2> = { [K in Exclude<keyof T1, keyof T2>]: T1[K] };
 
 export type ExtractProps<T> = T extends new (props: infer U1) => any
   ? U1

@@ -1,11 +1,10 @@
 import React from 'react';
 
-import { stateTodosItemsType } from '../types';
-
+import { stateType as itemsStateType } from '../reducers/items';
 import TodoItem from './TodoItem';
 
 type props = {
-  filteredTodos: stateTodosItemsType;
+  filteredTodos: itemsStateType;
   editTodo: (id: number, text: string) => void;
   deleteTodo: (id: number) => void;
   completeTodo: (id: number, completed: boolean) => void;

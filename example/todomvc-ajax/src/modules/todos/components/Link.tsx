@@ -2,9 +2,9 @@ import React, { ReactNode } from 'react';
 import classnames from 'classnames';
 
 type props = {
-  active: boolean;
-  children: ReactNode;
-  setVisibility: () => void;
+  readonly children: ReactNode;
+  readonly active: boolean;
+  readonly setVisibility: () => void;
 };
 
 const Link = ({ active, children, setVisibility }: props) => (

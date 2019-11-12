@@ -4,7 +4,7 @@ import { reducer, stateType as state } from './modules/reducer';
 
 const initState = undefined;
 
-const flux = fluxRx<stateType>(reducer, initState, {
+const flux = fluxRx<state>(reducer, initState, {
   middleware: [middleware.logger(), middleware.devTools()],
   timeDebounce: 5,
 });

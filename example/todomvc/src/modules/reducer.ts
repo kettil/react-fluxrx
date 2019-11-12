@@ -1,10 +1,7 @@
 import { combineReducers } from 'react-fluxrx';
 
-import todos from './todos/reducer';
+import todos from './todos/reducers';
 
-/**
- *
- */
 export const reducer = combineReducers({
   todos,
 });

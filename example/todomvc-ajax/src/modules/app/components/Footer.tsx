@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { todosConstants } from '../../todos';
+import { stateType as itemsStateType } from '../../todos/reducers/visibility';
 import FilterLink from '../../todos/containers/Link';
 
 type props = {
@@ -9,10 +9,10 @@ type props = {
   onClearCompleted: () => void;
 };
 
-const FILTER_TITLES = {
-  [todosConstants.SHOW_ALL]: 'All',
-  [todosConstants.SHOW_ACTIVE]: 'Active',
-  [todosConstants.SHOW_COMPLETED]: 'Completed',
+const FILTER_TITLES: Record<itemsStateType['filter'], string> = {
+  all: 'All',
+  active: 'Active',
+  completed: 'Completed',
 };
 
 const Footer = ({ activeCount, completedCount, onClearCompleted }: props) => {
@@ -25,11 +25,9 @@ const Footer = ({ activeCount, completedCount, onClearCompleted }: props) => {
       </span>
 
       <ul className="filters">
-        {Object.keys(FILTER_TITLES).map((filter) => (
+        {(Object.keys(FILTER_TITLES) as Array<keyof typeof FILTER_TITLES>).map((filter) => (
           <li key={filter}>
-            <FilterLink visibility={filter as keyof typeof FILTER_TITLES}>
-              {FILTER_TITLES[filter as keyof typeof FILTER_TITLES]}
-            </FilterLink>
+            <FilterLink visibility={{ filter }}>{FILTER_TITLES[filter]}</FilterLink>
           </li>
         ))}
       </ul>

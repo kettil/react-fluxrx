@@ -1,14 +1,12 @@
 import React, { Component } from 'react';
 import classnames from 'classnames';
-
 import { UnpackedArray } from 'react-fluxrx';
 
-import { stateTodosItemsType } from '../types';
-
+import { stateType as itemsStateType } from '../reducers/items';
 import TodoTextInput from './TodoTextInput';
 
 type props = {
-  todo: UnpackedArray<stateTodosItemsType>;
+  todo: UnpackedArray<itemsStateType>;
   editTodo: (id: number, text: string) => void;
   deleteTodo: (id: number) => void;
   completeTodo: (id: number) => void;
