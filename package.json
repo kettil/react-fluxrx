@@ -1,6 +1,6 @@
 {
   "name": "react-fluxrx",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "react-fluxRx is a predictable state container for react apps",
   "main": "build/index.js",
   "types": "build/index.d.ts",
