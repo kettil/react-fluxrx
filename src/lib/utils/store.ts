@@ -1,9 +1,7 @@
 import { from, isObservable, Observable, of } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
-
-import { defaultErrorHandler, getUniqueAction, isActionPayload, isActionType, isObject, isPromise } from './helper';
-
 import { actionSubjectType, actionType, middlewareType, reducerType, storeErrorHandlerType, storeType } from '../types';
+import { defaultErrorHandler, getUniqueAction, isActionPayload, isActionType, isObject, isPromise } from './helper';
 
 export const actionFlat = (action: actionSubjectType): Observable<actionType> => {
   if (isObservable(action)) {
@@ -73,6 +71,6 @@ export const reduceMiddleware = <State, K extends keyof middlewareType<State>>(
 };
 
 export const actions = {
-  fullUpdate: getUniqueAction('FULL_UPDATE_ACTION'),
-  ignoreAction: getUniqueAction('IGNORE_ACTION'),
+  fullUpdate: getUniqueAction('@@_rx_@@/ACTION_FULL_UPDATE'),
+  ignoreAction: getUniqueAction('@@_rx_@@/ACTION_IGNORE'),
 };

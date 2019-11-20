@@ -1,13 +1,8 @@
-/* tslint:disable:no-implicit-dependencies no-submodule-imports */
 import { Observable } from 'rxjs';
 import { AjaxError } from 'rxjs/ajax';
 import { SinonFakeServer, useFakeServer } from 'sinon';
-
 import { ajax } from './ajax';
 
-/**
- *
- */
 describe('Check the ajax middleware', () => {
   let xhr: SinonFakeServer;
 
@@ -38,16 +33,10 @@ describe('Check the ajax middleware', () => {
     ]);
   });
 
-  /**
-   *
-   */
   afterEach(() => {
     xhr.restore();
   });
 
-  /**
-   *
-   */
   test('it should be return the middleware object when logger() is called', () => {
     const result = ajax({ url: 'https://localhost' });
 
@@ -56,9 +45,6 @@ describe('Check the ajax middleware', () => {
     });
   });
 
-  /**
-   *
-   */
   test('it should be no request call when the middleware.action() is called without ajax data', () => {
     const dispatch = jest.fn();
     const reducer = jest.fn();
@@ -91,9 +77,6 @@ describe('Check the ajax middleware', () => {
   });
 
   describe('Call middleware.action() with ajax data', () => {
-    /**
-     *
-     */
     test('it should be request call when action() is called and silent mode is on', (done) => {
       expect.assertions(10);
 
@@ -160,9 +143,6 @@ describe('Check the ajax middleware', () => {
       xhr.respond();
     });
 
-    /**
-     *
-     */
     test('it should be request call when action() is called and with a callback', (done) => {
       expect.assertions(14);
 
@@ -259,9 +239,6 @@ describe('Check the ajax middleware', () => {
       xhr.respond();
     });
 
-    /**
-     *
-     */
     test('it should be request call when action() is called and the response data has an action structure (without whitelist)', (done) => {
       expect.assertions(11);
 
@@ -335,9 +312,6 @@ describe('Check the ajax middleware', () => {
       xhr.respond();
     });
 
-    /**
-     *
-     */
     test('it should be request call when action() is called, response data has an action structure and action type is in the whitelist', (done) => {
       expect.assertions(11);
 
@@ -411,9 +385,6 @@ describe('Check the ajax middleware', () => {
       xhr.respond();
     });
 
-    /**
-     *
-     */
     test('it should be throw an error when action() is called, response data has an action structure and action type is not in the whitelist', (done) => {
       expect.assertions(12);
 
@@ -481,9 +452,6 @@ describe('Check the ajax middleware', () => {
       xhr.respond();
     });
 
-    /**
-     *
-     */
     test('it should be nothing when action() is called and without response handler', (done) => {
       expect.assertions(10);
 
@@ -543,9 +511,6 @@ describe('Check the ajax middleware', () => {
       xhr.respond();
     });
 
-    /**
-     *
-     */
     test('it should be throw an error when action() is called and url is wrong', (done) => {
       expect.assertions(12);
 

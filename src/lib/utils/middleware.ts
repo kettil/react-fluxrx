@@ -1,10 +1,7 @@
 import { Observable, of } from 'rxjs';
-// tslint:disable-next-line:no-submodule-imports
 import { map, mergeMap, tap } from 'rxjs/operators';
-
-import * as storeUtils from './store';
-
 import { actionType, middlewareActionType, reducerType, storeDispatchType, storeType } from '../types';
+import * as storeUtils from './store';
 
 /**
  *

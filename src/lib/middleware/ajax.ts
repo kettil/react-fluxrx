@@ -1,16 +1,9 @@
-/* tslint:disable:no-submodule-imports */
 import { empty } from 'rxjs';
 import { ajax as rxAjax, AjaxError, AjaxRequest } from 'rxjs/ajax';
 import { map, mergeMap } from 'rxjs/operators';
-
+import { middlewareType, TypeAction } from '../types';
 import { actionFlat, actionValidate } from '../utils/store';
 
-import { middlewareType, TypeAction } from '../types';
-
-/**
- *
- * @param url
- */
 export const ajax = <State>({
   url,
   actionWhitelist,

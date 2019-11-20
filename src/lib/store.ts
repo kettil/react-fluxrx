@@ -1,20 +1,10 @@
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
-// tslint:disable-next-line:no-submodule-imports
 import { catchError, debounceTime, distinctUntilChanged, mergeMap, scan, tap } from 'rxjs/operators';
-
+import { actionSubjectType, middlewareType, reducerType, storeType } from './types';
 import { defaultErrorHandler } from './utils/helper';
 import middlewareUtils from './utils/middleware';
 import { actionError, actionFlat, actionValidate, reduceMiddleware, reducerHandler } from './utils/store';
 
-import { actionSubjectType, middlewareType, reducerType, storeType } from './types';
-
-/**
- *
- * @param reducer
- * @param init
- * @param middleware
- * @param errorHandler
- */
 export const createStore = <State>(
   reducer: reducerType<State>,
   init: State,
@@ -71,7 +61,4 @@ export const createStore = <State>(
   return store;
 };
 
-/**
- *
- */
 export default createStore;

@@ -9,21 +9,12 @@ const dispatch = jest.fn();
 const reducer = jest.fn().mockImplementation((state, action) => ({ state, action }));
 const updateDirectly = jest.fn();
 
-/**
- *
- */
 describe('Check the logger middleware', () => {
-  /**
-   *
-   */
   beforeEach(() => {
     (redux as any).connect = connect;
     (global as any).__REDUX_DEVTOOLS_EXTENSION__ = redux;
   });
 
-  /**
-   *
-   */
   test('it should be return the middleware object when devTools() is called and the devTools variable is defined', () => {
     const result = devTools();
 
@@ -36,9 +27,6 @@ describe('Check the logger middleware', () => {
     expect(connect).toHaveBeenCalledTimes(1);
   });
 
-  /**
-   *
-   */
   test('it should be return the middleware object when devTools() is called and the devTools variable is undefined', () => {
     (global as any).__REDUX_DEVTOOLS_EXTENSION__ = undefined;
 
@@ -49,9 +37,6 @@ describe('Check the logger middleware', () => {
     expect(connect).toHaveBeenCalledTimes(0);
   });
 
-  /**
-   *
-   */
   test('it should be output of the message when the middleware.init() is called', () => {
     const result = devTools();
 
@@ -106,9 +91,6 @@ describe('Check the logger middleware', () => {
     ['nothing', 'UNKNOWN', { type: 'ACTION' }, 0, 0],
   ];
 
-  /**
-   *
-   */
   test.each(testDataInit)(
     'it should be %s is called when callback() from middleware.init() is called with type "%s"',
     (_1, _2, message, countDispatch, countUpdateDirectly) => {
@@ -150,9 +132,6 @@ describe('Check the logger middleware', () => {
     },
   );
 
-  /**
-   *
-   */
   test('it should be send() is called when the middleware.action() is called', () => {
     const result = devTools();
 

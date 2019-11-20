@@ -1,6 +1,5 @@
 // tslint:disable:no-console
 import { isObservable, of, Subject } from 'rxjs';
-
 import { MiddlewareUtils } from './middleware';
 
 const dispatch = jest.fn();

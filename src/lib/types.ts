@@ -1,4 +1,3 @@
-/* tslint:disable:no-submodule-imports */
 import { Observable, Subscription } from 'rxjs';
 import { AjaxRequest } from 'rxjs/ajax';
 

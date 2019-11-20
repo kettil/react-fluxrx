@@ -1,6 +1,5 @@
-import { hasProperty, isObject } from './helper';
-
 import { actionSubjectType, storeDispatchType } from '../types';
+import { hasProperty, isObject } from './helper';
 
 export const defaultMapStateToProps = (): any => {
   return {};

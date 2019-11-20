@@ -1,8 +1,5 @@
 import { middlewareType } from '../types';
 
-/**
- *
- */
 export const devTools = <State>(): middlewareType<State> => {
   const devToolsObject = typeof window !== 'undefined' && (window as any).__REDUX_DEVTOOLS_EXTENSION__;
 
