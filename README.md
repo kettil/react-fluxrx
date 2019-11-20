@@ -162,8 +162,7 @@ export default ItemsConnect;
 
 ```typescript
 // actions.ts
-import { merge } from 'rxjs/internal/observable/merge';
-import { of } from 'rxjs/internal/observable/of';
+import { of, merge } from 'rxjs';
 import { ActionReturnType } from 'react-fluxrx';
 
 export type actionType = ActionReturnType<typeof import('./index')>;
