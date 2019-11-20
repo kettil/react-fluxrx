@@ -17,7 +17,7 @@
   "license": "MIT",
   "devDependencies": {
     "@types/classnames": "^2.2.9",
-    "@types/node": "^12.12.7",
+    "@types/node": "^12.12.11",
     "@types/react": "^16.9.11",
     "@types/react-dom": "^16.9.4",
     "@types/react-router-dom": "^5.1.2",
@@ -25,8 +25,8 @@
   },
   "dependencies": {
     "classnames": "^2.2.6",
-    "react": "^16.11.0",
-    "react-dom": "^16.11.0",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
     "react-fluxrx": "file:.module",
     "react-router-dom": "^5.1.2",
     "react-scripts": "^3.2.0",
