@@ -1,19 +1,10 @@
-/* tslint:disable:no-implicit-dependencies no-unused-expression */
 import React from 'react';
 import renderer from 'react-test-renderer';
-
 import { BehaviorSubject } from 'rxjs';
+import { connectorWrapper } from './Connect';
 
-import { createConnect } from './Connect';
-
-/**
- *
- */
 describe('Check the connect function', () => {
-  /**
-   *
-   */
-  test('it should be return a connected component when createConnect() and his callbacks is called', () => {
+  test('it should be return a connected component when connectorWrapper() and his callbacks is called', () => {
     const dispatch = jest.fn();
     const subject = new BehaviorSubject({ isState: true });
     const context: React.Context<any> = React.createContext({
@@ -22,7 +13,7 @@ describe('Check the connect function', () => {
       getState: () => subject.getValue(),
     });
 
-    const connect = createConnect(context);
+    const connect = connectorWrapper(context);
     expect(connect).toBeInstanceOf(Function);
 
     const callback = connect();

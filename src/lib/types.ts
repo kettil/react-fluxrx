@@ -9,9 +9,14 @@ import { AjaxRequest } from 'rxjs/ajax';
 export type dispatchType = storeDispatchType;
 
 export type ActionReturnType<T extends Record<string, any>> = {
-  [K in keyof T]: ReturnType<T[K]>;
-}[keyof T] &
-  actionType;
+  [K in keyof T]: ActionFilter<ActionRules<ReturnType<T[K]>>>;
+}[keyof T];
+
+type ActionRulePromise<Value, Other> = Value extends Promise<infer P> ? ActionRuleObservable<P, P> : Other;
+type ActionRuleFunction<Value, Other> = Value extends () => void ? never : Other;
+type ActionRuleObservable<Value, Other> = Value extends Observable<infer O> ? O : Other;
+type ActionRules<Value> = ActionRulePromise<Value, ActionRuleObservable<Value, ActionRuleFunction<Value, Value>>>;
+type ActionFilter<Value> = Value extends { type: string } ? Value : never;
 
 //
 // Action
@@ -38,16 +43,10 @@ export type actionType<State = any, Payload = any> = {
   };
 };
 
-export type actionSubjectShortType<State = any, Payload = any> =
-  | actionType<State, Payload>
-  | Promise<actionType<State, Payload>>
-  | Observable<actionType<State, Payload>>;
-
 export type actionSubjectType<State = any, Payload = any> =
   | actionType<State, Payload>
-  | Array<actionType<State, Payload>>
-  | Promise<actionType<State, Payload>>
-  | Observable<actionType<State, Payload>>;
+  | Observable<actionType<State, Payload>>
+  | Promise<actionType<State, Payload> | Observable<actionType<State, Payload>>>;
 
 //
 // Connect
@@ -56,22 +55,6 @@ export type actionSubjectType<State = any, Payload = any> =
 export type mapStateToPropsType<State, Props, MapState> = (state: State, ownProps: Props) => MapState;
 
 export type mapDispatchToPropsType<Props, MapDispatch> = (dispatch: storeDispatchType, ownProps: Props) => MapDispatch;
-
-export type ComponentConnected<MapState, MapDispatch, ConnectedProps, ComponentProps> = (
-  props: RequiredProps<MapState, MapDispatch, ComponentProps> &
-    PartialProps<MapState, MapDispatch, ComponentProps> &
-    ConnectedProps,
-) => JSX.Element;
-
-export type RequiredProps<MapState, MapDispatch, Props> = {
-  [K in Exclude<keyof Props, keyof MapState | keyof MapDispatch> &
-    NonNullable<FilterRequired<Props>[keyof FilterRequired<Props>]>]: Props[K];
-};
-
-export type PartialProps<MapState, MapDispatch, Props> = {
-  [K in Exclude<keyof Props, keyof MapState | keyof MapDispatch> &
-    NonNullable<FilterPartial<Props>[keyof FilterPartial<Props>]>]?: Props[K];
-};
 
 //
 // Store
@@ -86,8 +69,6 @@ export type storeType<State, Payload = any> = {
   dispatch: storeDispatchType<State, Payload>;
   getState: () => State;
 };
-
-export type storeSetStateType<State> = (state: State) => void;
 
 export type storeErrorHandlerType<State> = (err: any, dispatch: storeDispatchType<State>, state: State) => void;
 
@@ -122,7 +103,7 @@ export type middlewareActionType<State, Payload = any> = (
   state: State,
   dispatch: storeDispatchType<State, Payload>,
   reducer: reducerType<State>,
-) => actionSubjectShortType;
+) => actionSubjectType;
 
 export type middlewareErrorType<State> = storeErrorHandlerType<State>;
 
@@ -139,11 +120,3 @@ export type ExtractProps<T> = T extends new (props: infer U1) => any
   : {};
 
 export type UnpackedArray<T> = T extends Array<infer U> ? U : T;
-
-export type FilterRequired<T> = {
-  [K in keyof T]: Extract<T[K], undefined> extends never ? K : undefined;
-};
-
-export type FilterPartial<T> = {
-  [K in keyof T]: Extract<T[K], undefined> extends never ? undefined : K;
-};

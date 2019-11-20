@@ -6,9 +6,6 @@ export { getUniqueAction } from './lib/utils/helper';
 export { actionFlat, actions, actionValidate } from './lib/utils/store';
 export { bindActions } from './lib/utils/connect';
 
-export { dispatchType, UnpackedArray, ActionReturnType } from './lib/types';
+export { dispatchType, UnpackedArray, ActionReturnType, actionType } from './lib/types';
 
-/**
- *
- */
 export default create;

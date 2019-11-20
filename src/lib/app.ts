@@ -1,16 +1,8 @@
 import React, { createContext } from 'react';
-
-import createConnect from './connect';
+import createConnect from './Connect';
 import createStore from './store';
-
 import { middlewareType, reducerType, storeType } from './types';
 
-/**
- *
- * @param reducer
- * @param init
- * @param options
- */
 export const app = <State>(
   reducer: reducerType<State>,
   init?: State,
@@ -48,7 +40,4 @@ export const app = <State>(
   };
 };
 
-/**
- *
- */
 export default app;

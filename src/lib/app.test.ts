@@ -1,26 +1,17 @@
-jest.mock('./connect');
+jest.mock('./Connect');
 jest.mock('./store');
 
-import createConnect from './connect';
+import createConnect from './Connect';
 import createStore from './store';
 
 import { app } from './app';
 
-/**
- *
- */
 describe('Check the app function', () => {
-  /**
-   *
-   */
   beforeEach(() => {
     (createConnect as jest.Mock).mockReturnValue({ returnCreateConnect: true });
     (createStore as jest.Mock).mockReturnValue({ returnCreateStore: true });
   });
 
-  /**
-   *
-   */
   test('it should be return the app object when app() is called without init state', () => {
     const reducer = jest.fn().mockReturnValue({ returnReducer: true });
 
@@ -48,9 +39,6 @@ describe('Check the app function', () => {
     expect((createConnect as jest.Mock).mock.calls[0][0].Provider).toBe(result.Provider);
   });
 
-  /**
-   *
-   */
   test('it should be return the app object when app() is called with init state', () => {
     const reducer = jest.fn().mockReturnValue({ returnReducer: true });
 
