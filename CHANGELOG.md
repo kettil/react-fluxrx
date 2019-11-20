@@ -4,7 +4,8 @@
 
 ### Features
 
-- Improved output for logging middleware.
+- Improved output for logging middleware
+- Rewrite higher-order component Connect
 
 ### Fixes
 
