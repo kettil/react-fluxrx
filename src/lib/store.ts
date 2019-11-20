@@ -46,6 +46,7 @@ export const createStore = <State>(
   }
 
   const handlerReducer = reducerHandler(reducer);
+  const handlerError = actionError(mwErrors, store);
 
   // manipulates the stream and adds it to the state
   action$
@@ -56,12 +57,14 @@ export const createStore = <State>(
       tap(actionValidate),
       // middleware
       middlewareUtils.manager(mwActions, store, handlerReducer),
+      // error handling
+      catchError(handlerError),
       // change action to state type
       scan(handlerReducer, init),
       // only emit when the current state is different than the last
       distinctUntilChanged(),
       // error handling
-      catchError<State, Observable<State>>(actionError(mwErrors, store)),
+      catchError<State, Observable<State>>(handlerError),
     )
     .subscribe(state$);
 
