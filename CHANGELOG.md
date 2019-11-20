@@ -4,6 +4,8 @@
 
 ### Features
 
+- Improved output for logging middleware.
+
 ### Fixes
 
 ### Chore & Maintenance
