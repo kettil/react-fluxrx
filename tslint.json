@@ -20,6 +20,7 @@
     "no-null-keyword": true,
     "no-promise-as-boolean": true,
     "no-return-await": true,
+    "no-submodule-imports": [true, "rxjs/operators"],
     "no-switch-case-fall-through": true,
     "object-literal-sort-keys": false,
     "ordered-imports": true,
