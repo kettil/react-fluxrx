@@ -150,10 +150,7 @@ const mapStateToProps = (state: stateType) => ({
 
 const mapDispatchToProps = (dispatch: dispatchType) => bindActions(actions, dispatch);
 
-const ItemsConnect = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(Items);
+const ItemsConnect = connect(mapStateToProps, mapDispatchToProps)(Items);
 
 export default ItemsConnect;
 ```
