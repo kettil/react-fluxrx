@@ -32,7 +32,7 @@ export const app = <State>(
   return {
     // store
     store,
-    // linking function to the react component
+    // ho-component
     connect,
     // React Context
     Provider,

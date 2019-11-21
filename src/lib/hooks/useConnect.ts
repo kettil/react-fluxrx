@@ -1,16 +1,15 @@
 import { useContext, useEffect, useMemo, useState } from 'react';
 import selector from '../selector';
 import { mapDispatchToPropsType, mapStateToPropsType, storeType } from '../types';
-import { isStrictEqual } from './connect';
+import { isStrictEqual } from '../utils/connect';
 
 type Store<State, InnerProps, OuterProps> = {
   merge: InnerProps;
   state: State;
-  inner: InnerProps;
   outer: OuterProps;
 };
 
-export const useStore = <State, InnerProps, OuterProps, MapState, MapDispatch>(
+export const useConnect = <State, InnerProps, OuterProps, MapState, MapDispatch>(
   context: React.Context<storeType<State>>,
   mapStateToProps: mapStateToPropsType<State, OuterProps, MapState>,
   mapDispatchToProps: mapDispatchToPropsType<OuterProps, MapDispatch>,
@@ -34,8 +33,6 @@ export const useStore = <State, InnerProps, OuterProps, MapState, MapDispatch>(
 
   const [innerProps, updateProps] = useState(props.merge);
 
-  props.inner = innerProps;
-
   useEffect(() => {
     // update the componentState only if props has changed
     updateProps(props.merge);
@@ -45,18 +42,14 @@ export const useStore = <State, InnerProps, OuterProps, MapState, MapDispatch>(
     // update the componentState only if storeState has changed
     const subscription = store.subscribe((newState) => {
       if (!isStrictEqual(props.state, newState)) {
-        const newProps = createProps(newState, props.outer);
-
-        if (!isStrictEqual(props.inner, newProps)) {
-          updateProps(newProps);
-        }
+        updateProps(createProps(newState, props.outer));
       }
     });
 
     return () => subscription.unsubscribe();
   }, [store]);
 
-  return props.inner;
+  return innerProps;
 };
 
-export default useStore;
+export default useConnect;

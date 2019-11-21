@@ -1,8 +1,8 @@
 import hoistNonReactStatics from 'hoist-non-react-statics';
 import React, { memo } from 'react';
+import useConnect from './hooks/useConnect';
 import { ExtractProps, mapDispatchToPropsType, mapStateToPropsType, storeType } from './types';
 import { defaultMapDispatchToProps, defaultMapStateToProps } from './utils/connect';
-import useStore from './utils/useStore';
 
 export const connectorWrapper = <State,>(context: React.Context<storeType<State>>) => {
   return <OProps extends Record<any, any>, MState = {}, MDispatch = {}>(
@@ -27,7 +27,7 @@ export const connector = <Component extends React.ComponentType<IProps>, State, 
   Component: Component,
 ) => {
   const Consumer: React.FC<OProps> = (outerProps) => {
-    const innerProps: IProps = useStore(context, mapStateToProps, mapDispatchToProps, outerProps);
+    const innerProps: IProps = useConnect(context, mapStateToProps, mapDispatchToProps, outerProps);
 
     return <Component {...(innerProps as any)} />;
   };

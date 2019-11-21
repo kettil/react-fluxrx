@@ -1,7 +1,7 @@
 import React, { createContext } from 'react';
 import renderer from 'react-test-renderer';
 import { storeType } from '../types';
-import useStore from './useStore';
+import useStore from './useConnect';
 
 const oldState = { value: 42 };
 
