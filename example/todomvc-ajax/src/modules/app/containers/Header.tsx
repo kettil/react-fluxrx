@@ -10,9 +10,6 @@ const mapDispatchToProps = (dispatch: dispatchType) => {
   };
 };
 
-const HeaderConnected = connect(
-  undefined,
-  mapDispatchToProps,
-)(Header);
+const HeaderConnected = connect(undefined, mapDispatchToProps)(Header);
 
 export default HeaderConnected;

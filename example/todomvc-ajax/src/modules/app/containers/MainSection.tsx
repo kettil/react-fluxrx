@@ -17,7 +17,4 @@ const mapDispatchToProps = (dispatch: dispatchType) => ({
   clearCompleted: () => dispatch(todosAction.clearCompleted()),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(MainSection);
+export default connect(mapStateToProps, mapDispatchToProps)(MainSection);

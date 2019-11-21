@@ -6,24 +6,21 @@ export const getTodosItems = (state: stateType) => state.todos.items;
 
 export const getTodosVisibility = (state: stateType) => state.todos.visibility.filter;
 
-export const getFilteredTodos = createSelector(
-  [getTodosVisibility, getTodosItems],
-  (filter, todos) => {
-    switch (filter) {
-      case 'all':
-        return todos;
+export const getFilteredTodos = createSelector([getTodosVisibility, getTodosItems], (filter, todos) => {
+  switch (filter) {
+    case 'all':
+      return todos;
 
-      case 'completed':
-        return todos.filter((t) => t.completed);
+    case 'completed':
+      return todos.filter((t) => t.completed);
 
-      case 'active':
-        return todos.filter((t) => !t.completed);
+    case 'active':
+      return todos.filter((t) => !t.completed);
 
-      default:
-        throw new Error('Unknown filter: ' + filter);
-    }
-  },
-);
+    default:
+      throw new Error('Unknown filter: ' + filter);
+  }
+});
 
 export const getCompletedTodoCount = createSelector(
   [getTodosItems],

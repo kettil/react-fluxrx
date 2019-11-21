@@ -80,7 +80,13 @@ describe('Check the connect functions', () => {
       [true, true],
       [false, false],
     ];
-    const testStrictFalse: Array<[any, any]> = [[1, 10], [-1, 0], [NaN, NaN], [{ a: 3 }, { a: 3 }], [true, false]];
+    const testStrictFalse: Array<[any, any]> = [
+      [1, 10],
+      [-1, 0],
+      [NaN, NaN],
+      [{ a: 3 }, { a: 3 }],
+      [true, false],
+    ];
 
     test.each(testStrictTrue)('isStrictEqual(%s, %s) is true', (a, b) => {
       expect(isStrictEqual(a, b)).toBeTruthy();
@@ -104,7 +110,12 @@ describe('Check the connect functions', () => {
       [true, true],
       [false, false],
     ];
-    const testEqualFalse: Array<[any, any]> = [[1, 10], [-1, 0], [{ a: 3 }, { a: 3 }], [true, false]];
+    const testEqualFalse: Array<[any, any]> = [
+      [1, 10],
+      [-1, 0],
+      [{ a: 3 }, { a: 3 }],
+      [true, false],
+    ];
 
     test.each(testEqualTrue)('isEqual(%s, %s) is true', (a, b) => {
       expect(isEqual(a, b)).toBeTruthy();

@@ -71,7 +71,10 @@ describe('Check the reducers function', () => {
   /**
    *
    */
-  test.each<[string | symbol, string]>([['updateX', 'updateX'], [Symbol('updateX'), 'Symbol(updateX)']])(
+  test.each<[string | symbol, string]>([
+    ['updateX', 'updateX'],
+    [Symbol('updateX'), 'Symbol(updateX)'],
+  ])(
     'it should be throw an error when combineReducers() is called and the reducer returns undefined [%s]',
     (type, name) => {
       const reducer1 = jest.fn().mockReturnValue({ a: 42 });

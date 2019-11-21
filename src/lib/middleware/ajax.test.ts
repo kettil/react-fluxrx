@@ -14,7 +14,10 @@ describe('Check the ajax middleware', () => {
       { 'Content-Type': 'application/json' },
       JSON.stringify({
         status: 'ok',
-        items: [{ id: 5, text: 'first', completed: false }, { id: 9, text: 'second', completed: true }],
+        items: [
+          { id: 5, text: 'first', completed: false },
+          { id: 9, text: 'second', completed: true },
+        ],
       }),
     ]);
 
@@ -83,7 +86,10 @@ describe('Check the ajax middleware', () => {
       xhr.respondWith('GET', 'https://localhost/api/todos', [
         200,
         { 'Content-Type': 'application/json' },
-        JSON.stringify([{ id: 5, text: 'first', completed: false }, { id: 9, text: 'second', completed: true }]),
+        JSON.stringify([
+          { id: 5, text: 'first', completed: false },
+          { id: 9, text: 'second', completed: true },
+        ]),
       ]);
 
       const reducer = jest.fn();

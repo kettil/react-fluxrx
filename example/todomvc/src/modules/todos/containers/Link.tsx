@@ -15,9 +15,6 @@ const mapDispatchToProps = (dispatch: dispatchType, ownProps: ownProps) => ({
   setVisibility: () => dispatch(setVisibility(ownProps.visibility.filter)),
 });
 
-const LinkConnected = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(Link);
+const LinkConnected = connect(mapStateToProps, mapDispatchToProps)(Link);
 
 export default LinkConnected;
