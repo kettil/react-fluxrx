@@ -1,4 +1,5 @@
 import { ActionReturnType } from 'react-fluxrx';
+import { of } from 'rxjs';
 
 import { stateType as itemsStateType } from './reducers/items';
 import { stateType as visibilityStateType } from './reducers/visibility';
@@ -91,7 +92,7 @@ export const clearCompleted = () =>
       response: (data: any) => {
         const todos: itemsStateType = data;
 
-        return todos.map((d) => deleteTodo(d.id));
+        return of(...todos.map((d) => deleteTodo(d.id)));
       },
     },
   } as const);

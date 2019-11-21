@@ -11,9 +11,6 @@ const mapStateToProps = (state: stateType) => ({
 
 const mapDispatchToProps = (dispatch: dispatchType) => bindActions(actions, dispatch);
 
-const TodoListConnected = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(TodoList);
+const TodoListConnected = connect(mapStateToProps, mapDispatchToProps)(TodoList);
 
 export default TodoListConnected;
