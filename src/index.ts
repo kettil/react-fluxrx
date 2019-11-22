@@ -1,11 +1,10 @@
-import create from './lib/app';
+import app from './lib/app';
 
 export { middleware } from './lib/middleware';
 export { combineReducers } from './lib/reducers';
-export { getUniqueAction } from './lib/utils/helper';
 export { actionFlat, actions, actionValidate } from './lib/utils/store';
 export { bindActions } from './lib/utils/connect';
 
-export { dispatchType, UnpackedArray, ActionReturnType, actionType } from './lib/types';
+export { DispatchType, UnpackedArray, ActionReturnType, ActionType } from './lib/types';
 
-export default create;
+export const createStore = app;

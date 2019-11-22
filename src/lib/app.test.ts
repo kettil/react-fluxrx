@@ -9,7 +9,7 @@ import { app } from './app';
 describe('Check the app function', () => {
   beforeEach(() => {
     (createConnect as jest.Mock).mockReturnValue({ returnCreateConnect: true });
-    (createStore as jest.Mock).mockReturnValue({ returnCreateStore: true });
+    (createStore as jest.Mock).mockReturnValue({ dispatch: { returnDispatch: true } });
   });
 
   test('it should be return the app object when app() is called without init state', () => {
@@ -18,14 +18,14 @@ describe('Check the app function', () => {
     const result = app(reducer);
 
     expect(result).toEqual({
-      store: { returnCreateStore: true },
+      dispatch: { returnDispatch: true },
       connect: { returnCreateConnect: true },
-      Provider: expect.any(Object),
       Consumer: expect.any(Object),
+      Provider: expect.any(Object),
     });
 
-    expect(result.Provider.$$typeof.toString()).toBe('Symbol(react.provider)');
     expect(result.Consumer.$$typeof.toString()).toBe('Symbol(react.context)');
+    expect(result.Provider.$$typeof.toString()).toBe('Symbol(react.provider)');
 
     expect(reducer).toHaveBeenCalledTimes(1);
     expect(reducer).toHaveBeenCalledWith(undefined, { type: '', payload: undefined });
@@ -45,14 +45,14 @@ describe('Check the app function', () => {
     const result = app(reducer, { initObject: true });
 
     expect(result).toEqual({
-      store: { returnCreateStore: true },
+      dispatch: { returnDispatch: true },
       connect: { returnCreateConnect: true },
-      Provider: expect.any(Object),
       Consumer: expect.any(Object),
+      Provider: expect.any(Object),
     });
 
-    expect(result.Provider.$$typeof.toString()).toBe('Symbol(react.provider)');
     expect(result.Consumer.$$typeof.toString()).toBe('Symbol(react.context)');
+    expect(result.Provider.$$typeof.toString()).toBe('Symbol(react.provider)');
 
     expect(reducer).toHaveBeenCalledTimes(0);
 
