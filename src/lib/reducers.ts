@@ -1,13 +1,13 @@
-import { actionType, reducersType, reducerType } from './types';
+import { ActionType, ReducersType, ReducerType } from './types';
 
 /**
  *
  * @param reducers
  */
-export const combineReducers = <State>(reducers: reducersType<State, any>): reducerType<State, any> => {
+export const combineReducers = <State>(reducers: ReducersType<State, any>): ReducerType<State, any> => {
   checkedReducers(reducers);
 
-  return (state: State | undefined, action: actionType<State>): State => {
+  return (state: State | undefined, action: ActionType<State>): State => {
     const nextState: { [K in keyof State]?: State[K] } = {};
     let hasChange = false;
 
@@ -34,7 +34,7 @@ export const combineReducers = <State>(reducers: reducersType<State, any>): redu
  *
  * @param reducers
  */
-export function checkedReducers<State>(reducers: reducersType<State, any>) {
+export function checkedReducers<State>(reducers: ReducersType<State, any>) {
   (Object.keys(reducers) as Array<keyof State>).forEach((key) => {
     const reducer = reducers[key];
 

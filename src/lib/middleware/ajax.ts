@@ -1,7 +1,7 @@
 import { empty } from 'rxjs';
 import { ajax as rxAjax, AjaxError, AjaxRequest } from 'rxjs/ajax';
 import { map, mergeMap } from 'rxjs/operators';
-import { middlewareType, TypeAction } from '../types';
+import { MiddlewareType, TypeAction } from '../types';
 import { actionFlat, actionValidate } from '../utils/store';
 
 export const ajax = <State>({
@@ -14,7 +14,7 @@ export const ajax = <State>({
   actionWhitelist?: TypeAction[];
   ajaxRequest?: AjaxRequest;
   ajaxBody?: Record<string, any> | ((state: State) => Record<string, any> | void);
-}): middlewareType<State> => {
+}): MiddlewareType<State> => {
   return {
     action: (action, state, dispatch, reducer) => {
       if (typeof action.ajax === 'object' && typeof action.ajax.path === 'string') {

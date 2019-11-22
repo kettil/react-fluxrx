@@ -1,4 +1,4 @@
-import { actionSubjectType, storeDispatchType } from '../types';
+import { ActionSubjectType, StoreDispatchType } from '../types';
 import { hasProperty, isObject } from './helper';
 
 export const defaultMapStateToProps = (): any => {
@@ -17,9 +17,9 @@ export const mergeProps = <MapState, MapDispatch, ConnectedProps, ComponentProps
   return ({ ...props, ...stateProps, ...dispatchProps } as any) as ComponentProps;
 };
 
-export const bindActions = <State, T extends Record<any, (...args: any[]) => actionSubjectType<State, any>>>(
+export const bindActions = <State, T extends Record<any, (...args: any[]) => ActionSubjectType<State, any>>>(
   objs: T,
-  dispatch: storeDispatchType<State, any>,
+  dispatch: StoreDispatchType<State, any>,
 ): T => {
   const data: any = {};
 

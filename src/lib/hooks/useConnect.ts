@@ -1,6 +1,6 @@
 import { useContext, useEffect, useMemo, useState } from 'react';
 import selector from '../selector';
-import { mapDispatchToPropsType, mapStateToPropsType, storeType } from '../types';
+import { MapDispatchToPropsType, MapStateToPropsType, StoreType } from '../types';
 import { isStrictEqual } from '../utils/connect';
 
 type Store<State, InnerProps, OuterProps> = {
@@ -10,9 +10,9 @@ type Store<State, InnerProps, OuterProps> = {
 };
 
 export const useConnect = <State, InnerProps, OuterProps, MapState, MapDispatch>(
-  context: React.Context<storeType<State>>,
-  mapStateToProps: mapStateToPropsType<State, OuterProps, MapState>,
-  mapDispatchToProps: mapDispatchToPropsType<OuterProps, MapDispatch>,
+  context: React.Context<StoreType<State>>,
+  mapStateToProps: MapStateToPropsType<State, OuterProps, MapState>,
+  mapDispatchToProps: MapDispatchToPropsType<OuterProps, MapDispatch>,
   outerProps: OuterProps,
 ): InnerProps => {
   const store = useContext(context);

@@ -1,5 +1,5 @@
 // tslint:disable:cyclomatic-complexity
-import { mapDispatchToPropsType, mapStateToPropsType, storeDispatchType } from './types';
+import { MapDispatchToPropsType, MapStateToPropsType, StoreDispatchType } from './types';
 import { isStrictEqual, mergeProps, shallowEqual } from './utils/connect';
 
 export class Selector {
@@ -11,9 +11,9 @@ export class Selector {
    * @param mergeProps
    */
   create<State, Props, MapState, MapDispatch, ComponentProps>(
-    dispatch: storeDispatchType,
-    mapStateToProps: mapStateToPropsType<State, Props, MapState>,
-    mapDispatchToProps: mapDispatchToPropsType<Props, MapDispatch>,
+    dispatch: StoreDispatchType,
+    mapStateToProps: MapStateToPropsType<State, Props, MapState>,
+    mapDispatchToProps: MapDispatchToPropsType<Props, MapDispatch>,
   ) {
     let cachedState: State;
     let cachedProps: Props;

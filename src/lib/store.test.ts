@@ -1,7 +1,7 @@
 // tslint:disable:no-console
 import { of, throwError } from 'rxjs';
 import { createStore } from './store';
-import { middlewareInitType } from './types';
+import { MiddlewareInitType } from './types';
 
 const reducer = jest.fn((a, b) => ({ ...a, action: [...a.action, b.payload] }));
 
@@ -147,7 +147,7 @@ describe('Check the store', () => {
   test('it should be that the state is changed directly when updateDirectly() is called', (done) => {
     expect.assertions(2);
 
-    const middlewareInit: middlewareInitType<any> = (_1, _2, updateDirectly) => {
+    const middlewareInit: MiddlewareInitType<any> = (_1, _2, updateDirectly) => {
       updateDirectly({ articles: [] });
     };
 
@@ -174,7 +174,7 @@ describe('Check the store', () => {
   test('it should be that the state was restored and adjusted by action when the dispatcher was called after updateDirectly()', (done) => {
     expect.assertions(2);
 
-    const middlewareInit: middlewareInitType<any> = (_1, _2, updateDirectly) => {
+    const middlewareInit: MiddlewareInitType<any> = (_1, _2, updateDirectly) => {
       updateDirectly({ articles: [], action: [] });
     };
 

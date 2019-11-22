@@ -1,6 +1,6 @@
 import { Observable, of } from 'rxjs';
 import { map, mergeMap, tap } from 'rxjs/operators';
-import { actionType, middlewareActionType, reducerType, storeDispatchType, storeType } from '../types';
+import { ActionType, MiddlewareActionType, ReducerType, StoreDispatchType, StoreType } from '../types';
 import * as storeUtils from './store';
 
 /**
@@ -13,13 +13,13 @@ export class MiddlewareUtils {
    * @param store
    * @param reducer
    */
-  manager<State>(middleware: Array<middlewareActionType<State>>, store: storeType<State>, reducer: reducerType<State>) {
-    return (source$: Observable<actionType<State>>) => {
+  manager<State>(middleware: Array<MiddlewareActionType<State>>, store: StoreType<State>, reducer: ReducerType<State>) {
+    return (source$: Observable<ActionType<State>>) => {
       return source$.pipe(
         mergeMap((action) => {
           const action$ = of(action);
 
-          if (action.withoutMiddleware === true) {
+          if (action.ignoreMiddleware === true) {
             return action$;
           }
 
@@ -39,11 +39,11 @@ export class MiddlewareUtils {
    * @param reducer
    */
   handler<State>(
-    source$: Observable<actionType<State>>,
-    middleware: middlewareActionType<State>,
+    source$: Observable<ActionType<State>>,
+    middleware: MiddlewareActionType<State>,
     state: State,
-    dispatch: storeDispatchType,
-    reducer: reducerType<State>,
+    dispatch: StoreDispatchType,
+    reducer: ReducerType<State>,
   ) {
     return source$.pipe(
       map((action) => middleware(action, state, dispatch, reducer)),

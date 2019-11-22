@@ -5,7 +5,7 @@ import { AjaxRequest } from 'rxjs/ajax';
 // User Types
 //
 
-export type dispatchType = storeDispatchType;
+export type DispatchType = StoreDispatchType;
 
 export type ActionReturnType<T extends Record<string, any>> = {
   [K in keyof T]: ActionFilter<ActionRules<ReturnType<T[K]>>>;
@@ -21,15 +21,19 @@ type ActionFilter<Value> = Value extends { type: string } ? Value : never;
 // Action
 //
 
-export type actionType<State = any, Payload = any> = {
+export type ActionType<State = any, Payload = any> = {
   type: TypeAction;
   payload: Payload;
 
-  // options
-  withoutMiddleware?: boolean;
-
   // socket.io
-  sync?: boolean;
+  ws?:
+    | boolean
+    | {
+        // overwrite the type in the websocket context
+        type?: TypeAction;
+        // overwrite the payload in the websocket context
+        payload?: Payload;
+      };
 
   // ajax
   ajax?: {
@@ -38,73 +42,76 @@ export type actionType<State = any, Payload = any> = {
     data?: Record<string, any> | ((state: State) => Record<string, any> | void);
     options?: AjaxRequest;
     silent?: boolean;
-    response?: (data: unknown, status: number, type: string) => actionSubjectType | actionSubjectType[];
+    response?: (data: unknown, status: number, type: string) => ActionSubjectType;
   };
+
+  // options
+  ignoreMiddleware?: boolean;
 };
 
-export type actionSubjectType<State = any, Payload = any> =
-  | actionType<State, Payload>
-  | Observable<actionType<State, Payload>>
-  | Promise<actionType<State, Payload> | Observable<actionType<State, Payload>>>;
+export type ActionSubjectType<State = any, Payload = any> =
+  | ActionType<State, Payload>
+  | Observable<ActionType<State, Payload>>
+  | Promise<ActionType<State, Payload> | Observable<ActionType<State, Payload>>>;
 
 //
 // Connect
 //
 
-export type mapStateToPropsType<State, Props, MapState> = (state: State, ownProps: Props) => MapState;
+export type MapStateToPropsType<State, Props, MapState> = (state: State, ownProps: Props) => MapState;
 
-export type mapDispatchToPropsType<Props, MapDispatch> = (dispatch: storeDispatchType, ownProps: Props) => MapDispatch;
+export type MapDispatchToPropsType<Props, MapDispatch> = (dispatch: StoreDispatchType, ownProps: Props) => MapDispatch;
 
 //
 // Store
 //
 
-export type storeDispatchType<State = any, Payload = any> = (action: actionSubjectType<State, Payload>) => void;
+export type StoreDispatchType<State = any, Payload = any> = (action: ActionSubjectType<State, Payload>) => void;
 
-export type storeSubscribeType<State> = (state: State) => void;
+export type StoreSubscribeType<State> = (state: State) => void;
 
-export type storeType<State, Payload = any> = {
-  subscribe: (next: storeSubscribeType<State>) => Subscription;
-  dispatch: storeDispatchType<State, Payload>;
+export type StoreType<State, Payload = any> = {
+  subscribe: (next: StoreSubscribeType<State>) => Subscription;
+  dispatch: StoreDispatchType<State, Payload>;
   getState: () => State;
 };
 
-export type storeErrorHandlerType<State> = (err: any, dispatch: storeDispatchType<State>, state: State) => void;
+export type StoreErrorHandlerType<State> = (err: any, dispatch: StoreDispatchType<State>, state: State) => void;
 
 //
 // Reducer
 //
 
-export type reducersType<State, Action extends actionType = any> = {
-  [K in keyof State]: reducerType<State[K], Action>;
+export type ReducersType<State, Action extends ActionType = any> = {
+  [K in keyof State]: ReducerType<State[K], Action>;
 };
 
-export type reducerType<State, Action extends actionType = any> = (state: State | undefined, action: Action) => State;
+export type ReducerType<State, Action extends ActionType = any> = (state: State | undefined, action: Action) => State;
 
 //
 // Middleware
 //
 
-export type middlewareType<State> = {
-  init?: middlewareInitType<State>;
-  action?: middlewareActionType<State>;
-  error?: middlewareErrorType<State>;
+export type MiddlewareType<State> = {
+  init?: MiddlewareInitType<State>;
+  action?: MiddlewareActionType<State>;
+  error?: MiddlewareErrorType<State>;
 };
 
-export type middlewareInitType<State, Payload = any> = (
+export type MiddlewareInitType<State, Payload = any> = (
   state: State,
-  dispatch: storeDispatchType<State, Payload>,
-  updateDirectly: storeSubscribeType<State>,
+  dispatch: StoreDispatchType<State, Payload>,
+  updateDirectly: StoreSubscribeType<State>,
 ) => void;
 
-export type middlewareActionType<State, Payload = any> = (
-  action: actionType,
+export type MiddlewareActionType<State, Payload = any> = (
+  action: ActionType,
   state: State,
-  dispatch: storeDispatchType<State, Payload>,
-  reducer: reducerType<State>,
-) => actionSubjectType;
+  dispatch: StoreDispatchType<State, Payload>,
+  reducer: ReducerType<State>,
+) => ActionSubjectType;
 
-export type middlewareErrorType<State> = storeErrorHandlerType<State>;
+export type MiddlewareErrorType<State> = StoreErrorHandlerType<State>;
 
 //
 // Helper

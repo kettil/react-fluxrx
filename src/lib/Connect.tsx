@@ -1,16 +1,16 @@
 import hoistNonReactStatics from 'hoist-non-react-statics';
 import React, { memo } from 'react';
 import useConnect from './hooks/useConnect';
-import { ExtractProps, mapDispatchToPropsType, mapStateToPropsType, storeType } from './types';
+import { ExtractProps, MapDispatchToPropsType, MapStateToPropsType, StoreType } from './types';
 import { defaultMapDispatchToProps, defaultMapStateToProps } from './utils/connect';
 
-export const connectorWrapper = <State,>(context: React.Context<storeType<State>>) => {
+export const connectWrapper = <State,>(context: React.Context<StoreType<State>>) => {
   return <OProps extends Record<any, any>, MState = {}, MDispatch = {}>(
-    mapStateToProps: mapStateToPropsType<State, OProps, MState> = defaultMapStateToProps,
-    mapDispatchToProps: mapDispatchToPropsType<OProps, MDispatch> = defaultMapDispatchToProps,
+    mapStateToProps: MapStateToPropsType<State, OProps, MState> = defaultMapStateToProps,
+    mapDispatchToProps: MapDispatchToPropsType<OProps, MDispatch> = defaultMapDispatchToProps,
   ) => {
     return <Component extends React.ComponentType<IProps>, IProps = ExtractProps<Component>>(Component: Component) => {
-      return connector<Component, State, IProps, OProps, MState, MDispatch>(
+      return connect<Component, State, IProps, OProps, MState, MDispatch>(
         context,
         mapStateToProps,
         mapDispatchToProps,
@@ -20,10 +20,10 @@ export const connectorWrapper = <State,>(context: React.Context<storeType<State>
   };
 };
 
-export const connector = <Component extends React.ComponentType<IProps>, State, IProps, OProps, MState, MDispatch>(
-  context: React.Context<storeType<State>>,
-  mapStateToProps: mapStateToPropsType<State, OProps, MState>,
-  mapDispatchToProps: mapDispatchToPropsType<OProps, MDispatch>,
+export const connect = <Component extends React.ComponentType<IProps>, State, IProps, OProps, MState, MDispatch>(
+  context: React.Context<StoreType<State>>,
+  mapStateToProps: MapStateToPropsType<State, OProps, MState>,
+  mapDispatchToProps: MapDispatchToPropsType<OProps, MDispatch>,
   Component: Component,
 ) => {
   const Consumer: React.FC<OProps> = (outerProps) => {
@@ -42,4 +42,4 @@ export const connector = <Component extends React.ComponentType<IProps>, State, 
   return hoistNonReactStatics(memo(Consumer), Component);
 };
 
-export default connectorWrapper;
+export default connectWrapper;

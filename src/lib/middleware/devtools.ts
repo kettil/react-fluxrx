@@ -1,6 +1,6 @@
-import { middlewareType } from '../types';
+import { MiddlewareType } from '../types';
 
-export const devTools = <State>(): middlewareType<State> => {
+export const devTools = <State>(): MiddlewareType<State> => {
   const devToolsObject = typeof window !== 'undefined' && (window as any).__REDUX_DEVTOOLS_EXTENSION__;
 
   if (typeof devToolsObject !== 'function') {

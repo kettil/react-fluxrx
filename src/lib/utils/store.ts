@@ -1,9 +1,9 @@
 import { from, isObservable, Observable, of } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
-import { actionSubjectType, actionType, middlewareType, reducerType, storeErrorHandlerType, storeType } from '../types';
+import { ActionSubjectType, ActionType, MiddlewareType, ReducerType, StoreErrorHandlerType, StoreType } from '../types';
 import { defaultErrorHandler, getUniqueAction, isActionPayload, isActionType, isObject, isPromise } from './helper';
 
-export const actionFlat = (action: actionSubjectType): Observable<actionType> => {
+export const actionFlat = (action: ActionSubjectType): Observable<ActionType> => {
   if (isObservable(action)) {
     return action;
   }
@@ -15,7 +15,7 @@ export const actionFlat = (action: actionSubjectType): Observable<actionType> =>
   return of(action);
 };
 
-export const actionValidate = (action: any, withReturn = false): action is actionType => {
+export const actionValidate = (action: any, withReturn = false): action is ActionType => {
   if (isObject(action) && isActionType(action.type) && isActionPayload(action.payload)) {
     return true;
   }
@@ -27,7 +27,7 @@ export const actionValidate = (action: any, withReturn = false): action is actio
   throw new Error(`Incorrect action structure (${JSON.stringify(action)})`);
 };
 
-export const actionError = <State>(errorHandlers: Array<storeErrorHandlerType<State>>, store: storeType<State>) => <T>(
+export const actionError = <State>(errorHandlers: Array<StoreErrorHandlerType<State>>, store: StoreType<State>) => <T>(
   err: any,
   rx$: Observable<T>,
 ): Observable<T> => {
@@ -45,9 +45,9 @@ export const actionError = <State>(errorHandlers: Array<storeErrorHandlerType<St
   return rx$;
 };
 
-export const reducerHandler = <State>(reducer: reducerType<State>): reducerType<State> => (
+export const reducerHandler = <State>(reducer: ReducerType<State>): ReducerType<State> => (
   state: State | undefined,
-  action: actionType<State>,
+  action: ActionType<State>,
 ): State => {
   switch (true) {
     case action.type === actions.ignoreAction:
@@ -61,12 +61,12 @@ export const reducerHandler = <State>(reducer: reducerType<State>): reducerType<
   }
 };
 
-export const reduceMiddleware = <State, K extends keyof middlewareType<State>>(
+export const reduceMiddleware = <State, K extends keyof MiddlewareType<State>>(
   type: K,
-  middleware: Array<middlewareType<State>>,
+  middleware: Array<MiddlewareType<State>>,
 ) => {
   return middleware.map((mw) => mw[type]).filter((funcs) => typeof funcs === 'function') as Array<
-    NonNullable<middlewareType<State>[K]>
+    NonNullable<MiddlewareType<State>[K]>
   >;
 };
 

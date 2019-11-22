@@ -195,14 +195,14 @@ describe('Check the middleware class', () => {
     expect(typeof callback).toBe('function');
     expect(callback.length).toBe(1);
 
-    const result = callback(of({ type: 'edit', payload: { id: 4, message: '...' }, withoutMiddleware: true }));
+    const result = callback(of({ type: 'edit', payload: { id: 4, message: '...' }, ignoreMiddleware: true }));
 
     expect(isObservable(result)).toBe(true);
 
     result.subscribe(
       (action) => {
         try {
-          expect(action).toEqual({ type: 'edit', payload: { id: 4, message: '...' }, withoutMiddleware: true });
+          expect(action).toEqual({ type: 'edit', payload: { id: 4, message: '...' }, ignoreMiddleware: true });
         } catch (err) {
           done(err);
         }
@@ -317,7 +317,7 @@ describe('Check the middleware class', () => {
       (action) => {
         try {
           if (i === 1 || i === 2) {
-            expect(action).toEqual({ ...expected, withoutMiddleware: true });
+            expect(action).toEqual({ ...expected, ignoreMiddleware: true });
           } else {
             expect(action).toEqual(expected);
           }
@@ -347,8 +347,8 @@ describe('Check the middleware class', () => {
     );
 
     subject$.next({ type: 'edit', payload: { id: 4, message: '...' } });
-    subject$.next({ type: 'edit', payload: { id: 4, message: '...' }, withoutMiddleware: true });
-    subject$.next({ type: 'edit', payload: { id: 4, message: '...' }, withoutMiddleware: true });
+    subject$.next({ type: 'edit', payload: { id: 4, message: '...' }, ignoreMiddleware: true });
+    subject$.next({ type: 'edit', payload: { id: 4, message: '...' }, ignoreMiddleware: true });
     subject$.next({ type: 'edit', payload: { id: 4, message: '...' } });
     subject$.next({ type: 'edit', payload: { id: 4, message: '...' } });
 

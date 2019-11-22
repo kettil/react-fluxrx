@@ -1,6 +1,6 @@
 import React, { createContext } from 'react';
 import renderer from 'react-test-renderer';
-import { storeType } from '../types';
+import { StoreType } from '../types';
 import useStore from './useConnect';
 
 const oldState = { value: 42 };
@@ -15,7 +15,7 @@ const mapDispatchToProps = (dispatcher: any) => ({ onClick: () => dispatcher('ad
 
 describe('Check the useStore hook', () => {
   let results: any[];
-  let context: React.Context<storeType<any, any>>;
+  let context: React.Context<StoreType<any, any>>;
   let Component: React.FunctionComponent<{ type: string }>;
   let root: renderer.ReactTestRenderer | undefined;
 
@@ -24,7 +24,7 @@ describe('Check the useStore hook', () => {
 
     root = undefined;
     results = [];
-    context = createContext<storeType<any>>({ dispatch, getState, subscribe });
+    context = createContext<StoreType<any>>({ dispatch, getState, subscribe });
 
     Component = (props) => {
       const state = useStore(context, mapStateToProps, mapDispatchToProps, props);

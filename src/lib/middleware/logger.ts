@@ -1,5 +1,5 @@
 /* tslint:disable:no-console */
-import { middlewareType } from '../types';
+import { MiddlewareType } from '../types';
 
 const stylesPre = 'color: #9E9E9E; font-weight: bold';
 const stylesMain = 'color: #F20404; font-weight: bold';
@@ -10,7 +10,7 @@ const isConsoleGroupDefiend = () =>
   typeof console.groupEnd === 'function' &&
   typeof console.info === 'function';
 
-export const logger = <State>(groupOutput = true): middlewareType<State> => {
+export const logger = <State>(groupOutput = true): MiddlewareType<State> => {
   return {
     init: (state, dispatch, updateDirectly) => {
       console.log('init', { state });
