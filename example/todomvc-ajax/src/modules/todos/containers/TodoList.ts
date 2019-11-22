@@ -1,4 +1,4 @@
-import { dispatchType, bindActions } from 'react-fluxrx';
+import { DispatchType, bindActions } from 'react-fluxrx';
 
 import { connect, stateType } from '../../../fluxRx';
 import * as actions from '../actions';
@@ -9,7 +9,7 @@ const mapStateToProps = (state: stateType) => ({
   filteredTodos: getFilteredTodos(state),
 });
 
-const mapDispatchToProps = (dispatch: dispatchType) => bindActions(actions, dispatch);
+const mapDispatchToProps = (dispatch: DispatchType) => bindActions(actions, dispatch);
 
 const TodoListConnected = connect(mapStateToProps, mapDispatchToProps)(TodoList);
 

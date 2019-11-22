@@ -1,4 +1,4 @@
-import { dispatchType } from 'react-fluxrx';
+import { DispatchType } from 'react-fluxrx';
 
 import { connect, stateType } from '../../../fluxRx';
 import * as todosAction from '../../todos/actions';
@@ -12,7 +12,7 @@ const mapStateToProps = (state: stateType) => {
   };
 };
 
-const mapDispatchToProps = (dispatch: dispatchType) => ({
+const mapDispatchToProps = (dispatch: DispatchType) => ({
   completeAllTodos: () => dispatch(todosAction.completeAllTodos()),
   clearCompleted: () => dispatch(todosAction.clearCompleted()),
 });

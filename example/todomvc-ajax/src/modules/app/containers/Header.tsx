@@ -1,10 +1,10 @@
-import { dispatchType } from 'react-fluxrx';
+import { DispatchType } from 'react-fluxrx';
 
 import { connect } from '../../../fluxRx';
 import * as todosAction from '../../todos/actions';
 import Header from '../components/Header';
 
-const mapDispatchToProps = (dispatch: dispatchType) => {
+const mapDispatchToProps = (dispatch: DispatchType) => {
   return {
     addTodo: (text: string) => dispatch(todosAction.addTodo(text)),
   };

@@ -1,4 +1,4 @@
-import { dispatchType } from 'react-fluxrx';
+import { DispatchType } from 'react-fluxrx';
 
 import { connect, stateType } from '../../../fluxRx';
 import { setVisibility } from '../actions';
@@ -11,7 +11,7 @@ const mapStateToProps = (state: stateType, ownProps: ownProps) => ({
   active: ownProps.visibility.filter === state.todos.visibility.filter,
 });
 
-const mapDispatchToProps = (dispatch: dispatchType, ownProps: ownProps) => ({
+const mapDispatchToProps = (dispatch: DispatchType, ownProps: ownProps) => ({
   setVisibility: () => dispatch(setVisibility(ownProps.visibility.filter)),
 });
 

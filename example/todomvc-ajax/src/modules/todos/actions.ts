@@ -76,7 +76,7 @@ export const completeAllTodos = () =>
         const todos: itemsStateType = data;
         const areAllMarked = todos.every((todo) => todo.completed);
 
-        return todos.map((todo) => completeTodo(todo.id, !areAllMarked));
+        return of(...todos.map((todo) => completeTodo(todo.id, !areAllMarked)));
       },
     },
   } as const);
