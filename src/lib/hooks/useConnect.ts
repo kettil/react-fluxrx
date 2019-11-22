@@ -51,5 +51,3 @@ export const useConnect = <State, InnerProps, OuterProps, MapState, MapDispatch>
 
   return innerProps;
 };
-
-export default useConnect;

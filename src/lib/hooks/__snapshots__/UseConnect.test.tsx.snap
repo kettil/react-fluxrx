@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Check the useStore hook it should be return the element with merge props when the element is created: json 1`] = `
+exports[`Check the useConnect hook it should be return the element with merge props when the element is created: json 1`] = `
 <input
   onClick={[Function]}
   type="text"
@@ -8,7 +8,7 @@ exports[`Check the useStore hook it should be return the element with merge prop
 />
 `;
 
-exports[`Check the useStore hook it should be return the element with merge props when the element is created: results 1`] = `
+exports[`Check the useConnect hook it should be return the element with merge props when the element is created: results 1`] = `
 Array [
   Object {
     "onClick": [Function],
@@ -18,7 +18,7 @@ Array [
 ]
 `;
 
-exports[`Check the useStore hook it should be the element iis recreated when the state is updated (new value): json 1`] = `
+exports[`Check the useConnect hook it should be the element iis recreated when the state is updated (new value): json 1`] = `
 <input
   onClick={[Function]}
   type="text"
@@ -26,7 +26,7 @@ exports[`Check the useStore hook it should be the element iis recreated when the
 />
 `;
 
-exports[`Check the useStore hook it should be the element iis recreated when the state is updated (new value): json 2`] = `
+exports[`Check the useConnect hook it should be the element iis recreated when the state is updated (new value): json 2`] = `
 <input
   onClick={[Function]}
   type="text"
@@ -34,7 +34,7 @@ exports[`Check the useStore hook it should be the element iis recreated when the
 />
 `;
 
-exports[`Check the useStore hook it should be the element iis recreated when the state is updated (new value): results 1`] = `
+exports[`Check the useConnect hook it should be the element iis recreated when the state is updated (new value): results 1`] = `
 Array [
   Object {
     "onClick": [Function],
@@ -49,7 +49,7 @@ Array [
 ]
 `;
 
-exports[`Check the useStore hook it should be the element iis recreated when the state is updated (same reference): json 1`] = `
+exports[`Check the useConnect hook it should be the element iis recreated when the state is updated (same reference): json 1`] = `
 <input
   onClick={[Function]}
   type="text"
@@ -57,7 +57,7 @@ exports[`Check the useStore hook it should be the element iis recreated when the
 />
 `;
 
-exports[`Check the useStore hook it should be the element iis recreated when the state is updated (same reference): json 2`] = `
+exports[`Check the useConnect hook it should be the element iis recreated when the state is updated (same reference): json 2`] = `
 <input
   onClick={[Function]}
   type="text"
@@ -65,7 +65,7 @@ exports[`Check the useStore hook it should be the element iis recreated when the
 />
 `;
 
-exports[`Check the useStore hook it should be the element iis recreated when the state is updated (same reference): results 1`] = `
+exports[`Check the useConnect hook it should be the element iis recreated when the state is updated (same reference): results 1`] = `
 Array [
   Object {
     "onClick": [Function],
@@ -75,7 +75,7 @@ Array [
 ]
 `;
 
-exports[`Check the useStore hook it should be the element iis recreated when the state is updated (same value but diff reference): json 1`] = `
+exports[`Check the useConnect hook it should be the element iis recreated when the state is updated (same value but diff reference): json 1`] = `
 <input
   onClick={[Function]}
   type="text"
@@ -83,7 +83,7 @@ exports[`Check the useStore hook it should be the element iis recreated when the
 />
 `;
 
-exports[`Check the useStore hook it should be the element iis recreated when the state is updated (same value but diff reference): json 2`] = `
+exports[`Check the useConnect hook it should be the element iis recreated when the state is updated (same value but diff reference): json 2`] = `
 <input
   onClick={[Function]}
   type="text"
@@ -91,7 +91,7 @@ exports[`Check the useStore hook it should be the element iis recreated when the
 />
 `;
 
-exports[`Check the useStore hook it should be the element iis recreated when the state is updated (same value but diff reference): results 1`] = `
+exports[`Check the useConnect hook it should be the element iis recreated when the state is updated (same value but diff reference): results 1`] = `
 Array [
   Object {
     "onClick": [Function],
@@ -101,7 +101,7 @@ Array [
 ]
 `;
 
-exports[`Check the useStore hook it should be the element is recreated when element is updated with new props: json 1`] = `
+exports[`Check the useConnect hook it should be the element is recreated when element is updated with new props: json 1`] = `
 <input
   onClick={[Function]}
   type="text"
@@ -109,7 +109,7 @@ exports[`Check the useStore hook it should be the element is recreated when elem
 />
 `;
 
-exports[`Check the useStore hook it should be the element is recreated when element is updated with new props: json 2`] = `
+exports[`Check the useConnect hook it should be the element is recreated when element is updated with new props: json 2`] = `
 <input
   onClick={[Function]}
   type="number"
@@ -117,7 +117,7 @@ exports[`Check the useStore hook it should be the element is recreated when elem
 />
 `;
 
-exports[`Check the useStore hook it should be the element is recreated when element is updated with new props: results 1`] = `
+exports[`Check the useConnect hook it should be the element is recreated when element is updated with new props: results 1`] = `
 Array [
   Object {
     "onClick": [Function],
@@ -137,7 +137,7 @@ Array [
 ]
 `;
 
-exports[`Check the useStore hook it should be the element is recreated when element is updated with same props: json 1`] = `
+exports[`Check the useConnect hook it should be the element is recreated when element is updated with same props: json 1`] = `
 <input
   onClick={[Function]}
   type="text"
@@ -145,7 +145,7 @@ exports[`Check the useStore hook it should be the element is recreated when elem
 />
 `;
 
-exports[`Check the useStore hook it should be the element is recreated when element is updated with same props: json 2`] = `
+exports[`Check the useConnect hook it should be the element is recreated when element is updated with same props: json 2`] = `
 <input
   onClick={[Function]}
   type="text"
@@ -153,7 +153,7 @@ exports[`Check the useStore hook it should be the element is recreated when elem
 />
 `;
 
-exports[`Check the useStore hook it should be the element is recreated when element is updated with same props: results 1`] = `
+exports[`Check the useConnect hook it should be the element is recreated when element is updated with same props: results 1`] = `
 Array [
   Object {
     "onClick": [Function],

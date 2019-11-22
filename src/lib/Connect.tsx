@@ -1,10 +1,10 @@
 import hoistNonReactStatics from 'hoist-non-react-statics';
 import React, { memo } from 'react';
-import useConnect from './hooks/useConnect';
+import { useConnect } from './hooks/useConnect';
 import { ExtractProps, MapDispatchToPropsType, MapStateToPropsType, StoreType } from './types';
 import { defaultMapDispatchToProps, defaultMapStateToProps } from './utils/connect';
 
-export const connectWrapper = <State,>(context: React.Context<StoreType<State>>) => {
+export const connectFactory = <State,>(context: React.Context<StoreType<State>>) => {
   return <OProps extends Record<any, any>, MState = {}, MDispatch = {}>(
     mapStateToProps: MapStateToPropsType<State, OProps, MState> = defaultMapStateToProps,
     mapDispatchToProps: MapDispatchToPropsType<OProps, MDispatch> = defaultMapDispatchToProps,
@@ -42,4 +42,4 @@ export const connect = <Component extends React.ComponentType<IProps>, State, IP
   return hoistNonReactStatics(memo(Consumer), Component);
 };
 
-export default connectWrapper;
+export default connectFactory;

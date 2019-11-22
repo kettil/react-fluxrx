@@ -1,10 +1,10 @@
 import React from 'react';
 import renderer from 'react-test-renderer';
 import { BehaviorSubject } from 'rxjs';
-import { connectWrapper } from './Connect';
+import { connectFactory } from './Connect';
 
 describe('Check the connect function', () => {
-  test('it should be return a connected component when connectWrapper() and his callbacks is called', () => {
+  test('it should be return a connected component when connectFactory() and his callbacks is called', () => {
     const dispatch = jest.fn();
     const subject = new BehaviorSubject({ isState: true });
     const context: React.Context<any> = React.createContext({
@@ -13,7 +13,7 @@ describe('Check the connect function', () => {
       getState: () => subject.getValue(),
     });
 
-    const connect = connectWrapper(context);
+    const connect = connectFactory(context);
     expect(connect).toBeInstanceOf(Function);
 
     const callback = connect();

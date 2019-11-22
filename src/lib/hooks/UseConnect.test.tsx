@@ -1,7 +1,7 @@
 import React, { createContext } from 'react';
 import renderer from 'react-test-renderer';
 import { StoreType } from '../types';
-import useStore from './useConnect';
+import { useConnect } from './useConnect';
 
 const oldState = { value: 42 };
 
@@ -13,7 +13,7 @@ const getState = jest.fn();
 const mapStateToProps = (state: any) => state;
 const mapDispatchToProps = (dispatcher: any) => ({ onClick: () => dispatcher('add') });
 
-describe('Check the useStore hook', () => {
+describe('Check the useConnect hook', () => {
   let results: any[];
   let context: React.Context<StoreType<any, any>>;
   let Component: React.FunctionComponent<{ type: string }>;
@@ -27,7 +27,7 @@ describe('Check the useStore hook', () => {
     context = createContext<StoreType<any>>({ dispatch, getState, subscribe });
 
     Component = (props) => {
-      const state = useStore(context, mapStateToProps, mapDispatchToProps, props);
+      const state = useConnect(context, mapStateToProps, mapDispatchToProps, props);
 
       results.push(state);
 

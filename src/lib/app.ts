@@ -1,5 +1,6 @@
 import { createContext } from 'react';
 import createConnect from './Connect';
+import { createStoreHook } from './hooks/useDispatch';
 import createStore from './store';
 import { MiddlewareType, ReducerType } from './types';
 
@@ -24,11 +25,18 @@ export const app = <State>(
   // create a react context instance
   // https://reactjs.org/docs/context.html
   const context = createContext(store);
+
+  // hooks
+  const useStore = createStoreHook(context);
+
+  // higher-order component
   const connect = createConnect(context);
 
   return {
     // dispatch
     dispatch: store.dispatch,
+    // hooks
+    useStore,
     // higher-order component
     connect,
     // React Context

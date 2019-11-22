@@ -19,6 +19,7 @@ describe('Check the app function', () => {
 
     expect(result).toEqual({
       dispatch: { returnDispatch: true },
+      useStore: expect.any(Function),
       connect: { returnCreateConnect: true },
       Consumer: expect.any(Object),
       Provider: expect.any(Object),
@@ -46,6 +47,7 @@ describe('Check the app function', () => {
 
     expect(result).toEqual({
       dispatch: { returnDispatch: true },
+      useStore: expect.any(Function),
       connect: { returnCreateConnect: true },
       Consumer: expect.any(Object),
       Provider: expect.any(Object),

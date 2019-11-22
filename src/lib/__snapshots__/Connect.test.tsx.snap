@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Check the connect function it should be return a connected component when connectWrapper() and his callbacks is called 1`] = `
+exports[`Check the connect function it should be return a connected component when connectFactory() and his callbacks is called 1`] = `
 <div>
   Hello World
 </div>
