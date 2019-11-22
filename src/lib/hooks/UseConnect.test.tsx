@@ -47,7 +47,6 @@ describe('Check the useConnect hook', () => {
     expect(getState).toHaveBeenCalledTimes(1);
     expect(subscribe).toHaveBeenCalledTimes(1);
     expect(unsubscribe).toHaveBeenCalledTimes(0);
-    expect(results.length).toBe(1);
 
     renderer.act(() => {
       root!.unmount();
@@ -99,7 +98,7 @@ describe('Check the useConnect hook', () => {
     expect(unsubscribe).toHaveBeenCalledTimes(0);
   });
 
-  test('it should be the element iis recreated when the state is updated (new value)', () => {
+  test('it should be the element is recreated when the state is updated (new value)', () => {
     renderer.act(() => {
       root = renderer.create(<Component type="text" />);
     });
@@ -125,7 +124,7 @@ describe('Check the useConnect hook', () => {
     expect(unsubscribe).toHaveBeenCalledTimes(0);
   });
 
-  test('it should be the element iis recreated when the state is updated (same value but diff reference)', () => {
+  test('it should be the element is recreated when the state is updated (same value but diff reference)', () => {
     renderer.act(() => {
       root = renderer.create(<Component type="text" />);
     });
@@ -147,7 +146,7 @@ describe('Check the useConnect hook', () => {
     expect(unsubscribe).toHaveBeenCalledTimes(0);
   });
 
-  test('it should be the element iis recreated when the state is updated (same reference)', () => {
+  test('it should be the element is recreated when the state is updated (same reference)', () => {
     renderer.act(() => {
       root = renderer.create(<Component type="text" />);
     });
