@@ -1,4 +1,4 @@
-import React, { createContext } from 'react';
+import React, { createContext, useState } from 'react';
 import renderer from 'react-test-renderer';
 import { StoreType } from '../types';
 import { createSelectorHook } from './useSelector';
@@ -10,27 +10,38 @@ const subscribe = jest.fn().mockReturnValue({ unsubscribe });
 const dispatch = jest.fn();
 const getState = jest.fn();
 
-const mapStateToProps = <S, P>(state: S, props: P): S & P => ({ ...props, ...state });
-
 describe('Check the useSelector hook', () => {
+  let count: number;
   let results: any[];
   let context: React.Context<StoreType<any, any>>;
-  let Component: React.FunctionComponent<{ type: string }>;
+  let Component: React.FunctionComponent<{ type: string; trigger?: (a: (i: number) => void) => void }>;
   let root: renderer.ReactTestRenderer | undefined;
 
   beforeEach(() => {
     getState.mockReturnValue(oldState);
 
     root = undefined;
+    count = 0;
     results = [];
     context = createContext<StoreType<any>>({ dispatch, getState, subscribe });
 
+    const useSelector = createSelectorHook(context);
+
     Component = (props) => {
-      const state = createSelectorHook(context)(mapStateToProps, props);
+      const [n, setstate] = useState(0);
+      if (props.trigger) {
+        props.trigger((i) => setstate(i));
+      }
 
-      results.push(state);
+      const data = useSelector((state: any) => {
+        count += 1;
 
-      return React.createElement<any>('input', state);
+        return { ...props, ...state, n };
+      });
+
+      results.push(data);
+
+      return React.createElement<any>('input', data);
     };
   });
 
@@ -50,6 +61,7 @@ describe('Check the useSelector hook', () => {
     expect(root!.toJSON()).toMatchSnapshot('json');
     expect(results).toMatchSnapshot('results');
     expect(results.length).toBe(1);
+    expect(count).toBe(1);
     expect(dispatch).toHaveBeenCalledTimes(0);
     expect(getState).toHaveBeenCalledTimes(1);
     expect(subscribe).toHaveBeenCalledTimes(1);
@@ -77,10 +89,10 @@ describe('Check the useSelector hook', () => {
     expect(results).toMatchSnapshot('results');
     expect(results.length).toBe(2);
     expect(results[0] === results[1]).toBe(false);
+    expect(count).toBe(2);
     expect(dispatch).toHaveBeenCalledTimes(0);
     expect(getState).toHaveBeenCalledTimes(2);
     expect(subscribe).toHaveBeenCalledTimes(1);
-    expect(unsubscribe).toHaveBeenCalledTimes(0);
   });
 
   test('it should be the element is recreated when element is updated with same props', () => {
@@ -98,13 +110,13 @@ describe('Check the useSelector hook', () => {
     expect(results).toMatchSnapshot('results');
     expect(results.length).toBe(2);
     expect(results[0] === results[1]).toBe(false);
+    expect(count).toBe(2);
     expect(dispatch).toHaveBeenCalledTimes(0);
     expect(getState).toHaveBeenCalledTimes(2);
     expect(subscribe).toHaveBeenCalledTimes(1);
-    expect(unsubscribe).toHaveBeenCalledTimes(0);
   });
 
-  test('it should be the element is recreated when element is updated with equal element', () => {
+  test('it should be the element is not recreated when element is updated with equal element', () => {
     const Element = <Component type="text" />;
 
     renderer.act(() => {
@@ -120,10 +132,10 @@ describe('Check the useSelector hook', () => {
     expect(root!.toJSON()).toMatchSnapshot('json');
     expect(results).toMatchSnapshot('results');
     expect(results.length).toBe(1);
+    expect(count).toBe(1);
     expect(dispatch).toHaveBeenCalledTimes(0);
     expect(getState).toHaveBeenCalledTimes(1);
     expect(subscribe).toHaveBeenCalledTimes(1);
-    expect(unsubscribe).toHaveBeenCalledTimes(0);
   });
 
   test('it should be the element is recreated when the state is updated (new value)', () => {
@@ -146,10 +158,10 @@ describe('Check the useSelector hook', () => {
     expect(results).toMatchSnapshot('results');
     expect(results.length).toBe(2);
     expect(results[0] === results[1]).toBe(false);
+    expect(count).toBe(2);
     expect(dispatch).toHaveBeenCalledTimes(0);
     expect(getState).toHaveBeenCalledTimes(2);
     expect(subscribe).toHaveBeenCalledTimes(1);
-    expect(unsubscribe).toHaveBeenCalledTimes(0);
   });
 
   test('it should be the element is recreated when the state is updated (same value but diff reference)', () => {
@@ -172,13 +184,13 @@ describe('Check the useSelector hook', () => {
     expect(results).toMatchSnapshot('results');
     expect(results.length).toBe(2);
     expect(results[0] === results[1]).toBe(false);
+    expect(count).toBe(2);
     expect(dispatch).toHaveBeenCalledTimes(0);
     expect(getState).toHaveBeenCalledTimes(2);
     expect(subscribe).toHaveBeenCalledTimes(1);
-    expect(unsubscribe).toHaveBeenCalledTimes(0);
   });
 
-  test('it should be the element is recreated when the state is updated (same reference)', () => {
+  test('it should be the element is not recreated when the state is updated (same reference)', () => {
     renderer.act(() => {
       root = renderer.create(<Component type="text" />);
     });
@@ -194,9 +206,60 @@ describe('Check the useSelector hook', () => {
     expect(root!.toJSON()).toMatchSnapshot('json');
     expect(results).toMatchSnapshot('results');
     expect(results.length).toBe(1);
+    expect(count).toBe(1);
     expect(dispatch).toHaveBeenCalledTimes(0);
     expect(getState).toHaveBeenCalledTimes(1);
     expect(subscribe).toHaveBeenCalledTimes(1);
-    expect(unsubscribe).toHaveBeenCalledTimes(0);
+  });
+
+  test('it should be the element is recreated when a rerun through another hook (new value)', () => {
+    let callback: (i: number) => void;
+    const trigger = (cb: any) => (callback = cb);
+
+    renderer.act(() => {
+      root = renderer.create(<Component type="text" trigger={trigger} />);
+    });
+
+    expect(root!.toJSON()).toMatchSnapshot('json');
+    expect(subscribe).toHaveBeenCalledTimes(1);
+    expect(subscribe).toHaveBeenCalledWith(expect.any(Function));
+
+    renderer.act(() => {
+      callback(42);
+    });
+
+    expect(root!.toJSON()).toMatchSnapshot('json');
+    expect(results).toMatchSnapshot('results');
+    expect(results.length).toBe(2);
+    expect(results[0] === results[1]).toBe(false);
+    expect(count).toBe(2);
+    expect(dispatch).toHaveBeenCalledTimes(0);
+    expect(getState).toHaveBeenCalledTimes(2);
+    expect(subscribe).toHaveBeenCalledTimes(1);
+  });
+
+  test('it should be the element is not recreated when a rerun through another hook (same value)', () => {
+    let callback: (i: number) => void;
+    const trigger = (cb: any) => (callback = cb);
+
+    renderer.act(() => {
+      root = renderer.create(<Component type="text" trigger={trigger} />);
+    });
+
+    expect(root!.toJSON()).toMatchSnapshot('json');
+    expect(subscribe).toHaveBeenCalledTimes(1);
+    expect(subscribe).toHaveBeenCalledWith(expect.any(Function));
+
+    renderer.act(() => {
+      callback(0);
+    });
+
+    expect(root!.toJSON()).toMatchSnapshot('json');
+    expect(results).toMatchSnapshot('results');
+    expect(results.length).toBe(1);
+    expect(count).toBe(1);
+    expect(dispatch).toHaveBeenCalledTimes(0);
+    expect(getState).toHaveBeenCalledTimes(1);
+    expect(subscribe).toHaveBeenCalledTimes(1);
   });
 });
