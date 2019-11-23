@@ -1,7 +1,8 @@
 import { createContext } from 'react';
 import createConnect from './Connect';
-import { createStoreHook } from './hooks/useDispatch';
+import { createDispatchHook } from './hooks/useDispatch';
 import { createSelectorHook } from './hooks/useSelector';
+import { createStoreHook } from './hooks/useStore';
 import createStore from './store';
 import { MiddlewareType, ReducerType } from './types';
 
@@ -30,6 +31,7 @@ export const app = <State>(
   // hooks
   const useStore = createStoreHook(context);
   const useSelector = createSelectorHook(context);
+  const useDispatch = createDispatchHook;
 
   // higher-order component
   const connect = createConnect(context);
@@ -40,6 +42,7 @@ export const app = <State>(
     // hooks
     useSelector,
     useStore,
+    useDispatch,
     // higher-order component
     connect,
     // React Context

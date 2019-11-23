@@ -13,7 +13,6 @@ const getState = jest.fn();
 describe('Check the useSelector hook', () => {
   let count: number;
   let results: any[];
-  let context: React.Context<StoreType<any, any>>;
   let Component: React.FunctionComponent<{ type: string; trigger?: (a: (i: number) => void) => void }>;
   let root: renderer.ReactTestRenderer | undefined;
 
@@ -23,8 +22,8 @@ describe('Check the useSelector hook', () => {
     root = undefined;
     count = 0;
     results = [];
-    context = createContext<StoreType<any>>({ dispatch, getState, subscribe });
 
+    const context = createContext<StoreType<any>>({ dispatch, getState, subscribe });
     const useSelector = createSelectorHook(context);
 
     Component = (props) => {
