@@ -3,11 +3,13 @@ import { reducer, stateType as state } from './modules/reducer';
 
 const initState = undefined;
 
-const store = createStore<state>(reducer, initState, {
+const handler = createStore<state>(reducer, initState, {
   middleware: [middleware.logger(), middleware.devTools()],
   timeDebounce: 5,
 });
 
 export type stateType = state;
 
-export const connect = store.connect;
+export const store = handler.store;
+export const connect = handler.connect;
+export const Provider = handler.Provider;

@@ -9,7 +9,7 @@ import { app } from './app';
 describe('Check the app function', () => {
   beforeEach(() => {
     (createConnect as jest.Mock).mockReturnValue({ returnCreateConnect: true });
-    (createStore as jest.Mock).mockReturnValue({ dispatch: { returnDispatch: true } });
+    (createStore as jest.Mock).mockReturnValue({ returnStore: true });
   });
 
   test('it should be return the app object when app() is called without init state', () => {
@@ -18,7 +18,7 @@ describe('Check the app function', () => {
     const result = app(reducer);
 
     expect(result).toEqual({
-      dispatch: { returnDispatch: true },
+      store: { returnStore: true },
       useStore: expect.any(Function),
       useSelector: expect.any(Function),
       useDispatch: expect.any(Function),
@@ -48,7 +48,7 @@ describe('Check the app function', () => {
     const result = app(reducer, { initObject: true });
 
     expect(result).toEqual({
-      dispatch: { returnDispatch: true },
+      store: { returnStore: true },
       useStore: expect.any(Function),
       useSelector: expect.any(Function),
       useDispatch: expect.any(Function),

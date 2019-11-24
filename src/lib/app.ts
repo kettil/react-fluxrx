@@ -25,20 +25,19 @@ export const app = <State>(
   const store = createStore(reducer, init, middleware, timeDebounce);
 
   // create a react context instance
-  // https://reactjs.org/docs/context.html
   const context = createContext(store);
 
   // hooks
   const useStore = createStoreHook(context);
   const useSelector = createSelectorHook(context);
-  const useDispatch = createDispatchHook;
+  const useDispatch = createDispatchHook(context);
 
   // higher-order component
   const connect = createConnect(context);
 
   return {
-    // dispatch
-    dispatch: store.dispatch,
+    // store
+    store,
     // hooks
     useSelector,
     useStore,
