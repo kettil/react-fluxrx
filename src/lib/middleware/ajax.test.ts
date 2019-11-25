@@ -214,7 +214,7 @@ describe('Check the ajax middleware', () => {
               text: 'new',
             },
           }),
-          response: (responseData: Record<string, any>, responseStatus: number, responseType: string) => {
+          success: (responseData: Record<string, any>, responseStatus: number, responseType: string) => {
             expect(responseStatus).toBe(200);
             expect(responseData).toEqual({ item: { completed: false, id: 7, text: 'new' }, status: 'ok' });
             expect(responseType).toBe('json');
@@ -235,7 +235,7 @@ describe('Check the ajax middleware', () => {
         ajax: {
           path: '/api/todos',
           data: expect.any(Function),
-          response: expect.any(Function),
+          success: expect.any(Function),
         },
       });
 
@@ -576,6 +576,68 @@ describe('Check the ajax middleware', () => {
         ajax: {
           path: '/api/todoss',
           method: 'GET',
+        },
+      });
+
+      expect(reducer).toHaveBeenCalledTimes(0);
+      expect(dispatch).toHaveBeenCalledTimes(1);
+
+      xhr.respond();
+    });
+
+    test('it should be throw an error callback when action() is called and url is wrong', (done) => {
+      expect.assertions(10);
+
+      const reducer = jest.fn();
+      const dispatch = jest.fn((action$: Observable<any>) =>
+        action$.subscribe(
+          (data) => {
+            expect(data).toEqual({ payload: { showError: true }, type: 'error' });
+          },
+          done,
+          done,
+        ),
+      );
+
+      const result = ajax({ url: 'https://localhost' });
+      expect(result).toEqual({ action: expect.any(Function) });
+
+      const callback = result.action as (...args: any[]) => void;
+      expect(callback.length).toBe(4);
+
+      const action = {
+        type: 'load',
+        payload: { showLoader: true },
+
+        // ajax
+        ajax: {
+          path: '/api/todoss',
+          method: 'GET',
+          error: (err: any) => {
+            expect(err).toBeInstanceOf(AjaxError);
+            expect(err.message).toBe('ajax error 404');
+            expect(err.status).toBe(404);
+
+            return {
+              type: 'error',
+              payload: {
+                showError: true,
+              },
+            };
+          },
+        },
+      };
+
+      const value = callback(action, {}, dispatch, reducer);
+      expect(value).toBe(action);
+      expect(value).toEqual({
+        type: 'load',
+        payload: { showLoader: true },
+
+        ajax: {
+          path: '/api/todoss',
+          method: 'GET',
+          error: expect.any(Function),
         },
       });
 

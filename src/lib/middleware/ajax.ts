@@ -1,7 +1,7 @@
-import { empty } from 'rxjs';
-import { ajax as rxAjax, AjaxError, AjaxRequest } from 'rxjs/ajax';
-import { map, mergeMap } from 'rxjs/operators';
-import { MiddlewareType, TypeAction } from '../types';
+import { empty, of, throwError } from 'rxjs';
+import { ajax as rxAjax, AjaxError, AjaxRequest, AjaxResponse } from 'rxjs/ajax';
+import { catchError, map, mergeMap } from 'rxjs/operators';
+import { ActionSubjectType, MiddlewareType, TypeAction } from '../types';
 import { actionFlat, actionValidate } from '../utils/store';
 
 export const ajax = <State>({
@@ -18,7 +18,7 @@ export const ajax = <State>({
   return {
     action: (action, state, dispatch, reducer) => {
       if (typeof action.ajax === 'object' && typeof action.ajax.path === 'string') {
-        const { path, data = {}, response: next, method = 'POST', silent = false, options = {} } = action.ajax;
+        const { path, data = {}, method = 'POST', silent = false, options = {}, success, error } = action.ajax;
 
         const body: AjaxRequest['body'] = {
           ...(typeof ajaxBody === 'function' ? ajaxBody(state) : ajaxBody),
@@ -40,27 +40,29 @@ export const ajax = <State>({
         };
 
         const observable = rxAjax(params).pipe(
-          map((ajaxResponse) => {
+          map<AjaxResponse, ActionSubjectType<State, any>>((ajaxResponse) => {
             const response = ajaxResponse.response || {};
 
             if (silent === true) {
               return empty();
             }
 
-            if (next) {
-              return next(response, ajaxResponse.status, ajaxResponse.responseType);
+            if (success) {
+              return success(response, ajaxResponse.status, ajaxResponse.responseType);
             }
 
-            if (actionValidate(response.action, true) && typeof response.action.type !== 'symbol') {
-              if (Array.isArray(actionWhitelist) && actionWhitelist.indexOf(response.action.type) === -1) {
-                throw new AjaxError(`Action type ${response.action.type} is not allowed`, ajaxResponse.xhr, params);
+            const responseAction = response.action;
+            if (actionValidate(responseAction, true) && typeof responseAction.type !== 'symbol') {
+              if (Array.isArray(actionWhitelist) && actionWhitelist.indexOf(responseAction.type) === -1) {
+                throw new AjaxError(`Action type ${responseAction.type} is not allowed`, ajaxResponse.xhr, params);
               }
 
-              return response.action;
+              return responseAction;
             }
 
             return empty();
           }),
+          catchError((err: unknown) => (error && err instanceof AjaxError ? of(error(err)) : throwError(err))),
           mergeMap(actionFlat),
         );
 
