@@ -1,16 +1,15 @@
 import React from 'react';
+import Footer from '../Footer';
+import TodoList from '../../../todos/components/TodoList';
 
-import Footer from './Footer';
-import TodoList from '../../todos/containers/TodoList';
-
-type props = {
+export type Props = {
   todosCount: number;
   completedCount: number;
   completeAllTodos: () => void;
   clearCompleted: () => void;
 };
 
-const MainSection = ({ todosCount, completedCount, completeAllTodos, clearCompleted }: props) => {
+const MainSection = ({ todosCount, completedCount, completeAllTodos, clearCompleted }: Props) => {
   return (
     <section className="main">
       {!!todosCount && (

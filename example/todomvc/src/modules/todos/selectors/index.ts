@@ -1,10 +1,9 @@
 import { createSelector } from 'reselect';
+import { GlobalStateType } from '../../../store';
 
-import { stateType } from '../reducer';
+export const getTodosItems = (state: GlobalStateType) => state.todos.items;
 
-export const getTodosItems = (state: stateType) => state.todos.items;
-
-export const getTodosVisibility = (state: stateType) => state.todos.visibility.filter;
+export const getTodosVisibility = (state: GlobalStateType) => state.todos.visibility.status;
 
 export const getFilteredTodos = createSelector([getTodosVisibility, getTodosItems], (filter, todos) => {
   switch (filter) {
@@ -22,7 +21,7 @@ export const getFilteredTodos = createSelector([getTodosVisibility, getTodosItem
   }
 });
 
-export const getCompletedTodoCount = createSelector(
-  [getTodosItems],
-  (todos) => todos.filter((t) => t.completed).length,
-);
+export const getTodosAndCompletedCount = createSelector([getTodosItems], (todos) => ({
+  todosCount: todos.length,
+  completedCount: todos.filter((t) => t.completed).length,
+}));

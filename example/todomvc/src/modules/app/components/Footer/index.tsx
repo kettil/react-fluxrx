@@ -1,21 +1,20 @@
 import React from 'react';
+import { stateType as itemsStateType } from '../../../todos/reducers/visibility';
+import FilterLink from '../../../todos/components/Link';
 
-import { stateType as itemsStateType } from '../../todos/reducers/visibility';
-import FilterLink from '../../todos/containers/Link';
-
-type props = {
+type Props = {
   activeCount: number;
   completedCount: number;
   onClearCompleted: () => void;
 };
 
-const FILTER_TITLES: Record<itemsStateType['filter'], string> = {
+const FILTER_TITLES: Record<itemsStateType['status'], string> = {
   all: 'All',
   active: 'Active',
   completed: 'Completed',
 };
 
-const Footer = ({ activeCount, completedCount, onClearCompleted }: props) => {
+const Footer = ({ activeCount, completedCount, onClearCompleted }: Props) => {
   const itemWord = activeCount === 1 ? 'item' : 'items';
 
   return (
@@ -27,7 +26,7 @@ const Footer = ({ activeCount, completedCount, onClearCompleted }: props) => {
       <ul className="filters">
         {(Object.keys(FILTER_TITLES) as Array<keyof typeof FILTER_TITLES>).map((filter) => (
           <li key={filter}>
-            <FilterLink visibility={{ filter }}>{FILTER_TITLES[filter]}</FilterLink>
+            <FilterLink visibility={filter}>{FILTER_TITLES[filter]}</FilterLink>
           </li>
         ))}
       </ul>

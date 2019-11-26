@@ -1,15 +1,13 @@
 import { actionType } from '../actions';
 
-export type stateType = { filter: 'all' | 'completed' | 'active' };
+export type stateType = { status: 'all' | 'completed' | 'active' };
 
-const initialState: stateType = { filter: 'all' };
+const initialState: stateType = { status: 'all' };
 
 export const reducer = (state = initialState, action: actionType): stateType => {
   switch (action.type) {
-    case 'todos/SET_VISIBILITY':
-      return {
-        filter: action.payload.filter,
-      };
+    case 'TODOS/SET_VISIBILITY':
+      return { status: action.payload.status };
 
     default:
       return state;
