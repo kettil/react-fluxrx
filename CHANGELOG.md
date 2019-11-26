@@ -14,6 +14,7 @@
 ### Chore & Maintenance
 
 - Remove the bindActions function
+- Conversion to functional components and hooks in the example [TodoMVC with AJAX](./example/todomvc-ajax)
 
 ### Performance
 
