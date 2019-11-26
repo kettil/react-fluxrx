@@ -67,7 +67,7 @@ export const completeAllTodos = () =>
     ajax: {
       method: 'GET',
       path: '/todos',
-      response: (data: any) => {
+      success: (data: any) => {
         const todos: stateType = data;
         const areAllMarked = todos.every((todo) => todo.completed);
 
@@ -84,7 +84,7 @@ export const clearCompleted = () =>
     ajax: {
       method: 'GET',
       path: '/todos?completed=true',
-      response: (data: any) => {
+      success: (data: any) => {
         const todos: stateType = data;
 
         return of(...todos.map((d) => deleteTodo(d.id)));
