@@ -1,4 +1,4 @@
-import { memo } from 'react-fluxrx';
+import { hocOptimize } from 'react-fluxrx';
 import { useDispatch } from '../../../../store';
 import Header, { Props } from './Header';
 import React, { FunctionComponent } from 'react';
@@ -11,7 +11,7 @@ const hocHeader = (Component: FunctionComponent<Props>): FunctionComponent<{}> =
     return <Component {...props} addTodo={handleAdd} />;
   };
 
-  return memo(Component, Wrapper);
+  return hocOptimize(Component, Wrapper);
 };
 
 export default hocHeader(Header);

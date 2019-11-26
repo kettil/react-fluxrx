@@ -3,7 +3,7 @@ import { editTodo, deleteTodo, completeTodo } from '../../actions';
 import TodoList, { Props } from './TodoList';
 import { getFilteredTodos } from '../../selectors';
 import React, { FunctionComponent } from 'react';
-import { memo } from 'react-fluxrx';
+import { hocOptimize } from 'react-fluxrx';
 
 type HocProps = {};
 
@@ -25,7 +25,7 @@ const hoc = (Component: FunctionComponent<Props>): FunctionComponent<HocProps> =
     );
   };
 
-  return memo(Component, Wrapper);
+  return hocOptimize(Component, Wrapper);
 };
 
 export default hoc(TodoList);

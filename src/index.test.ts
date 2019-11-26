@@ -2,7 +2,7 @@ import * as app from './index';
 import createStore from './lib/app';
 import { middleware } from './lib/middleware';
 import { combineReducers } from './lib/reducers';
-import { memo } from './lib/utils/React';
+import { hocOptimize } from './lib/utils/React';
 import { actionFlat, actions, actionValidate } from './lib/utils/store';
 
 /**
@@ -19,7 +19,7 @@ describe('Check the index file', () => {
       actionFlat,
       actionValidate,
       combineReducers,
-      memo,
+      hocOptimize,
       middleware,
     });
   });

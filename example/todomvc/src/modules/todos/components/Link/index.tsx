@@ -4,7 +4,7 @@ import { stateType as visibilityStateType } from '../../reducers/visibility';
 import Link, { Props } from './Link';
 import { getTodosVisibility } from '../../selectors';
 import React, { FunctionComponent, useCallback } from 'react';
-import { memo } from 'react-fluxrx';
+import { hocOptimize } from 'react-fluxrx';
 
 type HocProps = { visibility: visibilityStateType['status'] };
 
@@ -20,7 +20,7 @@ const hocLink = (Component: FunctionComponent<Props>): FunctionComponent<HocProp
     return <Component active={active} clickHandler={clickHandler} {...props} />;
   };
 
-  return memo(Component, Wrapper);
+  return hocOptimize(Component, Wrapper);
 };
 
 export default hocLink(Link);

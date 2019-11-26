@@ -1,6 +1,6 @@
-import React, { FunctionComponent } from 'react';
+import { FunctionComponent, memo } from 'react';
 
-export const memo = <C, W>(Component: FunctionComponent<C>, Wrapper: FunctionComponent<W>) => {
+export const hocOptimize = <C, W>(Component: FunctionComponent<C>, Wrapper: FunctionComponent<W>) => {
   const displayName = Component.displayName || Component.name;
 
   // istanbul ignore else
@@ -8,5 +8,5 @@ export const memo = <C, W>(Component: FunctionComponent<C>, Wrapper: FunctionCom
     Wrapper.displayName = displayName;
   }
 
-  return React.memo(Wrapper);
+  return memo(Wrapper);
 };

@@ -1,4 +1,4 @@
-import { memo } from 'react-fluxrx';
+import { hocOptimize } from 'react-fluxrx';
 import { useDispatch, useSelector } from '../../../../store';
 import MainSection, { Props } from './MainSection';
 import React, { FunctionComponent } from 'react';
@@ -16,7 +16,7 @@ const hocMainSection = (Component: FunctionComponent<Props>): FunctionComponent<
     );
   };
 
-  return memo(Component, Wrapper);
+  return hocOptimize(Component, Wrapper);
 };
 
 export default hocMainSection(MainSection);
