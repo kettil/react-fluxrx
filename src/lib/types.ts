@@ -5,8 +5,6 @@ import { AjaxError, AjaxRequest } from 'rxjs/ajax';
 // User Types
 //
 
-export type DispatchType = StoreDispatchType;
-
 export type ActionReturnType<T extends Record<string, any>> = {
   [K in keyof T]: ActionFilter<ActionRules<ReturnType<T[K]>>>;
 }[keyof T];
@@ -54,14 +52,6 @@ export type ActionSubjectType<State = any, Payload = any> =
   | ActionType<State, Payload>
   | Observable<ActionType<State, Payload>>
   | Promise<ActionType<State, Payload> | Observable<ActionType<State, Payload>>>;
-
-//
-// Connect
-//
-
-export type MapStateToPropsType<State, Props, MapState> = (state: State, ownProps: Props) => MapState;
-
-export type MapDispatchToPropsType<Props, MapDispatch> = (dispatch: StoreDispatchType, ownProps: Props) => MapDispatch;
 
 //
 // Store
@@ -119,11 +109,5 @@ export type MiddlewareErrorType<State> = StoreErrorHandlerType<State>;
 //
 
 export type TypeAction = string | symbol;
-
-export type ExtractProps<T> = T extends new (props: infer U1) => any
-  ? U1
-  : T extends (props: infer U2) => any
-  ? U2
-  : {};
 
 export type UnpackedArray<T> = T extends Array<infer U> ? U : T;

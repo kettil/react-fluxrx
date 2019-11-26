@@ -2,7 +2,7 @@ import * as app from './index';
 import createStore from './lib/app';
 import { middleware } from './lib/middleware';
 import { combineReducers } from './lib/reducers';
-import { memo } from './lib/utils/connect';
+import { memo } from './lib/utils/React';
 import { actionFlat, actions, actionValidate } from './lib/utils/store';
 
 /**

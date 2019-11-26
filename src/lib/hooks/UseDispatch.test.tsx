@@ -7,7 +7,7 @@ const subscribe = jest.fn();
 const dispatch = jest.fn();
 const getState = jest.fn();
 
-describe('Check the useConnect hook', () => {
+describe('Check the useDispatch hook', () => {
   let context: React.Context<StoreType<{}, any>>;
   let Component: React.FunctionComponent<{}>;
   let root: renderer.ReactTestRenderer | undefined;

@@ -1,14 +1,10 @@
-jest.mock('./Connect');
 jest.mock('./store');
 
-import createConnect from './Connect';
-import createStore from './store';
-
 import { app } from './app';
+import createStore from './store';
 
 describe('Check the app function', () => {
   beforeEach(() => {
-    (createConnect as jest.Mock).mockReturnValue({ returnCreateConnect: true });
     (createStore as jest.Mock).mockReturnValue({ returnStore: true });
   });
 
@@ -22,7 +18,6 @@ describe('Check the app function', () => {
       useStore: expect.any(Function),
       useSelector: expect.any(Function),
       useDispatch: expect.any(Function),
-      connect: { returnCreateConnect: true },
       Consumer: expect.any(Object),
       Provider: expect.any(Object),
     });
@@ -35,11 +30,6 @@ describe('Check the app function', () => {
 
     expect(createStore).toHaveBeenCalledTimes(1);
     expect(createStore).toHaveBeenCalledWith(reducer, { returnReducer: true }, undefined, undefined);
-
-    expect(createConnect).toHaveBeenCalledTimes(1);
-    expect(typeof (createConnect as jest.Mock).mock.calls[0][0].$$typeof).toBe('symbol');
-    expect((createConnect as jest.Mock).mock.calls[0][0].Consumer).toBe(result.Consumer);
-    expect((createConnect as jest.Mock).mock.calls[0][0].Provider).toBe(result.Provider);
   });
 
   test('it should be return the app object when app() is called with init state', () => {
@@ -52,7 +42,6 @@ describe('Check the app function', () => {
       useStore: expect.any(Function),
       useSelector: expect.any(Function),
       useDispatch: expect.any(Function),
-      connect: { returnCreateConnect: true },
       Consumer: expect.any(Object),
       Provider: expect.any(Object),
     });
@@ -64,10 +53,5 @@ describe('Check the app function', () => {
 
     expect(createStore).toHaveBeenCalledTimes(1);
     expect(createStore).toHaveBeenCalledWith(reducer, { initObject: true }, undefined, undefined);
-
-    expect(createConnect).toHaveBeenCalledTimes(1);
-    expect(typeof (createConnect as jest.Mock).mock.calls[0][0].$$typeof).toBe('symbol');
-    expect((createConnect as jest.Mock).mock.calls[0][0].Consumer).toBe(result.Consumer);
-    expect((createConnect as jest.Mock).mock.calls[0][0].Provider).toBe(result.Provider);
   });
 });

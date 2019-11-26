@@ -11,7 +11,6 @@ const handler = createStore<GlobalStateType>(reducer, initState, {
 export type GlobalStateType = ReturnType<typeof reducer>;
 
 export const store = handler.store;
-export const connect = handler.connect;
 export const Consumer = handler.Consumer;
 export const Provider = handler.Provider;
 export const useDispatch = handler.useDispatch;
