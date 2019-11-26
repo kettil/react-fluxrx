@@ -1,12 +1,11 @@
 import React from 'react';
+import TodoTextInput from '../../../todos/components/TodoInput';
 
-import TodoTextInput from '../../todos/components/TodoTextInput';
-
-type props = {
+export type Props = {
   addTodo: (text: string) => void;
 };
 
-const Header = ({ addTodo }: props) => (
+const Header = ({ addTodo }: Props) => (
   <header className="header">
     <h1>todos</h1>
     <TodoTextInput

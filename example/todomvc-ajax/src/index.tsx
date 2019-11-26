@@ -3,13 +3,12 @@ import { render } from 'react-dom';
 import App from './modules/app/components/App';
 import 'todomvc-app-css/index.css';
 import fetch from 'isomorphic-unfetch';
-import { Provider, store } from './fluxRx';
+import { Provider, store } from './store';
 import * as todoActions from './modules/todos/actions';
 
 render(
   <Provider value={store}>
-    {' '}
-    <App />{' '}
+    <App />
   </Provider>,
   document.getElementById('root'),
 );

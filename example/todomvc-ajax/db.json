@@ -8,12 +8,17 @@
     {
       "id": 1,
       "completed": true,
-      "text": "completed todo"
+      "text": "Completed todo"
+    },
+    {
+      "text": "Another todo",
+      "completed": true,
+      "id": 2
     },
     {
       "text": "...",
       "completed": false,
-      "id": 2
+      "id": 3
     }
   ]
 }

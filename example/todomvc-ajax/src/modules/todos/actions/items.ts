@@ -1,14 +1,9 @@
-import { ActionReturnType } from 'react-fluxrx';
 import { of } from 'rxjs';
-
-import { stateType as itemsStateType } from './reducers/items';
-import { stateType as visibilityStateType } from './reducers/visibility';
-
-export type actionType = ActionReturnType<typeof import('./actions')>;
+import { stateType } from '../reducers/items';
 
 export const insertTodo = (id: number, text: string, completed: boolean) =>
   ({
-    type: 'todos/TODO_ADD',
+    type: 'TODOS/TODO_ADD',
     payload: {
       id,
       text,
@@ -18,20 +13,20 @@ export const insertTodo = (id: number, text: string, completed: boolean) =>
 
 export const addTodo = (text: string) =>
   ({
-    type: 'todos/LOADING',
+    type: 'TODOS/LOADING',
     payload: {},
 
     ajax: {
       method: 'POST',
       path: '/todos',
       data: { text, completed: false },
-      response: (data: any) => insertTodo(data.id, data.text, data.completed),
+      success: (data: any) => insertTodo(data.id, data.text, data.completed),
     },
   } as const);
 
 export const deleteTodo = (id: number) =>
   ({
-    type: 'todos/TODO_DELETE',
+    type: 'TODOS/TODO_DELETE',
     payload: { id },
 
     ajax: {
@@ -42,7 +37,7 @@ export const deleteTodo = (id: number) =>
 
 export const editTodo = (id: number, text: string) =>
   ({
-    type: 'todos/TODO_EDIT',
+    type: 'TODOS/TODO_EDIT',
     payload: { id, text },
 
     ajax: {
@@ -54,7 +49,7 @@ export const editTodo = (id: number, text: string) =>
 
 export const completeTodo = (id: number, completed: boolean) =>
   ({
-    type: 'todos/COMPLETE_TODO',
+    type: 'TODOS/COMPLETE_TODO',
     payload: { id, completed },
 
     ajax: {
@@ -66,14 +61,14 @@ export const completeTodo = (id: number, completed: boolean) =>
 
 export const completeAllTodos = () =>
   ({
-    type: 'todos/LOADING',
+    type: 'TODOS/LOADING',
     payload: {},
 
     ajax: {
       method: 'GET',
       path: '/todos',
       response: (data: any) => {
-        const todos: itemsStateType = data;
+        const todos: stateType = data;
         const areAllMarked = todos.every((todo) => todo.completed);
 
         return of(...todos.map((todo) => completeTodo(todo.id, !areAllMarked)));
@@ -83,22 +78,16 @@ export const completeAllTodos = () =>
 
 export const clearCompleted = () =>
   ({
-    type: 'todos/LOADING',
+    type: 'TODOS/LOADING',
     payload: {},
 
     ajax: {
       method: 'GET',
       path: '/todos?completed=true',
       response: (data: any) => {
-        const todos: itemsStateType = data;
+        const todos: stateType = data;
 
         return of(...todos.map((d) => deleteTodo(d.id)));
       },
     },
-  } as const);
-
-export const setVisibility = (filter: visibilityStateType['filter']) =>
-  ({
-    type: 'todos/SET_VISIBILITY',
-    payload: { filter },
   } as const);

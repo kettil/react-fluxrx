@@ -10,7 +10,7 @@ const initialState: stateType = [];
 
 export const reducer = (state = initialState, action: actionType): stateType => {
   switch (action.type) {
-    case 'todos/TODO_ADD':
+    case 'TODOS/TODO_ADD':
       return [
         ...state,
         {
@@ -20,13 +20,13 @@ export const reducer = (state = initialState, action: actionType): stateType => 
         },
       ];
 
-    case 'todos/TODO_DELETE':
+    case 'TODOS/TODO_DELETE':
       return state.filter((todo) => todo.id !== action.payload.id);
 
-    case 'todos/TODO_EDIT':
+    case 'TODOS/TODO_EDIT':
       return state.map((todo) => (todo.id === action.payload.id ? { ...todo, text: action.payload.text } : todo));
 
-    case 'todos/COMPLETE_TODO':
+    case 'TODOS/COMPLETE_TODO':
       return state.map((todo) =>
         todo.id === action.payload.id ? { ...todo, completed: action.payload.completed } : todo,
       );
