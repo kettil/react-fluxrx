@@ -32,11 +32,14 @@ describe('Check the useSelector hook', () => {
         props.trigger((i) => setstate(i));
       }
 
-      const data = useSelector((state: any) => {
-        count += 1;
+      const data = useSelector(
+        (state: any) => {
+          count += 1;
 
-        return { ...props, ...state, n };
-      });
+          return { ...props, ...state, n };
+        },
+        [...Object.values(props), n],
+      );
 
       results.push(data);
 
@@ -53,6 +56,20 @@ describe('Check the useSelector hook', () => {
   });
 
   test('it should be return the element with merge props when the element is created', () => {
+    const context = createContext<StoreType<any>>({ dispatch, getState, subscribe });
+    const useSelector = createSelectorHook(context);
+
+    Component = (props) => {
+      const data = useSelector((state: any) => {
+        count += 1;
+
+        return { ...props, ...state };
+      });
+
+      results.push(data);
+
+      return React.createElement<any>('input', data);
+    };
     renderer.act(() => {
       root = renderer.create(<Component type="text" />);
     });
@@ -108,8 +125,8 @@ describe('Check the useSelector hook', () => {
     expect(root!.toJSON()).toMatchSnapshot('json');
     expect(results).toMatchSnapshot('results');
     expect(results.length).toBe(2);
-    expect(results[0] === results[1]).toBe(false);
-    expect(count).toBe(2);
+    expect(results[0] === results[1]).toBe(true);
+    expect(count).toBe(1);
     expect(dispatch).toHaveBeenCalledTimes(0);
     expect(getState).toHaveBeenCalledTimes(2);
     expect(subscribe).toHaveBeenCalledTimes(1);
@@ -224,7 +241,7 @@ describe('Check the useSelector hook', () => {
     expect(subscribe).toHaveBeenCalledWith(expect.any(Function));
 
     renderer.act(() => {
-      callback(42);
+      callback(13);
     });
 
     expect(root!.toJSON()).toMatchSnapshot('json');

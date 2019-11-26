@@ -2,7 +2,7 @@ import * as app from './index';
 import createStore from './lib/app';
 import { middleware } from './lib/middleware';
 import { combineReducers } from './lib/reducers';
-import { bindActions } from './lib/utils/connect';
+import { memo } from './lib/utils/connect';
 import { actionFlat, actions, actionValidate } from './lib/utils/store';
 
 /**
@@ -18,8 +18,8 @@ describe('Check the index file', () => {
       actions,
       actionFlat,
       actionValidate,
-      bindActions,
       combineReducers,
+      memo,
       middleware,
     });
   });

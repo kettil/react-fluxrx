@@ -6,10 +6,14 @@
 
 - Improved output for logging middleware
 - Rewrite higher-order component Connect
+- Add hooks: useDispatch, useSelector and useStore [[#3](https://github.com/kettil/react-fluxrx/issues/3)]
+- AJAX middleware: Add an error handler callback
 
 ### Fixes
 
 ### Chore & Maintenance
+
+- Remove the bindActions function
 
 ### Performance
 

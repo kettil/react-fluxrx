@@ -1,6 +1,7 @@
 // tslint:disable:cyclomatic-complexity
 import { MapDispatchToPropsType, MapStateToPropsType, StoreDispatchType } from './types';
-import { isStrictEqual, mergeProps, shallowEqual } from './utils/connect';
+import { mergeProps } from './utils/connect';
+import { isStrictEqual, shallowEqual } from './utils/equals';
 
 export class Selector {
   /**

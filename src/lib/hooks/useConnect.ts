@@ -1,7 +1,7 @@
 import { useContext, useEffect, useMemo, useState } from 'react';
 import selector from '../selector';
 import { MapDispatchToPropsType, MapStateToPropsType, StoreType } from '../types';
-import { isStrictEqual, shallowEqual } from '../utils/connect';
+import { isStrictEqual, shallowEqual } from '../utils/equals';
 
 type Store<State, InnerProps, OuterProps> = {
   merge: InnerProps;

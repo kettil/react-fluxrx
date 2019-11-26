@@ -2,7 +2,6 @@
 
 exports[`Check the useSelector hook it should be return the element with merge props when the element is created: json 1`] = `
 <input
-  n={0}
   type="text"
   value={42}
 />
@@ -11,7 +10,6 @@ exports[`Check the useSelector hook it should be return the element with merge p
 exports[`Check the useSelector hook it should be return the element with merge props when the element is created: results 1`] = `
 Array [
   Object {
-    "n": 0,
     "type": "text",
     "value": 42,
   },
@@ -110,7 +108,7 @@ exports[`Check the useSelector hook it should be the element is recreated when a
 
 exports[`Check the useSelector hook it should be the element is recreated when a rerun through another hook (new value): json 2`] = `
 <input
-  n={42}
+  n={13}
   trigger={[Function]}
   type="text"
   value={42}
@@ -126,7 +124,7 @@ Array [
     "value": 42,
   },
   Object {
-    "n": 42,
+    "n": 13,
     "trigger": [Function],
     "type": "text",
     "value": 42,
