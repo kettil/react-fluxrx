@@ -1,15 +1,16 @@
-import { createStore, middleware } from 'react-fluxrx';
-import { reducer } from './reducer';
+import { createStore, middleware, GetStateTypeFactory, ActionTypeFactory } from 'react-fluxrx';
+import { reducer, StateType } from './reducer';
 
 const initState = undefined;
 
-const handler = createStore<GlobalStateType>(reducer, initState, {
+const handler = createStore<StateType>(reducer, initState, {
   middleware: [middleware.logger(), middleware.devTools()],
   timeDebounce: 5,
 });
 
-export type GlobalStateType = ReturnType<typeof reducer>;
-
+export type State = StateType;
+export type ActionType = ActionTypeFactory<StateType>;
+export type GetStateType = GetStateTypeFactory<StateType>;
 export const store = handler.store;
 export const Consumer = handler.Consumer;
 export const Provider = handler.Provider;

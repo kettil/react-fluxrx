@@ -1,9 +1,9 @@
 import { createSelector } from 'reselect';
-import { GlobalStateType } from '../../../store';
+import { State } from '../../../store';
 
-export const getTodosItems = (state: GlobalStateType) => state.todos.items;
+export const getTodosItems = (state: State) => state.todos.items;
 
-export const getTodosVisibility = (state: GlobalStateType) => state.todos.visibility.status;
+export const getTodosVisibility = (state: State) => state.todos.visibility.status;
 
 export const getFilteredTodos = createSelector([getTodosVisibility, getTodosItems], (filter, todos) => {
   switch (filter) {

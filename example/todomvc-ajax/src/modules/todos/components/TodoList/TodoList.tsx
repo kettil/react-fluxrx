@@ -1,9 +1,9 @@
 import React, { FunctionComponent } from 'react';
-import { stateType as itemsStateType } from '../../reducers/items';
+import { StateTodosItemsType } from '../../reducers/items';
 import TodoListItem from './TodoListItem';
 
 export type Props = {
-  todos: itemsStateType;
+  todos: StateTodosItemsType;
   editHandler: (id: number, text: string) => void;
   deleteHandler: (id: number) => void;
   completeHandler: (id: number, completed: boolean) => void;

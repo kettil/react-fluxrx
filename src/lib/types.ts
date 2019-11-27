@@ -2,18 +2,25 @@ import { Observable, Subscription } from 'rxjs';
 import { AjaxError, AjaxRequest } from 'rxjs/ajax';
 
 //
-// User Types
+// Factory
 //
 
-export type ActionReturnType<T extends Record<string, any>> = {
-  [K in keyof T]: ActionFilter<ActionRules<ReturnType<T[K]>>>;
+export type GetStateTypeFactory<State> = GetStateType<State>;
+
+export type ActionTypeFactory<State> = ActionType<State>;
+
+// This typing extracts the action objects from the action functions
+export type ActionReturnType<State, T extends Record<string, any>> = {
+  [K in keyof T]: AFilter<ARules<State, ReturnType<T[K]>>>;
 }[keyof T];
 
-type ActionRulePromise<Value, Other> = Value extends Promise<infer P> ? ActionRuleObservable<P, P> : Other;
-type ActionRuleFunction<Value, Other> = Value extends () => void ? never : Other;
-type ActionRuleObservable<Value, Other> = Value extends Observable<infer O> ? O : Other;
-type ActionRules<Value> = ActionRulePromise<Value, ActionRuleObservable<Value, ActionRuleFunction<Value, Value>>>;
-type ActionFilter<Value> = Value extends { type: string } ? Value : never;
+type ARPromise<V, O> = V extends Promise<infer S> ? ARObservable<S, S> : O;
+type ARObservable<V, O> = V extends Observable<infer S> ? S : O;
+type ARFunction<S, V, O> = ARFunctionState<S, V, ARFunctionOther<V, O>>;
+type ARFunctionState<S, V, O> = V extends (getState: GetStateType<S>) => infer R ? ARPromise<R, ARObservable<R, R>> : O;
+type ARFunctionOther<V, O> = V extends () => void ? never : O;
+type ARules<S, V> = ARPromise<V, ARObservable<V, ARFunction<S, V, V>>>;
+type AFilter<V> = V extends { type: string } ? V : never;
 
 //
 // Action
@@ -53,18 +60,28 @@ export type ActionSubjectType<State = any, Payload = any> =
   | Observable<ActionType<State, Payload>>
   | Promise<ActionType<State, Payload> | Observable<ActionType<State, Payload>>>;
 
+export type ActionSubjectExtendType<State = any, Payload = any> =
+  | ActionSubjectType<State, Payload>
+  | ActionFunctionType<State, Payload>;
+
+export type ActionFunctionType<State = any, Payload = any> = (
+  getState: GetStateType<State>,
+) => ActionSubjectType<State, Payload>;
+
 //
 // Store
 //
 
-export type StoreDispatchType<State = any, Payload = any> = (action: ActionSubjectType<State, Payload>) => void;
+export type GetStateType<State> = () => State;
+
+export type StoreDispatchType<State = any, Payload = any> = (action: ActionSubjectExtendType<State, Payload>) => void;
 
 export type StoreSubscribeType<State> = (state: State) => void;
 
 export type StoreType<State, Payload = any> = {
   subscribe: (next: StoreSubscribeType<State>) => Subscription;
   dispatch: StoreDispatchType<State, Payload>;
-  getState: () => State;
+  getState: GetStateType<State>;
 };
 
 export type StoreErrorHandlerType<State> = (err: any, dispatch: StoreDispatchType<State>, state: State) => void;

@@ -1,3 +1,6 @@
+// For the action debugging
+//import { ActionType } from '../../../store';
+
 export const addTodo = (text: string) =>
   ({
     type: 'TODOS/TODO_ADD',

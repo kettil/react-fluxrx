@@ -1,14 +1,14 @@
-import { actionType } from '../actions';
+import { ActionType } from '../actions';
 
-export type stateType = Array<{
+export type StateTodosItemsType = Array<{
   text: string;
   completed: boolean;
   id: number;
 }>;
 
-const initialState: stateType = [];
+const initialState: StateTodosItemsType = [];
 
-export const reducer = (state = initialState, action: actionType): stateType => {
+export const reducer = (state = initialState, action: ActionType): StateTodosItemsType => {
   switch (action.type) {
     case 'TODOS/TODO_ADD':
       return [

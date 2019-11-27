@@ -1,9 +1,47 @@
 // tslint:disable:no-console
 import { isObservable, of } from 'rxjs';
-
-import { actionError, actionFlat, actions, actionValidate, reduceMiddleware, reducerHandler } from './store';
+import {
+  actionCallback,
+  actionError,
+  actionFlat,
+  actions,
+  actionValidate,
+  reduceMiddleware,
+  reducerHandler,
+} from './store';
 
 describe('Check the store functions', () => {
+  test('it should be returned the return value of the function when actionCallback() is called with a function', (done) => {
+    expect.assertions(4);
+
+    const state = () => ({ todos: { items: [] } });
+    const callback = actionCallback(() => state);
+
+    expect(typeof callback).toBe('function');
+
+    const result$ = callback((getState) => {
+      expect(typeof getState).toBe('function');
+      expect(getState()).toEqual({ todos: { items: [] } });
+
+      return { type: 'test', payload: { value: 42 } } as const;
+    });
+
+    result$.subscribe((action) => expect(action).toEqual({ payload: { value: 42 }, type: 'test' }), done, done);
+  });
+
+  test('it should be returned the object when actionCallback() is called with an object', (done) => {
+    expect.assertions(2);
+
+    const state = () => ({ todos: { items: [] } });
+    const callback = actionCallback(() => state);
+
+    expect(typeof callback).toBe('function');
+
+    const result$ = callback({ type: 'test', payload: { value: 13 } } as const);
+
+    result$.subscribe((action) => expect(action).toEqual({ payload: { value: 13 }, type: 'test' }), done, done);
+  });
+
   test('it should be return a observable when actionFlat() is called with an object', () => {
     expect.assertions(2);
 

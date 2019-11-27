@@ -1,9 +1,16 @@
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, mergeMap, scan, tap } from 'rxjs/operators';
-import { ActionSubjectType, MiddlewareType, ReducerType, StoreType } from './types';
+import { ActionSubjectExtendType, MiddlewareType, ReducerType, StoreType } from './types';
 import { defaultErrorHandler } from './utils/helper';
 import middlewareUtils from './utils/middleware';
-import { actionError, actionFlat, actionValidate, reduceMiddleware, reducerHandler } from './utils/store';
+import {
+  actionCallback,
+  actionError,
+  actionFlat,
+  actionValidate,
+  reduceMiddleware,
+  reducerHandler,
+} from './utils/store';
 
 export const createStore = <State>(
   reducer: ReducerType<State>,
@@ -12,7 +19,7 @@ export const createStore = <State>(
   timeDebounce: number = 0,
 ) => {
   // create a stream for the action
-  const action$ = new Subject<ActionSubjectType<State>>();
+  const action$ = new Subject<ActionSubjectExtendType<State>>();
 
   // create a stream for the state
   const state$ = new BehaviorSubject(init);
@@ -41,6 +48,8 @@ export const createStore = <State>(
   // manipulates the stream and adds it to the state
   action$
     .pipe(
+      // calls the callback from the action and integrates the return value
+      mergeMap(actionCallback(getState)),
       // change inner streams to outer stream
       mergeMap(actionFlat),
       // validate the action

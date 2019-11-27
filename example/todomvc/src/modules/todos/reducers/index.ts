@@ -1,8 +1,13 @@
 import { combineReducers } from 'react-fluxrx';
-import items from './items';
-import visibility from './visibility';
+import items, { StateTodosItemsType } from './items';
+import visibility, { StateTodosVisibilityType } from './visibility';
 
-export const reducer = combineReducers({
+export type StateTodosType = {
+  items: StateTodosItemsType;
+  visibility: StateTodosVisibilityType;
+};
+
+export const reducer = combineReducers<StateTodosType>({
   items,
   visibility,
 });

@@ -1,5 +1,8 @@
-import { of } from 'rxjs';
-import { stateType } from '../reducers/items';
+import { of, merge } from 'rxjs';
+import { GetStateType } from '../../../store';
+import { getTodosItems } from '../selectors';
+// For the action debugging
+//import { ActionType } from '../../../store';
 
 export const insertTodo = (id: number, text: string, completed: boolean) =>
   ({
@@ -20,6 +23,7 @@ export const addTodo = (text: string) =>
       method: 'POST',
       path: '/todos',
       data: { text, completed: false },
+      // sata validation is missing
       success: (data: any) => insertTodo(data.id, data.text, data.completed),
     },
   } as const);
@@ -59,35 +63,19 @@ export const completeTodo = (id: number, completed: boolean) =>
     },
   } as const);
 
-export const completeAllTodos = () =>
-  ({
-    type: 'TODOS/LOADING',
-    payload: {},
+export const completeAllTodos = () => (getState: GetStateType) => {
+  const allTodos = getTodosItems(getState());
+  // When all todos are finished, then status is true otherwise false
+  const status = allTodos.every((todo) => todo.completed);
+  const todos = allTodos.filter((todo) => todo.completed === status).map((todo) => completeTodo(todo.id, !status));
 
-    ajax: {
-      method: 'GET',
-      path: '/todos',
-      success: (data: any) => {
-        const todos: stateType = data;
-        const areAllMarked = todos.every((todo) => todo.completed);
+  return merge(of({ type: 'TODOS/LOADING', payload: {} } as const), of(...todos));
+};
 
-        return of(...todos.map((todo) => completeTodo(todo.id, !areAllMarked)));
-      },
-    },
-  } as const);
+export const clearCompleted = () => (getState: GetStateType) => {
+  const todos = getTodosItems(getState())
+    .filter((todo) => todo.completed === true)
+    .map((todo) => deleteTodo(todo.id));
 
-export const clearCompleted = () =>
-  ({
-    type: 'TODOS/LOADING',
-    payload: {},
-
-    ajax: {
-      method: 'GET',
-      path: '/todos?completed=true',
-      success: (data: any) => {
-        const todos: stateType = data;
-
-        return of(...todos.map((d) => deleteTodo(d.id)));
-      },
-    },
-  } as const);
+  return merge(of({ type: 'TODOS/LOADING', payload: {} } as const), of(...todos));
+};

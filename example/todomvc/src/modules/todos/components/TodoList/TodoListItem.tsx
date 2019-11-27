@@ -1,11 +1,11 @@
 import React, { FunctionComponent, useState, memo } from 'react';
 import classnames from 'classnames';
 import { UnpackedArray } from 'react-fluxrx';
-import { stateType as itemsStateType } from '../../reducers/items';
+import { StateTodosItemsType } from '../../reducers/items';
 import TodoTextInput from '../TodoInput';
 
 type Props = {
-  todo: UnpackedArray<itemsStateType>;
+  todo: UnpackedArray<StateTodosItemsType>;
   editHandler: (id: number, text: string) => void;
   deleteHandler: (id: number) => void;
   completeHandler: (id: number, completed: boolean) => void;

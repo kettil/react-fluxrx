@@ -1,5 +1,5 @@
 import React from 'react';
-import { stateType as itemsStateType } from '../../../todos/reducers/visibility';
+import { StateTodosVisibilityType } from '../../../todos/reducers/visibility';
 import FilterLink from '../../../todos/components/Link';
 
 type Props = {
@@ -8,7 +8,7 @@ type Props = {
   onClearCompleted: () => void;
 };
 
-const FILTER_TITLES: Record<itemsStateType['status'], string> = {
+const FILTER_TITLES: Record<StateTodosVisibilityType['status'], string> = {
   all: 'All',
   active: 'Active',
   completed: 'Completed',

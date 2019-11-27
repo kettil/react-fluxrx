@@ -1,12 +1,12 @@
 import { useDispatch, useSelector } from '../../../../store';
 import { setVisibility } from '../../actions';
-import { stateType as visibilityStateType } from '../../reducers/visibility';
+import { StateTodosVisibilityType } from '../../reducers/visibility';
 import Link, { Props } from './Link';
 import { getTodosVisibility } from '../../selectors';
 import React, { FunctionComponent, useCallback } from 'react';
 import { hocOptimize } from 'react-fluxrx';
 
-type HocProps = { visibility: visibilityStateType['status'] };
+type HocProps = { visibility: StateTodosVisibilityType['status'] };
 
 const hocLink = (Component: FunctionComponent<Props>): FunctionComponent<HocProps> => {
   const Wrapper: FunctionComponent<HocProps> = ({ visibility, ...props }) => {

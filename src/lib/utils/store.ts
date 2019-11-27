@@ -1,9 +1,28 @@
 import { from, isObservable, Observable, of } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
-import { ActionSubjectType, ActionType, MiddlewareType, ReducerType, StoreErrorHandlerType, StoreType } from '../types';
+import {
+  ActionSubjectExtendType,
+  ActionSubjectType,
+  ActionType,
+  GetStateType,
+  MiddlewareType,
+  ReducerType,
+  StoreErrorHandlerType,
+  StoreType,
+} from '../types';
 import { defaultErrorHandler, getUniqueAction, isActionPayload, isActionType, isObject, isPromise } from './helper';
 
-export const actionFlat = (action: ActionSubjectType): Observable<ActionType> => {
+export const actionCallback = <State>(getState: GetStateType<State>) => (
+  action: ActionSubjectExtendType<State>,
+): Observable<ActionSubjectType<State>> => {
+  if (!isObservable(action) && !isPromise(action) && typeof action === 'function') {
+    return actionFlat(action(getState));
+  }
+
+  return of(action);
+};
+
+export const actionFlat = <State>(action: ActionSubjectType<State>): Observable<ActionType<State>> => {
   if (isObservable(action)) {
     return action;
   }
