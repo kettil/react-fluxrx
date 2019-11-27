@@ -14,7 +14,7 @@ describe('Check the store functions', () => {
   test('it should be returned the return value of the function when actionCallback() is called with a function', (done) => {
     expect.assertions(4);
 
-    const state = () => ({ todos: { items: [] } });
+    const state = { todos: { items: [] } };
     const callback = actionCallback(() => state);
 
     expect(typeof callback).toBe('function');
@@ -32,7 +32,7 @@ describe('Check the store functions', () => {
   test('it should be returned the object when actionCallback() is called with an object', (done) => {
     expect.assertions(2);
 
-    const state = () => ({ todos: { items: [] } });
+    const state = { todos: { items: [] } };
     const callback = actionCallback(() => state);
 
     expect(typeof callback).toBe('function');
