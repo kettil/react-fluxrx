@@ -5,7 +5,7 @@ const initState = undefined;
 
 const handler = createStore<StateType>(reducer, initState, {
   middleware: [middleware.logger(), middleware.devTools(), middleware.ajax({ url: 'http://localhost:4001' })],
-  timeDebounce: 5,
+  timeDebounce: 25,
 });
 
 export type State = StateType;

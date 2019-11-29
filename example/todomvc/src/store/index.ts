@@ -5,7 +5,7 @@ const initState = undefined;
 
 const handler = createStore<StateType>(reducer, initState, {
   middleware: [middleware.logger(), middleware.devTools()],
-  timeDebounce: 5,
+  timeDebounce: 10,
 });
 
 export type State = StateType;
