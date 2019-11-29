@@ -8,6 +8,7 @@
 - Rewrite higher-order component Connect
 - Add hooks: useDispatch, useSelector and useStore [[#3](https://github.com/kettil/react-fluxrx/issues/3)]
 - AJAX middleware: Add an error handler callback
+- AJAX middleware: Ignore the global URL [[#8](https://github.com/kettil/react-fluxrx/issues/8)]
 
 ### Fixes
 

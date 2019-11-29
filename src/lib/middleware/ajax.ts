@@ -24,7 +24,16 @@ export const ajax = <State>({
   return {
     action: (action, state, dispatch, reducer) => {
       if (typeof action.ajax === 'object' && typeof action.ajax.path === 'string') {
-        const { path, data = {}, method = 'POST', silent = false, options = {}, success, error } = action.ajax;
+        const {
+          path,
+          data = {},
+          method = 'POST',
+          silent = false,
+          options = {},
+          success,
+          error,
+          ignoreUrl = false,
+        } = action.ajax;
 
         const body: AjaxRequest['body'] = {
           ...(typeof ajaxBody === 'function' ? ajaxBody(state) : ajaxBody),
@@ -35,7 +44,7 @@ export const ajax = <State>({
           timeout,
           ...ajaxRequest,
           ...options,
-          url: url + path,
+          url: ignoreUrl === true ? path : url + path,
           body: Object.keys(body).length > 0 ? body : undefined,
           method,
           headers: {

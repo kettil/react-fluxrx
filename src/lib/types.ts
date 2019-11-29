@@ -47,6 +47,7 @@ export type ActionType<State = any, Payload = any> = {
     data?: Record<string, any> | ((state: State) => Record<string, any> | void);
     options?: AjaxRequest;
     silent?: boolean;
+    ignoreUrl?: boolean;
     success?: (data: unknown, status: number, type: string) => ActionSubjectType<State>;
     error?: (err: AjaxError) => ActionSubjectType<State>;
   };
