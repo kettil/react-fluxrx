@@ -21,7 +21,12 @@ export const getFilteredTodos = createSelector([getTodosVisibility, getTodosItem
   }
 });
 
-export const getTodosAndCompletedCount = createSelector([getTodosItems], (todos) => ({
-  todosCount: todos.length,
-  completedCount: todos.filter((t) => t.completed).length,
-}));
+export const getTodosCompletedStatus = (_: State, completed: boolean = true) => completed;
+
+export const getTodosAndCompletedCount = createSelector(
+  [getTodosItems, getTodosCompletedStatus],
+  (todos, completed) => ({
+    todosCount: todos.length,
+    completedCount: todos.filter((t) => t.completed === completed).length,
+  }),
+);

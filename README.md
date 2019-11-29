@@ -11,7 +11,7 @@ It combines the idea behind [flux](https://facebook.github.io/flux/)/[redux](htt
 
 - [Features](#features)
 - [Installation](#installation)
-- [Introduction](#introduction)
+- [Documents](./documents) / [Introduction](#introduction)
 - [Building](#building)
 - [Tests](#tests)
 - [Prettier and Lint](#prettier-and-lint)
@@ -34,6 +34,8 @@ npm install -P react-fluxrx
 ```
 
 ## Introduction
+
+A description of all modules and the API can be found under [Documents](./documents).
 
 In the [example folder](./example) there are two example projects, one a [simple application](./example/todomvc) and one [with AJAX](./example/todomvc-ajax/).
 

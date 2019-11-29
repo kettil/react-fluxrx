@@ -17,6 +17,7 @@
 - Remove the HOC connect function
 - Conversion to functional components and hooks in the example [TodoMVC with AJAX](./example/todomvc-ajax)
 - Conversion to functional components and hooks in the example [TodoMVC](./example/todomvc)
+- [Documentation](./documents) added [[#6](https://github.com/kettil/react-fluxrx/issues/6)]
 
 ### Performance
 

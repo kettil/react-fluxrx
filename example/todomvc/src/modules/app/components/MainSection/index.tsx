@@ -7,7 +7,7 @@ import { getTodosAndCompletedCount } from '../../../todos/selectors';
 
 const hocMainSection = (Component: FunctionComponent<Props>): FunctionComponent<{}> => {
   const Wrapper: FunctionComponent<{}> = (props) => {
-    const state = useSelector(getTodosAndCompletedCount);
+    const state = useSelector((state) => getTodosAndCompletedCount(state, true));
     const handleCompleteAll = useDispatch(completeAllTodos);
     const handleClearCompleted = useDispatch(clearCompleted);
 
