@@ -15,7 +15,11 @@ A reducer changes the local state (for which it is responsible) when a correspon
 > The "default" value must always be the passing state and
 > the return value must be a object.
 
+---
+
 ## Submodule reducer
+
+The standard reducer that is directly responsible for a data set.
 
 ### Example
 
@@ -41,6 +45,8 @@ export const reducer = (state = initialState, action: ActionType): StateTodosVis
 
 export default reducer;
 ```
+
+---
 
 ## Module reducer
 
@@ -69,6 +75,8 @@ export const reducer = combineReducers<StateTodosType>({
 
 export default reducer;
 ```
+
+---
 
 ## Application reducer
 

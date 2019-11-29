@@ -34,6 +34,8 @@ For complex actions, it is recommended that you define the action objects in ind
 >
 > At the end of each action object must be `as const`, this ensures type inheritance.
 
+---
+
 ## Action object
 
 Returns the `action object` for the changes directly.
@@ -49,6 +51,8 @@ export const actionFactoryRaw = (id: number, text: string) =>
     payload: { id, text },
   } as const);
 ```
+
+---
 
 ## RxJS observable stream
 
@@ -91,6 +95,8 @@ export const actionFactoryWithObservable3 = (id: number, text: string) => {
 };
 ```
 
+---
+
 ## Promise
 
 Returns the `action object` or the `RxJS observable stream` as promise/async.
@@ -127,6 +133,8 @@ export const actionFactoryWithPromise3 = async (id: number, text: string) => {
   return of(actionFactoryRaw(id, '#1: ' + text), actionFactoryRaw(id, '#2: ' + text));
 };
 ```
+
+---
 
 ## Callback Function
 

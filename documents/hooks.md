@@ -12,6 +12,8 @@ In general, the hooks should only be used in the [HOC](./hoc.md).
 This ensures that the view and logic are separate.
 In the following examples, the hooks for simpler examples are directly in the component.
 
+---
+
 ## useSelector
 
 The useSelector can be used to read the data from the state.
@@ -58,6 +60,8 @@ export const CountComponent: FunctionComponent<Props> = ({ completed }) => {
 };
 ```
 
+---
+
 ## useDispatch
 
 With the useDispatch you can change the state.
@@ -95,6 +99,8 @@ export const ButtonComponent: FunctionComponent<Props> = ({}) => {
   return <button onClick={}>Click me</button>;
 };
 ```
+
+---
 
 ## useStore
 
