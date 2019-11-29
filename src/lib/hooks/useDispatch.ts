@@ -1,9 +1,9 @@
 import { Context, useCallback, useContext } from 'react';
-import { ActionSubjectExtendType, StoreDispatchType, StoreType } from '../types';
+import { ActionFunctionType, ActionVoidType, StoreDispatchType, StoreType } from '../types';
 
 type HookType<State> = {
   (): StoreDispatchType<State, any>;
-  <T extends any[]>(action?: (...args: T) => ActionSubjectExtendType<State>): (...args: T) => void;
+  <T extends any[]>(action?: ActionFunctionType<State, T>): ActionVoidType<T>;
 };
 
 export const createDispatchHook = <State>(context: Context<StoreType<State, any>>): HookType<State> => (

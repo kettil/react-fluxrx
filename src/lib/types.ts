@@ -63,11 +63,15 @@ export type ActionSubjectType<State = any, Payload = any> =
 
 export type ActionSubjectExtendType<State = any, Payload = any> =
   | ActionSubjectType<State, Payload>
-  | ActionFunctionType<State, Payload>;
+  | ActionCallbackType<State, Payload>;
 
-export type ActionFunctionType<State = any, Payload = any> = (
+export type ActionCallbackType<State = any, Payload = any> = (
   getState: GetStateType<State>,
 ) => ActionSubjectType<State, Payload>;
+
+export type ActionFunctionType<State, T extends any[]> = (...args: T) => ActionSubjectExtendType<State>;
+
+export type ActionVoidType<T extends any[]> = (...args: T) => void;
 
 //
 // Store
