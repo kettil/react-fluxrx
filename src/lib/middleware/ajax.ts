@@ -1,19 +1,25 @@
-import { empty, of, throwError } from 'rxjs';
+import { empty, MonoTypeOperatorFunction, of, throwError, timer } from 'rxjs';
 import { ajax as rxAjax, AjaxError, AjaxRequest, AjaxResponse } from 'rxjs/ajax';
-import { catchError, map, mergeMap } from 'rxjs/operators';
+import { catchError, delayWhen, map, mergeMap, retryWhen } from 'rxjs/operators';
 import { ActionSubjectType, MiddlewareType, TypeAction } from '../types';
 import { actionFlat, actionValidate } from '../utils/store';
 
 export const ajax = <State>({
   url,
-  actionWhitelist,
   ajaxRequest = {},
   ajaxBody = {},
+  actionWhitelist,
+  timeout = 2500,
+  retries = 0,
+  delay = 1000,
 }: {
   url: string;
-  actionWhitelist?: TypeAction[];
   ajaxRequest?: AjaxRequest;
   ajaxBody?: Record<string, any> | ((state: State) => Record<string, any> | void);
+  actionWhitelist?: TypeAction[];
+  timeout?: number;
+  retries?: number;
+  delay?: number[] | number;
 }): MiddlewareType<State> => {
   return {
     action: (action, state, dispatch, reducer) => {
@@ -26,6 +32,7 @@ export const ajax = <State>({
         };
 
         const params: AjaxRequest = {
+          timeout,
           ...ajaxRequest,
           ...options,
           url: url + path,
@@ -40,6 +47,7 @@ export const ajax = <State>({
         };
 
         const observable = rxAjax(params).pipe(
+          retryByError(retries, delay),
           map<AjaxResponse, ActionSubjectType<State, any>>((ajaxResponse) => {
             const response = ajaxResponse.response || {};
 
@@ -73,5 +81,27 @@ export const ajax = <State>({
     },
   };
 };
+
+export const retryByError = (retries: number, delay: number[] | number): MonoTypeOperatorFunction<any> =>
+  retryWhen((err$) =>
+    err$.pipe(
+      mergeMap((err: any, i: number) => {
+        if (!(err instanceof AjaxError) || err.status < 500) {
+          throw err;
+        }
+
+        if (i > retries - 1) {
+          throw err;
+        }
+
+        if (Array.isArray(delay)) {
+          return of(typeof delay[i] === 'number' ? delay[i] : delay[delay.length - 1]);
+        }
+
+        return of(delay);
+      }),
+      delayWhen((time) => timer(typeof time === 'number' ? time : 1000)),
+    ),
+  );
 
 export default ajax;
