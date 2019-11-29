@@ -131,7 +131,7 @@ export const actionFactoryWithPromise3 = async (id: number, text: string) => {
 ## Callback Function
 
 Return value is a callback function.
-The return value of the callback function is then an action object, `RxJS observable stream` or directly an `action object`.
+The return value of the callback function is then an `Promise`, `RxJS observable stream` or directly an `action object`.
 The first argument of the callback function is a function to get the current state.
 
 ### Example
