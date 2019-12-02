@@ -10,7 +10,7 @@ import {
   StoreErrorHandlerType,
   StoreType,
 } from '../types';
-import { defaultErrorHandler, getUniqueAction, isActionPayload, isActionType, isObject, isPromise } from './helper';
+import { defaultErrorHandler, isActionPayload, isActionType, isObject, isPromise } from './helper';
 
 export const actionCallback = <State>(getState: GetStateType<State>) => (
   action: ActionSubjectExtendType<State>,
@@ -91,6 +91,6 @@ export const reduceMiddleware = <State, K extends keyof MiddlewareType<State>>(
 };
 
 export const actions = {
-  fullUpdate: getUniqueAction('@@_rx_@@/ACTION_FULL_UPDATE'),
-  ignoreAction: getUniqueAction('@@_rx_@@/ACTION_IGNORE'),
-};
+  fullUpdate: '@@RX@@/ACTION_FULL_UPDATE',
+  ignoreAction: '@@RX@@/ACTION_IGNORE',
+} as const;

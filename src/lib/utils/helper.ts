@@ -30,15 +30,6 @@ export const hasProperty = (obj: object, key: string): boolean => {
   return Object.prototype.hasOwnProperty.call(obj, key);
 };
 
-export const getUniqueAction = (id: string, withSymbol = true) => {
-  if (withSymbol && typeof Symbol === 'function') {
-    return Symbol(id);
-  }
-
-  // fallback
-  return `${id}_${Math.round(Math.random() * 1000)}`;
-};
-
 export const defaultErrorHandler = (err: any) => {
   // istanbul ignore else
   if (process.env.NODE_ENV !== 'production') {

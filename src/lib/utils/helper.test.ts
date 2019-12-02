@@ -1,13 +1,5 @@
 /* tslint:disable:no-console no-null-keyword */
-import {
-  defaultErrorHandler,
-  getUniqueAction,
-  hasProperty,
-  isActionPayload,
-  isActionType,
-  isObject,
-  isPromise,
-} from './helper';
+import { defaultErrorHandler, hasProperty, isActionPayload, isActionType, isObject, isPromise } from './helper';
 
 /**
  *
@@ -117,26 +109,6 @@ describe('Check the helper functions', () => {
     const result = isPromise('i am a promise');
 
     expect(result).toBe(false);
-  });
-
-  /**
-   *
-   */
-  test('it should be return a Symbol when getUniqueAction() is called', () => {
-    const result = getUniqueAction('test');
-
-    expect(typeof result).toBe('symbol');
-    expect(result.toString()).toBe('Symbol(test)');
-  });
-
-  /**
-   *
-   */
-  test('it should be return a string when getUniqueAction() is called with params', () => {
-    const result = getUniqueAction('test', false);
-
-    expect(typeof result).toBe('string');
-    expect(/test_[0-9]+/.test(result as string)).toBe(true);
   });
 
   /**
