@@ -1,5 +1,6 @@
 import { createContext } from 'react';
 import { createDispatchHook } from './hooks/useDispatch';
+import { createDispatchRxHook } from './hooks/useDispatchRx';
 import { createSelectorHook } from './hooks/useSelector';
 import { createStoreHook } from './hooks/useStore';
 import createStore from './store';
@@ -30,6 +31,7 @@ export const app = <State>(
   const useStore = createStoreHook(context);
   const useSelector = createSelectorHook(context);
   const useDispatch = createDispatchHook(context);
+  const useDispatchRx = createDispatchRxHook(context);
 
   return {
     // store
@@ -38,6 +40,7 @@ export const app = <State>(
     useSelector,
     useStore,
     useDispatch,
+    useDispatchRx,
     // React Context
     Consumer: context.Consumer,
     Provider: context.Provider,
