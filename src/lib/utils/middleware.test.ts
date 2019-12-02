@@ -263,7 +263,7 @@ describe('Check the middleware class', () => {
 
     const middlewareUtils = new MiddlewareUtils();
 
-    const callback = middlewareUtils.manager([middleware], { dispatch, getState, subscribe }, reducer);
+    const callback = middlewareUtils.manager([middleware], { dispatch, getState: getStateLocal, subscribe }, reducer);
 
     expect(typeof callback).toBe('function');
     expect(callback.length).toBe(1);
