@@ -17,9 +17,7 @@ export const combineReducers = <State>(reducers: ReducersType<State>): ReducerTy
       const newSubState = reducer(oldSubState, action);
 
       if (typeof newSubState === 'undefined') {
-        const type = typeof action.type === 'symbol' ? action.type.toString() : action.type;
-
-        throw new Error(`Action "${type}" from Reducer "${key}" returns an undefined value`);
+        throw new Error(`Action "${action.type}" from Reducer "${key}" returns an undefined value`);
       }
 
       nextState[key] = newSubState;

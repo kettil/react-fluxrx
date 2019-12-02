@@ -50,12 +50,10 @@ export const actionError = <State>(errorHandlers: Array<StoreErrorHandlerType<St
   err: any,
   rx$: Observable<T>,
 ): Observable<T> => {
-  const state = store.getState();
-
   // evaluates the error message
   errorHandlers.forEach((errorHandler) => {
     try {
-      errorHandler(err, store.dispatch, state);
+      errorHandler(err, store.dispatch, store.getState);
     } catch (err) {
       defaultErrorHandler(err);
     }

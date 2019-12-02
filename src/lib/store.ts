@@ -37,7 +37,7 @@ export const createStore = <State>(
   const mwActions = reduceMiddleware('action', middleware);
   const mwErrors = reduceMiddleware('error', middleware);
 
-  mwInits.forEach((mwInit) => mwInit(getState(), dispatch, updateDirectly));
+  mwInits.forEach((mwInit) => mwInit(getState, dispatch, updateDirectly));
   if (mwErrors.length === 0) {
     mwErrors.push(defaultErrorHandler);
   }
