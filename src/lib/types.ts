@@ -27,33 +27,33 @@ type AFilter<V> = V extends { type: string } ? V : never;
 //
 
 export type ActionType<State = any> = {
-  type: TypeAction;
-  payload: TypePayload;
+  readonly type: string;
+  readonly payload: TypePayload;
 
   // socket.io
   ws?:
     | boolean
     | {
         // overwrite the type in the websocket context
-        type?: TypeAction;
+        readonly type?: string;
         // overwrite the payload in the websocket context
-        payload?: TypePayload;
+        readonly payload?: TypePayload;
       };
 
   // ajax
   ajax?: {
-    path: string;
-    method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
-    data?: TypePayload | ((state: State) => TypePayload | void);
-    options?: AjaxRequest;
-    silent?: boolean;
-    ignoreUrl?: boolean;
-    success?: (data: unknown, status: number, type: string) => ActionSubjectType<State>;
-    error?: (err: AjaxError) => ActionSubjectType<State>;
+    readonly path: string;
+    readonly method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
+    readonly data?: TypePayload | ((state: State) => TypePayload | void);
+    readonly options?: AjaxRequest;
+    readonly silent?: boolean;
+    readonly ignoreUrl?: boolean;
+    readonly success?: (data: unknown, status: number, type: string) => ActionSubjectType<State>;
+    readonly error?: (err: AjaxError) => ActionSubjectType<State>;
   };
 
   // options
-  ignoreMiddleware?: boolean;
+  readonly ignoreMiddleware?: boolean;
 };
 
 export type ActionSubjectType<State = any> =
@@ -80,9 +80,9 @@ export type StoreDispatchType<State = any> = (action: ActionSubjectExtendType<St
 export type StoreSubscribeType<State> = (state: State) => void;
 
 export type StoreType<State> = {
-  subscribe: (next: StoreSubscribeType<State>) => Subscription;
-  dispatch: StoreDispatchType<State>;
-  getState: GetStateType<State>;
+  readonly subscribe: (next: StoreSubscribeType<State>) => Subscription;
+  readonly dispatch: StoreDispatchType<State>;
+  readonly getState: GetStateType<State>;
 };
 
 export type StoreErrorHandlerType<State> = (err: any, dispatch: StoreDispatchType<State>, state: State) => void;
@@ -102,9 +102,9 @@ export type ReducerType<State, Action extends ActionType = any> = (state: State 
 //
 
 export type MiddlewareType<State> = {
-  init?: MiddlewareInitType<State>;
-  action?: MiddlewareActionType<State>;
-  error?: MiddlewareErrorType<State>;
+  readonly init?: MiddlewareInitType<State>;
+  readonly action?: MiddlewareActionType<State>;
+  readonly error?: MiddlewareErrorType<State>;
 };
 
 export type MiddlewareInitType<State> = (
@@ -125,8 +125,6 @@ export type MiddlewareErrorType<State> = StoreErrorHandlerType<State>;
 //
 // Helper
 //
-
-export type TypeAction = string | symbol;
 
 export type TypePayload = Record<string, any>;
 

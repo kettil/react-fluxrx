@@ -1,7 +1,7 @@
 import { empty, MonoTypeOperatorFunction, of, throwError, timer } from 'rxjs';
 import { ajax as rxAjax, AjaxError, AjaxRequest, AjaxResponse } from 'rxjs/ajax';
 import { catchError, delayWhen, map, mergeMap, retryWhen } from 'rxjs/operators';
-import { ActionSubjectType, MiddlewareType, TypeAction } from '../types';
+import { ActionSubjectType, MiddlewareType } from '../types';
 import { actionFlat, actionValidate } from '../utils/store';
 
 export const ajax = <State>({
@@ -16,7 +16,7 @@ export const ajax = <State>({
   url: string;
   ajaxRequest?: AjaxRequest;
   ajaxBody?: Record<string, any> | ((state: State) => Record<string, any> | void);
-  actionWhitelist?: TypeAction[];
+  actionWhitelist?: string[];
   timeout?: number;
   retries?: number;
   delay?: number[] | number;
