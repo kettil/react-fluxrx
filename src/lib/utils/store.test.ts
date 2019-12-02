@@ -142,14 +142,14 @@ describe('Check the store functions', () => {
 
     expect(result$).toBe(actionMock$);
 
-    expect(getStateMock).toHaveBeenCalledTimes(1);
+    expect(getStateMock).toHaveBeenCalledTimes(0);
     expect(dispatchMock).toHaveBeenCalledTimes(0);
     expect(subscribeMock).toHaveBeenCalledTimes(0);
 
     expect(errorHandlersMock1).toHaveBeenCalledTimes(1);
-    expect(errorHandlersMock1).toHaveBeenCalledWith(errMock, dispatchMock, { a: 42 });
+    expect(errorHandlersMock1).toHaveBeenCalledWith(errMock, dispatchMock, getStateMock);
     expect(errorHandlersMock2).toHaveBeenCalledTimes(1);
-    expect(errorHandlersMock2).toHaveBeenCalledWith(errMock, dispatchMock, { a: 42 });
+    expect(errorHandlersMock2).toHaveBeenCalledWith(errMock, dispatchMock, getStateMock);
   });
 
   test('it should be output the two errors when actionError() is called and the middleware are throwing errors', () => {
@@ -184,14 +184,14 @@ describe('Check the store functions', () => {
 
     expect(result$).toBe(actionMock$);
 
-    expect(getStateMock).toHaveBeenCalledTimes(1);
+    expect(getStateMock).toHaveBeenCalledTimes(0);
     expect(dispatchMock).toHaveBeenCalledTimes(0);
     expect(subscribeMock).toHaveBeenCalledTimes(0);
 
     expect(errorHandlersMock1).toHaveBeenCalledTimes(1);
-    expect(errorHandlersMock1).toHaveBeenCalledWith(errMock, dispatchMock, { a: 42 });
+    expect(errorHandlersMock1).toHaveBeenCalledWith(errMock, dispatchMock, getStateMock);
     expect(errorHandlersMock2).toHaveBeenCalledTimes(1);
-    expect(errorHandlersMock2).toHaveBeenCalledWith(errMock, dispatchMock, { a: 42 });
+    expect(errorHandlersMock2).toHaveBeenCalledWith(errMock, dispatchMock, getStateMock);
 
     expect(console.error).toHaveBeenCalledTimes(2);
     expect(console.error).toHaveBeenNthCalledWith(1, expect.any(Error));

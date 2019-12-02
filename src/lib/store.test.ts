@@ -36,7 +36,7 @@ describe('Check the store', () => {
     expect(reducer).toHaveBeenCalledTimes(0);
 
     expect(middlewareInit2).toHaveBeenCalledTimes(1);
-    expect(middlewareInit2).toHaveBeenCalledWith(state, store.dispatch, expect.any(Function));
+    expect(middlewareInit2).toHaveBeenCalledWith(store.getState, store.dispatch, expect.any(Function));
     expect(middlewareAction1).toHaveBeenCalledTimes(0);
     expect(middlewareAction2).toHaveBeenCalledTimes(0);
     expect(middlewareError1).toHaveBeenCalledTimes(0);
@@ -87,11 +87,11 @@ describe('Check the store', () => {
           expect(reducer).toHaveBeenCalledWith({ action: [] }, action);
 
           expect(middlewareInit2).toHaveBeenCalledTimes(1);
-          expect(middlewareInit2).toHaveBeenCalledWith(state, store.dispatch, expect.any(Function));
+          expect(middlewareInit2).toHaveBeenCalledWith(store.getState, store.dispatch, expect.any(Function));
           expect(middlewareAction1).toHaveBeenCalledTimes(1);
-          expect(middlewareAction1).toHaveBeenCalledWith(action, getState, store.dispatch, expect.any(Function));
+          expect(middlewareAction1).toHaveBeenCalledWith(action, store.getState, store.dispatch, expect.any(Function));
           expect(middlewareAction2).toHaveBeenCalledTimes(1);
-          expect(middlewareAction2).toHaveBeenCalledWith(action, getState, store.dispatch, expect.any(Function));
+          expect(middlewareAction2).toHaveBeenCalledWith(action, store.getState, store.dispatch, expect.any(Function));
           expect(middlewareError1).toHaveBeenCalledTimes(0);
 
           done();
@@ -261,7 +261,7 @@ describe('Check the store', () => {
         expect(newState).toEqual({ action: [] });
 
         expect(middlewareError).toHaveBeenCalledTimes(1);
-        expect(middlewareError).toHaveBeenCalledWith(error, store.dispatch, state);
+        expect(middlewareError).toHaveBeenCalledWith(error, store.dispatch, store.getState);
         done();
       } catch (err) {
         done(err);

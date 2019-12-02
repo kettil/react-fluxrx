@@ -71,34 +71,28 @@ describe('Check the reducers function', () => {
   /**
    *
    */
-  test.each<[string | symbol, string]>([
-    ['updateX', 'updateX'],
-    [Symbol('updateX'), 'Symbol(updateX)'],
-  ])(
-    'it should be throw an error when combineReducers() is called and the reducer returns undefined [%s]',
-    (type, name) => {
-      const reducer1 = jest.fn().mockReturnValue({ a: 42 });
-      const reducer2 = jest.fn().mockReturnValue({ a: 13 });
+  test('it should be throw an error when combineReducers() is called and the reducer returns undefined', () => {
+    const reducer1 = jest.fn().mockReturnValue({ a: 42 });
+    const reducer2 = jest.fn().mockReturnValue({ a: 13 });
 
-      const callback = combineReducers({ a: reducer1, b: reducer2 });
+    const callback = combineReducers({ a: reducer1, b: reducer2 });
 
-      expect(callback).toBeInstanceOf(Function);
-      expect(callback.length).toBe(2);
+    expect(callback).toBeInstanceOf(Function);
+    expect(callback.length).toBe(2);
 
-      reducer1.mockReset();
-      reducer2.mockReset();
+    reducer1.mockReset();
+    reducer2.mockReset();
 
-      reducer1.mockImplementation((state1) => state1);
+    reducer1.mockImplementation((state1) => state1);
 
-      expect.assertions(4);
-      try {
-        callback({ a: { a: 3 }, b: { a: 7 } }, { type, payload: 17 });
-      } catch (err) {
-        expect(err).toBeInstanceOf(Error);
-        expect(err.message).toBe(`Action "${name}" from Reducer "b" returns an undefined value`);
-      }
-    },
-  );
+    expect.assertions(4);
+    try {
+      callback({ a: { a: 3 }, b: { a: 7 } }, { type: 'updateX', payload: 17 });
+    } catch (err) {
+      expect(err).toBeInstanceOf(Error);
+      expect(err.message).toBe('Action "updateX" from Reducer "b" returns an undefined value');
+    }
+  });
 
   /**
    *
