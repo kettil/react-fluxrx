@@ -7,33 +7,24 @@ describe('Check the ajax middleware', () => {
   let xhr: SinonFakeServer;
 
   beforeEach(() => {
+    const cType = { 'Content-Type': 'application/json' };
+
+    const response1 = {
+      status: 'ok',
+      items: [
+        { id: 5, text: 'first', completed: false },
+        { id: 9, text: 'second', completed: true },
+      ],
+    };
+    const response2 = { status: 'ok', action: { type: 'add', payload: { id: 5, text: 'five', completed: false } } };
+    const response3 = { status: 'ok', item: { id: 7, text: 'new', completed: false } };
+
     xhr = useFakeServer();
 
-    xhr.respondWith('GET', 'https://localhost/api/todos', [
-      200,
-      { 'Content-Type': 'application/json' },
-      JSON.stringify({
-        status: 'ok',
-        items: [
-          { id: 5, text: 'first', completed: false },
-          { id: 9, text: 'second', completed: true },
-        ],
-      }),
-    ]);
-
-    xhr.respondWith('GET', 'https://localhost/api/todos?page=7', [200, { 'Content-Type': 'application/json' }, '']);
-
-    xhr.respondWith('GET', 'https://localhost/api/action/todos/5', [
-      200,
-      { 'Content-Type': 'application/json' },
-      JSON.stringify({ status: 'ok', action: { type: 'add', payload: { id: 5, text: 'five', completed: false } } }),
-    ]);
-
-    xhr.respondWith('POST', 'https://localhost/api/todos', [
-      200,
-      { 'Content-Type': 'application/json' },
-      JSON.stringify({ status: 'ok', item: { id: 7, text: 'new', completed: false } }),
-    ]);
+    xhr.respondWith('GET', 'https://localhost/api/todos', [200, cType, JSON.stringify(response1)]);
+    xhr.respondWith('GET', 'https://localhost/api/todos?page=7', [200, cType, '']);
+    xhr.respondWith('GET', 'https://localhost/api/action/todos/5', [200, cType, JSON.stringify(response2)]);
+    xhr.respondWith('POST', 'https://localhost/api/todos', [200, cType, JSON.stringify(response3)]);
   });
 
   afterEach(() => {
@@ -140,6 +131,99 @@ describe('Check the ajax middleware', () => {
           path: '/api/todos',
           method: 'GET',
           silent: true,
+        },
+      });
+
+      expect(reducer).toHaveBeenCalledTimes(0);
+      expect(dispatch).toHaveBeenCalledTimes(1);
+
+      xhr.respond();
+    });
+
+    test('it should be request call when action() is called and with a callback', (done) => {
+      expect.assertions(14);
+
+      const reducer = jest.fn();
+      const dispatch = jest.fn((action$: Observable<any>) =>
+        action$.subscribe(
+          (responseAction) => {
+            try {
+              expect(responseAction).toEqual({
+                payload: {
+                  completed: false,
+                  id: 7,
+                  text: 'new',
+                },
+                type: 'add',
+              });
+            } catch (err) {
+              done(err);
+            }
+          },
+          done,
+          () => {
+            try {
+              expect(xhr.requests.length).toBe(1);
+              expect(xhr.requests[0].method).toBe('POST');
+              expect(xhr.requests[0].requestHeaders).toEqual({
+                'Content-Type': 'application/json;charset=utf-8',
+                Accept: 'application/json',
+              });
+              expect(xhr.requests[0].requestBody).toBe(
+                JSON.stringify({
+                  item: {
+                    completed: false,
+                    text: 'new',
+                  },
+                }),
+              );
+
+              done();
+            } catch (err) {
+              done(err);
+            }
+          },
+        ),
+      );
+
+      const result = ajax({ url: 'https://localhost' });
+      expect(result).toEqual({ action: expect.any(Function) });
+
+      const callback = result.action as (...args: any[]) => void;
+      expect(callback.length).toBe(4);
+
+      const action = {
+        type: 'load',
+        payload: { showLoader: true },
+
+        // ajax
+        ajax: {
+          path: 'https://localhost/api/todos',
+          data: { item: { completed: false, text: 'new' } },
+          ignoreUrl: true,
+          success: (responseData: Record<string, any>, responseStatus: number, responseType: string) => {
+            expect(responseStatus).toBe(200);
+            expect(responseData).toEqual({ item: { completed: false, id: 7, text: 'new' }, status: 'ok' });
+            expect(responseType).toBe('json');
+
+            return {
+              type: 'add',
+              payload: responseData.item,
+            };
+          },
+        },
+      };
+
+      const value = callback(action, {}, dispatch, reducer);
+      expect(value).toBe(action);
+      expect(value).toEqual({
+        type: 'load',
+        payload: { showLoader: true },
+        ajax: {
+          path: 'https://localhost/api/todos',
+          ignoreUrl: true,
+          data: { item: { completed: false, text: 'new' } },
+          success: expect.any(Function),
         },
       });
 
