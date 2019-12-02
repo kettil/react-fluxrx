@@ -44,7 +44,7 @@ export type ActionType<State = any> = {
   ajax?: {
     readonly path: string;
     readonly method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
-    readonly data?: TypePayload | ((state: State) => TypePayload | void);
+    readonly data?: TypePayload;
     readonly options?: AjaxRequest;
     readonly silent?: boolean;
     readonly ignoreUrl?: boolean;

@@ -2,6 +2,7 @@ import { empty, MonoTypeOperatorFunction, of, throwError, timer } from 'rxjs';
 import { ajax as rxAjax, AjaxError, AjaxRequest, AjaxResponse } from 'rxjs/ajax';
 import { catchError, delayWhen, map, mergeMap, retryWhen } from 'rxjs/operators';
 import { ActionSubjectType, MiddlewareType } from '../types';
+import { isObject } from '../utils/helper';
 import { actionFlat, actionValidate } from '../utils/store';
 
 export const ajax = <State>({
@@ -23,7 +24,7 @@ export const ajax = <State>({
 }): MiddlewareType<State> => {
   return {
     action: (action, state, dispatch, reducer) => {
-      if (typeof action.ajax === 'object' && typeof action.ajax.path === 'string') {
+      if (isObject(action.ajax) && typeof action.ajax.path === 'string') {
         const {
           path,
           data = {},
@@ -37,7 +38,7 @@ export const ajax = <State>({
 
         const body: AjaxRequest['body'] = {
           ...(typeof ajaxBody === 'function' ? ajaxBody(state) : ajaxBody),
-          ...(typeof data === 'function' ? data(state) : data),
+          ...data,
         };
 
         const params: AjaxRequest = {
