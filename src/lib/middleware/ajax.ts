@@ -1,7 +1,7 @@
 import { empty, MonoTypeOperatorFunction, of, throwError, timer } from 'rxjs';
 import { ajax as rxAjax, AjaxError, AjaxRequest, AjaxResponse } from 'rxjs/ajax';
 import { catchError, delayWhen, map, mergeMap, retryWhen } from 'rxjs/operators';
-import { ActionSubjectType, MiddlewareType } from '../types';
+import { ActionSubjectType, GetStateType, MiddlewareType } from '../types';
 import { isObject } from '../utils/helper';
 import { actionFlat, actionValidate } from '../utils/store';
 
@@ -16,14 +16,14 @@ export const ajax = <State>({
 }: {
   url: string;
   ajaxRequest?: AjaxRequest;
-  ajaxBody?: Record<string, any> | ((state: State) => Record<string, any> | void);
+  ajaxBody?: Record<string, any> | ((getState: GetStateType<State>) => Record<string, any> | void);
   actionWhitelist?: string[];
   timeout?: number;
   retries?: number;
   delay?: number[] | number;
 }): MiddlewareType<State> => {
   return {
-    action: (action, state, dispatch, reducer) => {
+    action: (action, getState, dispatch, reducer) => {
       if (isObject(action.ajax) && typeof action.ajax.path === 'string') {
         const {
           path,
@@ -37,7 +37,7 @@ export const ajax = <State>({
         } = action.ajax;
 
         const body: AjaxRequest['body'] = {
-          ...(typeof ajaxBody === 'function' ? ajaxBody(state) : ajaxBody),
+          ...(typeof ajaxBody === 'function' ? ajaxBody(getState) : ajaxBody),
           ...data,
         };
 

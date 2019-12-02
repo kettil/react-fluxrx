@@ -12,36 +12,35 @@ const isConsoleGroupDefiend = () =>
 
 export const logger = <State>(groupOutput = true): MiddlewareType<State> => {
   return {
-    init: (state, dispatch, updateDirectly) => {
-      console.log('init', { state });
+    init: (getState, dispatch, updateDirectly) => {
+      console.log('init', { state: getState() });
     },
 
-    action: (action, state, dispatch, reducer) => {
+    action: (action, getState, dispatch, reducer) => {
       const { type, payload, ...rest } = action;
-      const id = typeof type === 'symbol' ? type.toString() : type;
 
       if (groupOutput && isConsoleGroupDefiend()) {
-        console.groupCollapsed(`%c Action: %c ${id}`, 'color: gray; font-weight: lighter;', 'color: inherit;');
-        console.info('%c prev state', stylesPre, state);
+        console.groupCollapsed(`%c Action: %c ${type}`, 'color: gray; font-weight: lighter;', 'color: inherit;');
+        console.info('%c prev state', stylesPre, getState());
         console.info('%c action    ', stylesMain, payload, rest);
-        console.info('%c next state', stylesPost, reducer(state, action));
+        console.info('%c next state', stylesPost, reducer(getState(), action));
         console.groupEnd();
       } else {
-        console.log('action', id, {
+        console.log('action', type, {
           action,
-          prevState: state,
-          nextState: reducer(state, action),
+          prevState: getState(),
+          nextState: reducer(getState(), action),
         });
       }
 
       return action;
     },
 
-    error: (err, dispatch, state) => {
+    error: (err, dispatch, getState) => {
       try {
         if (groupOutput && err instanceof Error && isConsoleGroupDefiend()) {
           console.groupCollapsed(`%c Error:  %c ${err.message}`, stylesMain, 'color: inherit;');
-          console.info('%c state  ', stylesPre, state);
+          console.info('%c state  ', stylesPre, getState());
           console.info('%c message', stylesMain, err.message);
           console.info('%c stack  ', stylesPost, err.stack);
           console.groupEnd();

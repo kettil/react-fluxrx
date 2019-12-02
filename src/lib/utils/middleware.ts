@@ -1,18 +1,9 @@
 import { Observable, of } from 'rxjs';
 import { map, mergeMap, tap } from 'rxjs/operators';
-import { ActionType, MiddlewareActionType, ReducerType, StoreDispatchType, StoreType } from '../types';
+import { ActionType, GetStateType, MiddlewareActionType, ReducerType, StoreDispatchType, StoreType } from '../types';
 import * as storeUtils from './store';
 
-/**
- *
- */
 export class MiddlewareUtils {
-  /**
-   *
-   * @param middleware
-   * @param store
-   * @param reducer
-   */
   manager<State>(middleware: Array<MiddlewareActionType<State>>, store: StoreType<State>, reducer: ReducerType<State>) {
     return (source$: Observable<ActionType<State>>) => {
       return source$.pipe(
@@ -23,30 +14,24 @@ export class MiddlewareUtils {
             return action$;
           }
 
-          const state = store.getState();
-
-          return middleware.reduce((prev$, mw) => this.handler(prev$, mw, state, store.dispatch, reducer), action$);
+          return middleware.reduce(
+            (prev$, mw) => this.handler(prev$, mw, store.getState, store.dispatch, reducer),
+            action$,
+          );
         }),
       );
     };
   }
 
-  /**
-   *
-   * @param source$
-   * @param middleware
-   * @param store
-   * @param reducer
-   */
   handler<State>(
     source$: Observable<ActionType<State>>,
     middleware: MiddlewareActionType<State>,
-    state: State,
+    getState: GetStateType<State>,
     dispatch: StoreDispatchType,
     reducer: ReducerType<State>,
   ) {
     return source$.pipe(
-      map((action) => middleware(action, state, dispatch, reducer)),
+      map((action) => middleware(action, getState, dispatch, reducer)),
       // change inner streams to outer stream
       mergeMap(storeUtils.actionFlat),
       // validate the action
@@ -55,7 +40,4 @@ export class MiddlewareUtils {
   }
 }
 
-/**
- *
- */
 export default new MiddlewareUtils();

@@ -64,11 +64,13 @@ describe('Check the store', () => {
   test('it should be that the last state is passed when subscribing', (done) => {
     expect.assertions(11);
 
+    const getState = expect.any(Function);
+
     const store = createStore(reducer, state, middleware, 5);
 
     expect(store).toEqual({
+      getState,
       dispatch: expect.any(Function),
-      getState: expect.any(Function),
       subscribe: expect.any(Function),
     });
 
@@ -87,9 +89,9 @@ describe('Check the store', () => {
           expect(middlewareInit2).toHaveBeenCalledTimes(1);
           expect(middlewareInit2).toHaveBeenCalledWith(state, store.dispatch, expect.any(Function));
           expect(middlewareAction1).toHaveBeenCalledTimes(1);
-          expect(middlewareAction1).toHaveBeenCalledWith(action, state, store.dispatch, expect.any(Function));
+          expect(middlewareAction1).toHaveBeenCalledWith(action, getState, store.dispatch, expect.any(Function));
           expect(middlewareAction2).toHaveBeenCalledTimes(1);
-          expect(middlewareAction2).toHaveBeenCalledWith(action, state, store.dispatch, expect.any(Function));
+          expect(middlewareAction2).toHaveBeenCalledWith(action, getState, store.dispatch, expect.any(Function));
           expect(middlewareError1).toHaveBeenCalledTimes(0);
 
           done();

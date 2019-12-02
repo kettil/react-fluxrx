@@ -85,7 +85,11 @@ export type StoreType<State> = {
   readonly getState: GetStateType<State>;
 };
 
-export type StoreErrorHandlerType<State> = (err: any, dispatch: StoreDispatchType<State>, state: State) => void;
+export type StoreErrorHandlerType<State> = (
+  err: any,
+  dispatch: StoreDispatchType<State>,
+  getState: GetStateType<State>,
+) => void;
 
 //
 // Reducer
@@ -108,14 +112,14 @@ export type MiddlewareType<State> = {
 };
 
 export type MiddlewareInitType<State> = (
-  state: State,
+  getState: GetStateType<State>,
   dispatch: StoreDispatchType<State>,
   updateDirectly: StoreSubscribeType<State>,
 ) => void;
 
 export type MiddlewareActionType<State> = (
   action: ActionType,
-  state: State,
+  getState: GetStateType<State>,
   dispatch: StoreDispatchType<State>,
   reducer: ReducerType<State>,
 ) => ActionSubjectType;

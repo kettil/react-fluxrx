@@ -19,6 +19,7 @@ describe('Check the logger middleware', () => {
   });
 
   test('it should be output of the message when the middleware.init() is called', () => {
+    const getState = jest.fn(() => ({ isState: true }));
     const result = logger();
 
     expect(result).toEqual({
@@ -31,14 +32,16 @@ describe('Check the logger middleware', () => {
 
     expect(callback.length).toBe(3);
 
-    callback({ isState: true });
+    callback(getState);
 
+    expect(getState).toHaveBeenCalledTimes(1);
     expect(console.log).toHaveBeenCalledTimes(1);
     expect(console.log).toHaveBeenCalledWith('init', { state: { isState: true } });
     expect(console.error).toHaveBeenCalledTimes(0);
   });
 
   test('it should be output of the message when the middleware.action() is called with console.groupCollapsed', () => {
+    const getState = jest.fn(() => ({ isState: true }));
     const reducer = jest.fn().mockReturnValue({ newState: true });
     const result = logger();
 
@@ -50,8 +53,9 @@ describe('Check the logger middleware', () => {
 
     expect(result.action!.length).toBe(4);
 
-    result.action!({ type: 'edit', payload: { id: 3, message: '...' } }, { isState: true }, () => undefined, reducer);
+    result.action!({ type: 'edit', payload: { id: 3, message: '...' } }, getState, () => undefined, reducer);
 
+    expect(getState).toHaveBeenCalledTimes(2);
     expect(reducer).toHaveBeenCalledTimes(1);
     expect(reducer).toHaveBeenCalledWith({ isState: true }, { payload: { id: 3, message: '...' }, type: 'edit' });
 
@@ -65,8 +69,9 @@ describe('Check the logger middleware', () => {
   });
 
   test('it should be output of the message when the middleware.action() is called without console.groupCollapsed', () => {
+    const getState = jest.fn(() => ({ isState: true }));
     const reducer = jest.fn().mockReturnValue({ newState: true });
-    const type = Symbol('...');
+    const type = 'TYPE_KEY';
     const result = logger(false);
 
     expect(result).toEqual({
@@ -77,13 +82,14 @@ describe('Check the logger middleware', () => {
 
     expect(result.action!.length).toBe(4);
 
-    result.action!({ type, payload: { id: 3, message: '...' } }, { isState: true }, () => undefined, reducer);
+    result.action!({ type, payload: { id: 3, message: '...' } }, getState, () => undefined, reducer);
 
+    expect(getState).toHaveBeenCalledTimes(2);
     expect(reducer).toHaveBeenCalledTimes(1);
     expect(reducer).toHaveBeenCalledWith({ isState: true }, { payload: { id: 3, message: '...' }, type });
 
     expect(console.log).toHaveBeenCalledTimes(1);
-    expect(console.log).toHaveBeenCalledWith('action', 'Symbol(...)', {
+    expect(console.log).toHaveBeenCalledWith('action', 'TYPE_KEY', {
       action: { payload: { id: 3, message: '...' }, type },
       nextState: { newState: true },
       prevState: { isState: true },
@@ -91,6 +97,7 @@ describe('Check the logger middleware', () => {
   });
 
   test('it should be output of the error message when the middleware.error() is called with error instance', () => {
+    const getState = jest.fn(() => ({ state: true }));
     const result = logger<any>();
 
     expect(result).toEqual({
@@ -101,8 +108,9 @@ describe('Check the logger middleware', () => {
 
     expect(result.error!.length).toBe(3);
 
-    result.error!(new Error('error logger'), () => undefined, { state: true });
+    result.error!(new Error('error logger'), () => undefined, getState);
 
+    expect(getState).toHaveBeenCalledTimes(1);
     expect(console.info).toHaveBeenCalledTimes(3);
     expect(console.info).toHaveBeenNthCalledWith(1, '%c state  ', 'color: #9E9E9E; font-weight: bold', { state: true });
     expect(console.info).toHaveBeenNthCalledWith(2, '%c message', 'color: #F20404; font-weight: bold', 'error logger');
@@ -117,6 +125,7 @@ describe('Check the logger middleware', () => {
   });
 
   test('it should be output of the error message when the middleware.error() is called with string', () => {
+    const getState = jest.fn(() => ({ state: true }));
     const result = logger<any>();
 
     expect(result).toEqual({
@@ -127,13 +136,15 @@ describe('Check the logger middleware', () => {
 
     expect(result.error!.length).toBe(3);
 
-    result.error!('error logger', () => undefined, { state: true });
+    result.error!('error logger', () => undefined, getState);
 
+    expect(getState).toHaveBeenCalledTimes(0);
     expect(console.error).toHaveBeenCalledTimes(1);
     expect(console.error).toHaveBeenCalledWith('error logger');
   });
 
   test('it should be output of the error message when the middleware.error() is called and error within the function', () => {
+    const getState = jest.fn(() => ({ state: true }));
     (console.groupCollapsed as jest.Mock).mockImplementationOnce(() => {
       throw new Error('...');
     });
@@ -148,8 +159,9 @@ describe('Check the logger middleware', () => {
 
     expect(result.error!.length).toBe(3);
 
-    result.error!(new Error('error logger'), () => undefined, { state: true });
+    result.error!(new Error('error logger'), () => undefined, getState);
 
+    expect(getState).toHaveBeenCalledTimes(0);
     expect(console.log).toHaveBeenCalledTimes(1);
     expect(console.log).toHaveBeenCalledWith(expect.any(Error));
   });
