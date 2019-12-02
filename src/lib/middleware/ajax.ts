@@ -57,7 +57,7 @@ export const ajax = <State>({
 
         const observable = rxAjax(params).pipe(
           retryByError(retries, delay),
-          map<AjaxResponse, ActionSubjectType<State, any>>((ajaxResponse) => {
+          map<AjaxResponse, ActionSubjectType<State>>((ajaxResponse) => {
             const response = ajaxResponse.response || {};
 
             if (silent === true) {

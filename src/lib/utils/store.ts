@@ -73,7 +73,8 @@ export const reducerHandler = <State>(reducer: ReducerType<State>): ReducerType<
       return state!;
 
     case action.type === actions.fullUpdate:
-      return action.payload;
+      // This is a special case where the complete state should be overwritten.
+      return action.payload as any;
 
     default:
       return reducer(state, action);

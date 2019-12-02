@@ -26,9 +26,9 @@ type AFilter<V> = V extends { type: string } ? V : never;
 // Action
 //
 
-export type ActionType<State = any, Payload = any> = {
+export type ActionType<State = any> = {
   type: TypeAction;
-  payload: Payload;
+  payload: TypePayload;
 
   // socket.io
   ws?:
@@ -37,14 +37,14 @@ export type ActionType<State = any, Payload = any> = {
         // overwrite the type in the websocket context
         type?: TypeAction;
         // overwrite the payload in the websocket context
-        payload?: Payload;
+        payload?: TypePayload;
       };
 
   // ajax
   ajax?: {
     path: string;
     method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
-    data?: Record<string, any> | ((state: State) => Record<string, any> | void);
+    data?: TypePayload | ((state: State) => TypePayload | void);
     options?: AjaxRequest;
     silent?: boolean;
     ignoreUrl?: boolean;
@@ -56,18 +56,14 @@ export type ActionType<State = any, Payload = any> = {
   ignoreMiddleware?: boolean;
 };
 
-export type ActionSubjectType<State = any, Payload = any> =
-  | ActionType<State, Payload>
-  | Observable<ActionType<State, Payload>>
-  | Promise<ActionType<State, Payload> | Observable<ActionType<State, Payload>>>;
+export type ActionSubjectType<State = any> =
+  | ActionType<State>
+  | Observable<ActionType<State>>
+  | Promise<ActionType<State> | Observable<ActionType<State>>>;
 
-export type ActionSubjectExtendType<State = any, Payload = any> =
-  | ActionSubjectType<State, Payload>
-  | ActionCallbackType<State, Payload>;
+export type ActionSubjectExtendType<State = any> = ActionSubjectType<State> | ActionCallbackType<State>;
 
-export type ActionCallbackType<State = any, Payload = any> = (
-  getState: GetStateType<State>,
-) => ActionSubjectType<State, Payload>;
+export type ActionCallbackType<State = any> = (getState: GetStateType<State>) => ActionSubjectType<State>;
 
 export type ActionFunctionType<State, T extends any[]> = (...args: T) => ActionSubjectExtendType<State>;
 
@@ -79,13 +75,13 @@ export type ActionVoidType<T extends any[]> = (...args: T) => void;
 
 export type GetStateType<State> = () => State;
 
-export type StoreDispatchType<State = any, Payload = any> = (action: ActionSubjectExtendType<State, Payload>) => void;
+export type StoreDispatchType<State = any> = (action: ActionSubjectExtendType<State>) => void;
 
 export type StoreSubscribeType<State> = (state: State) => void;
 
-export type StoreType<State, Payload = any> = {
+export type StoreType<State> = {
   subscribe: (next: StoreSubscribeType<State>) => Subscription;
-  dispatch: StoreDispatchType<State, Payload>;
+  dispatch: StoreDispatchType<State>;
   getState: GetStateType<State>;
 };
 
@@ -111,16 +107,16 @@ export type MiddlewareType<State> = {
   error?: MiddlewareErrorType<State>;
 };
 
-export type MiddlewareInitType<State, Payload = any> = (
+export type MiddlewareInitType<State> = (
   state: State,
-  dispatch: StoreDispatchType<State, Payload>,
+  dispatch: StoreDispatchType<State>,
   updateDirectly: StoreSubscribeType<State>,
 ) => void;
 
-export type MiddlewareActionType<State, Payload = any> = (
+export type MiddlewareActionType<State> = (
   action: ActionType,
   state: State,
-  dispatch: StoreDispatchType<State, Payload>,
+  dispatch: StoreDispatchType<State>,
   reducer: ReducerType<State>,
 ) => ActionSubjectType;
 
@@ -131,5 +127,7 @@ export type MiddlewareErrorType<State> = StoreErrorHandlerType<State>;
 //
 
 export type TypeAction = string | symbol;
+
+export type TypePayload = Record<string, any>;
 
 export type UnpackedArray<T> = T extends Array<infer U> ? U : T;

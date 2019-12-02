@@ -4,7 +4,7 @@ import { ActionType, ReducersType, ReducerType } from './types';
  *
  * @param reducers
  */
-export const combineReducers = <State>(reducers: ReducersType<State, any>): ReducerType<State, any> => {
+export const combineReducers = <State>(reducers: ReducersType<State>): ReducerType<State> => {
   checkedReducers(reducers);
 
   return (state: State | undefined, action: ActionType<State>): State => {
@@ -34,7 +34,7 @@ export const combineReducers = <State>(reducers: ReducersType<State, any>): Redu
  *
  * @param reducers
  */
-export function checkedReducers<State>(reducers: ReducersType<State, any>) {
+export function checkedReducers<State>(reducers: ReducersType<State>) {
   (Object.keys(reducers) as Array<keyof State>).forEach((key) => {
     const reducer = reducers[key];
 

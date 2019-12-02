@@ -9,7 +9,7 @@ type Ref<State, R> = {
   selector: (state: State) => R;
 };
 
-export const createSelectorHook = <State>(context: Context<StoreType<State, any>>) => <R>(
+export const createSelectorHook = <State>(context: Context<StoreType<State>>) => <R>(
   selector: (state: State) => R,
   debs: readonly any[] = [],
   isEqual = isStrictEqual,
