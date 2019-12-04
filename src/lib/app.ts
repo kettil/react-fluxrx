@@ -2,6 +2,7 @@ import { createContext } from 'react';
 import { createDispatchHook } from './hooks/useDispatch';
 import { createDispatchDebounceHook } from './hooks/useDispatchDebounce';
 import { createDispatchRxHook } from './hooks/useDispatchRx';
+import { createDispatchThrottleHook } from './hooks/useDispatchThrottle';
 import { createSelectorHook } from './hooks/useSelector';
 import { createStoreHook } from './hooks/useStore';
 import createStore from './store';
@@ -34,6 +35,7 @@ export const app = <State>(
   const useDispatch = createDispatchHook(context);
   const useDispatchRx = createDispatchRxHook(context);
   const useDispatchDebounce = createDispatchDebounceHook(context);
+  const useDispatchThrottle = createDispatchThrottleHook(context);
 
   return {
     // store
@@ -44,6 +46,7 @@ export const app = <State>(
     useDispatch,
     useDispatchRx,
     useDispatchDebounce,
+    useDispatchThrottle,
     // React Context
     Consumer: context.Consumer,
     Provider: context.Provider,

@@ -20,6 +20,7 @@ describe('Check the app function', () => {
       useDispatch: expect.any(Function),
       useDispatchRx: expect.any(Function),
       useDispatchDebounce: expect.any(Function),
+      useDispatchThrottle: expect.any(Function),
       Consumer: expect.any(Object),
       Provider: expect.any(Object),
     });
@@ -46,6 +47,7 @@ describe('Check the app function', () => {
       useDispatch: expect.any(Function),
       useDispatchRx: expect.any(Function),
       useDispatchDebounce: expect.any(Function),
+      useDispatchThrottle: expect.any(Function),
       Consumer: expect.any(Object),
       Provider: expect.any(Object),
     });
