@@ -33,9 +33,9 @@ describe('Check the useDispatchRx hook', () => {
     const useDispatchRx = createDispatchRxHook(context);
 
     Component = () => {
-      const action = useDispatchRx(
+      const action = useDispatchRx<[number, string]>(
         (a: number, b: string) => ({ type: 'a', payload: { a, b } } as const),
-        map<[number, string], [number, string]>(([a, b]) => [a * 2, b + b]),
+        map(([a, b]) => [a * 2, b + b]),
       );
 
       action(2, '#');
@@ -65,7 +65,7 @@ describe('Check the useDispatchRx hook', () => {
         map<[number, string], [number, string]>(([a, b]) => [a * a, b + b]),
       );
 
-      action(2, '#');
+      action(2, '##');
 
       return React.createElement<any>('span');
     };
@@ -75,7 +75,7 @@ describe('Check the useDispatchRx hook', () => {
     });
 
     expect(dispatch).toHaveBeenCalledTimes(1);
-    expect(dispatch).toHaveBeenCalledWith({ payload: { a: 16, b: '####' }, type: 'a' });
+    expect(dispatch).toHaveBeenCalledWith({ payload: { a: 16, b: '########' }, type: 'a' });
     expect(getState).toHaveBeenCalledTimes(0);
     expect(subscribe).toHaveBeenCalledTimes(0);
   });
