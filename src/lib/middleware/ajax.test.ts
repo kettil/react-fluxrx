@@ -1,53 +1,36 @@
-/* tslint:disable:no-implicit-dependencies no-submodule-imports */
 import { Observable } from 'rxjs';
 import { AjaxError } from 'rxjs/ajax';
 import { SinonFakeServer, useFakeServer } from 'sinon';
-
 import { ajax } from './ajax';
 
-/**
- *
- */
 describe('Check the ajax middleware', () => {
   let xhr: SinonFakeServer;
 
   beforeEach(() => {
+    const cType = { 'Content-Type': 'application/json' };
+
+    const response1 = {
+      status: 'ok',
+      items: [
+        { id: 5, text: 'first', completed: false },
+        { id: 9, text: 'second', completed: true },
+      ],
+    };
+    const response2 = { status: 'ok', action: { type: 'add', payload: { id: 5, text: 'five', completed: false } } };
+    const response3 = { status: 'ok', item: { id: 7, text: 'new', completed: false } };
+
     xhr = useFakeServer();
 
-    xhr.respondWith('GET', 'https://localhost/api/todos', [
-      200,
-      { 'Content-Type': 'application/json' },
-      JSON.stringify({
-        status: 'ok',
-        items: [{ id: 5, text: 'first', completed: false }, { id: 9, text: 'second', completed: true }],
-      }),
-    ]);
-
-    xhr.respondWith('GET', 'https://localhost/api/todos?page=7', [200, { 'Content-Type': 'application/json' }, '']);
-
-    xhr.respondWith('GET', 'https://localhost/api/action/todos/5', [
-      200,
-      { 'Content-Type': 'application/json' },
-      JSON.stringify({ status: 'ok', action: { type: 'add', payload: { id: 5, text: 'five', completed: false } } }),
-    ]);
-
-    xhr.respondWith('POST', 'https://localhost/api/todos', [
-      200,
-      { 'Content-Type': 'application/json' },
-      JSON.stringify({ status: 'ok', item: { id: 7, text: 'new', completed: false } }),
-    ]);
+    xhr.respondWith('GET', 'https://localhost/api/todos', [200, cType, JSON.stringify(response1)]);
+    xhr.respondWith('GET', 'https://localhost/api/todos?page=7', [200, cType, '']);
+    xhr.respondWith('GET', 'https://localhost/api/action/todos/5', [200, cType, JSON.stringify(response2)]);
+    xhr.respondWith('POST', 'https://localhost/api/todos', [200, cType, JSON.stringify(response3)]);
   });
 
-  /**
-   *
-   */
   afterEach(() => {
     xhr.restore();
   });
 
-  /**
-   *
-   */
   test('it should be return the middleware object when logger() is called', () => {
     const result = ajax({ url: 'https://localhost' });
 
@@ -56,9 +39,6 @@ describe('Check the ajax middleware', () => {
     });
   });
 
-  /**
-   *
-   */
   test('it should be no request call when the middleware.action() is called without ajax data', () => {
     const dispatch = jest.fn();
     const reducer = jest.fn();
@@ -91,16 +71,16 @@ describe('Check the ajax middleware', () => {
   });
 
   describe('Call middleware.action() with ajax data', () => {
-    /**
-     *
-     */
     test('it should be request call when action() is called and silent mode is on', (done) => {
       expect.assertions(10);
 
       xhr.respondWith('GET', 'https://localhost/api/todos', [
         200,
         { 'Content-Type': 'application/json' },
-        JSON.stringify([{ id: 5, text: 'first', completed: false }, { id: 9, text: 'second', completed: true }]),
+        JSON.stringify([
+          { id: 5, text: 'first', completed: false },
+          { id: 9, text: 'second', completed: true },
+        ]),
       ]);
 
       const reducer = jest.fn();
@@ -160,9 +140,6 @@ describe('Check the ajax middleware', () => {
       xhr.respond();
     });
 
-    /**
-     *
-     */
     test('it should be request call when action() is called and with a callback', (done) => {
       expect.assertions(14);
 
@@ -221,14 +198,10 @@ describe('Check the ajax middleware', () => {
 
         // ajax
         ajax: {
-          path: '/api/todos',
-          data: () => ({
-            item: {
-              completed: false,
-              text: 'new',
-            },
-          }),
-          response: (responseData: Record<string, any>, responseStatus: number, responseType: string) => {
+          path: 'https://localhost/api/todos',
+          data: { item: { completed: false, text: 'new' } },
+          ignoreUrl: true,
+          success: (responseData: Record<string, any>, responseStatus: number, responseType: string) => {
             expect(responseStatus).toBe(200);
             expect(responseData).toEqual({ item: { completed: false, id: 7, text: 'new' }, status: 'ok' });
             expect(responseType).toBe('json');
@@ -247,9 +220,10 @@ describe('Check the ajax middleware', () => {
         type: 'load',
         payload: { showLoader: true },
         ajax: {
-          path: '/api/todos',
-          data: expect.any(Function),
-          response: expect.any(Function),
+          path: 'https://localhost/api/todos',
+          ignoreUrl: true,
+          data: { item: { completed: false, text: 'new' } },
+          success: expect.any(Function),
         },
       });
 
@@ -259,9 +233,6 @@ describe('Check the ajax middleware', () => {
       xhr.respond();
     });
 
-    /**
-     *
-     */
     test('it should be request call when action() is called and the response data has an action structure (without whitelist)', (done) => {
       expect.assertions(11);
 
@@ -335,9 +306,6 @@ describe('Check the ajax middleware', () => {
       xhr.respond();
     });
 
-    /**
-     *
-     */
     test('it should be request call when action() is called, response data has an action structure and action type is in the whitelist', (done) => {
       expect.assertions(11);
 
@@ -411,9 +379,6 @@ describe('Check the ajax middleware', () => {
       xhr.respond();
     });
 
-    /**
-     *
-     */
     test('it should be throw an error when action() is called, response data has an action structure and action type is not in the whitelist', (done) => {
       expect.assertions(12);
 
@@ -481,9 +446,6 @@ describe('Check the ajax middleware', () => {
       xhr.respond();
     });
 
-    /**
-     *
-     */
     test('it should be nothing when action() is called and without response handler', (done) => {
       expect.assertions(10);
 
@@ -543,9 +505,6 @@ describe('Check the ajax middleware', () => {
       xhr.respond();
     });
 
-    /**
-     *
-     */
     test('it should be throw an error when action() is called and url is wrong', (done) => {
       expect.assertions(12);
 
@@ -605,6 +564,68 @@ describe('Check the ajax middleware', () => {
         ajax: {
           path: '/api/todoss',
           method: 'GET',
+        },
+      });
+
+      expect(reducer).toHaveBeenCalledTimes(0);
+      expect(dispatch).toHaveBeenCalledTimes(1);
+
+      xhr.respond();
+    });
+
+    test('it should be throw an error callback when action() is called and url is wrong', (done) => {
+      expect.assertions(10);
+
+      const reducer = jest.fn();
+      const dispatch = jest.fn((action$: Observable<any>) =>
+        action$.subscribe(
+          (data) => {
+            expect(data).toEqual({ payload: { showError: true }, type: 'error' });
+          },
+          done,
+          done,
+        ),
+      );
+
+      const result = ajax({ url: 'https://localhost' });
+      expect(result).toEqual({ action: expect.any(Function) });
+
+      const callback = result.action as (...args: any[]) => void;
+      expect(callback.length).toBe(4);
+
+      const action = {
+        type: 'load',
+        payload: { showLoader: true },
+
+        // ajax
+        ajax: {
+          path: '/api/todoss',
+          method: 'GET',
+          error: (err: any) => {
+            expect(err).toBeInstanceOf(AjaxError);
+            expect(err.message).toBe('ajax error 404');
+            expect(err.status).toBe(404);
+
+            return {
+              type: 'error',
+              payload: {
+                showError: true,
+              },
+            };
+          },
+        },
+      };
+
+      const value = callback(action, {}, dispatch, reducer);
+      expect(value).toBe(action);
+      expect(value).toEqual({
+        type: 'load',
+        payload: { showLoader: true },
+
+        ajax: {
+          path: '/api/todoss',
+          method: 'GET',
+          error: expect.any(Function),
         },
       });
 

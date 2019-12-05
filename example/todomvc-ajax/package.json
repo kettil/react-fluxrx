@@ -20,10 +20,10 @@
   "devDependencies": {
     "@types/classnames": "^2.2.9",
     "@types/json-server": "^0.14.2",
-    "@types/node": "^12.12.7",
-    "@types/react": "^16.9.11",
+    "@types/node": "^12.12.14",
+    "@types/react": "^16.9.13",
     "@types/react-dom": "^16.9.4",
-    "@types/react-router-dom": "^5.1.2",
+    "@types/react-router-dom": "^5.1.3",
     "concurrently": "^5.0.0",
     "json-server": "^0.15.1",
     "typescript": "^3.7.2"
@@ -31,8 +31,8 @@
   "dependencies": {
     "classnames": "^2.2.6",
     "isomorphic-unfetch": "^3.0.0",
-    "react": "^16.11.0",
-    "react-dom": "^16.11.0",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
     "react-fluxrx": "file:.module",
     "react-router-dom": "^5.1.2",
     "react-scripts": "^3.2.0",

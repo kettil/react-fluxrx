@@ -1,149 +1,135 @@
-/* tslint:disable:no-submodule-imports */
 import { Observable, Subscription } from 'rxjs';
-import { AjaxRequest } from 'rxjs/ajax';
+import { AjaxError, AjaxRequest } from 'rxjs/ajax';
 
 //
-// User Types
+// Factory
 //
 
-export type dispatchType = storeDispatchType;
+export type GetStateTypeFactory<State> = GetStateType<State>;
 
-export type ActionReturnType<T extends Record<string, any>> = {
-  [K in keyof T]: ReturnType<T[K]>;
-}[keyof T] &
-  actionType;
+export type ActionTypeFactory<State> = ActionType<State>;
+
+// This typing extracts the action objects from the action functions
+export type ActionReturnType<State, T extends Record<string, any>> = {
+  [K in keyof T]: AFilter<ARules<State, ReturnType<T[K]>>>;
+}[keyof T];
+
+type ARPromise<V, O> = V extends Promise<infer S> ? ARObservable<S, S> : O;
+type ARObservable<V, O> = V extends Observable<infer S> ? S : O;
+type ARFunction<S, V, O> = ARFunctionState<S, V, ARFunctionOther<V, O>>;
+type ARFunctionState<S, V, O> = V extends (getState: GetStateType<S>) => infer R ? ARPromise<R, ARObservable<R, R>> : O;
+type ARFunctionOther<V, O> = V extends () => void ? never : O;
+type ARules<S, V> = ARPromise<V, ARObservable<V, ARFunction<S, V, V>>>;
+type AFilter<V> = V extends { type: string } ? V : never;
 
 //
 // Action
 //
 
-export type actionType<State = any, Payload = any> = {
-  type: TypeAction;
-  payload: Payload;
-
-  // options
-  withoutMiddleware?: boolean;
+export type ActionType<State = any> = {
+  readonly type: string;
+  readonly payload: TypePayload;
 
   // socket.io
-  sync?: boolean;
+  ws?:
+    | boolean
+    | {
+        // overwrite the type in the websocket context
+        readonly type?: string;
+        // overwrite the payload in the websocket context
+        readonly payload?: TypePayload;
+      };
 
   // ajax
   ajax?: {
-    path: string;
-    method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
-    data?: Record<string, any> | ((state: State) => Record<string, any> | void);
-    options?: AjaxRequest;
-    silent?: boolean;
-    response?: (data: unknown, status: number, type: string) => actionSubjectType | actionSubjectType[];
+    readonly path: string;
+    readonly method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
+    readonly data?: TypePayload;
+    readonly options?: AjaxRequest;
+    readonly silent?: boolean;
+    readonly ignoreUrl?: boolean;
+    readonly success?: (data: unknown, status: number, type: string) => ActionSubjectType<State>;
+    readonly error?: (err: AjaxError) => ActionSubjectType<State>;
   };
+
+  // options
+  readonly ignoreMiddleware?: boolean;
 };
 
-export type actionSubjectShortType<State = any, Payload = any> =
-  | actionType<State, Payload>
-  | Promise<actionType<State, Payload>>
-  | Observable<actionType<State, Payload>>;
+export type ActionSubjectType<State = any> =
+  | ActionType<State>
+  | Observable<ActionType<State>>
+  | Promise<ActionType<State> | Observable<ActionType<State>>>;
 
-export type actionSubjectType<State = any, Payload = any> =
-  | actionType<State, Payload>
-  | Array<actionType<State, Payload>>
-  | Promise<actionType<State, Payload>>
-  | Observable<actionType<State, Payload>>;
+export type ActionSubjectExtendType<State = any> = ActionSubjectType<State> | ActionCallbackType<State>;
 
-//
-// Connect
-//
+export type ActionCallbackType<State = any> = (getState: GetStateType<State>) => ActionSubjectType<State>;
 
-export type mapStateToPropsType<State, Props, MapState> = (state: State, ownProps: Props) => MapState;
+export type ActionFunctionType<State, T extends any[]> = (...args: T) => ActionSubjectExtendType<State>;
 
-export type mapDispatchToPropsType<Props, MapDispatch> = (dispatch: storeDispatchType, ownProps: Props) => MapDispatch;
-
-export type ComponentConnected<MapState, MapDispatch, ConnectedProps, ComponentProps> = (
-  props: RequiredProps<MapState, MapDispatch, ComponentProps> &
-    PartialProps<MapState, MapDispatch, ComponentProps> &
-    ConnectedProps,
-) => JSX.Element;
-
-export type RequiredProps<MapState, MapDispatch, Props> = {
-  [K in Exclude<keyof Props, keyof MapState | keyof MapDispatch> &
-    NonNullable<FilterRequired<Props>[keyof FilterRequired<Props>]>]: Props[K];
-};
-
-export type PartialProps<MapState, MapDispatch, Props> = {
-  [K in Exclude<keyof Props, keyof MapState | keyof MapDispatch> &
-    NonNullable<FilterPartial<Props>[keyof FilterPartial<Props>]>]?: Props[K];
-};
+export type ActionVoidType<T extends any[]> = (...args: T) => void;
 
 //
 // Store
 //
 
-export type storeDispatchType<State = any, Payload = any> = (action: actionSubjectType<State, Payload>) => void;
+export type GetStateType<State> = () => State;
 
-export type storeSubscribeType<State> = (state: State) => void;
+export type StoreDispatchType<State = any> = (action: ActionSubjectExtendType<State>) => void;
 
-export type storeType<State, Payload = any> = {
-  subscribe: (next: storeSubscribeType<State>) => Subscription;
-  dispatch: storeDispatchType<State, Payload>;
-  getState: () => State;
+export type StoreSubscribeType<State> = (state: State) => void;
+
+export type StoreType<State> = {
+  readonly subscribe: (next: StoreSubscribeType<State>) => Subscription;
+  readonly dispatch: StoreDispatchType<State>;
+  readonly getState: GetStateType<State>;
 };
 
-export type storeSetStateType<State> = (state: State) => void;
-
-export type storeErrorHandlerType<State> = (err: any, dispatch: storeDispatchType<State>, state: State) => void;
+export type StoreErrorHandlerType<State> = (
+  err: any,
+  dispatch: StoreDispatchType<State>,
+  getState: GetStateType<State>,
+) => void;
 
 //
 // Reducer
 //
 
-export type reducersType<State, Action extends actionType = any> = {
-  [K in keyof State]: reducerType<State[K], Action>;
+export type ReducersType<State, Action extends ActionType = any> = {
+  [K in keyof State]: ReducerType<State[K], Action>;
 };
 
-export type reducerType<State, Action extends actionType = any> = (state: State | undefined, action: Action) => State;
+export type ReducerType<State, Action extends ActionType = any> = (state: State | undefined, action: Action) => State;
 
 //
 // Middleware
 //
 
-export type middlewareType<State> = {
-  init?: middlewareInitType<State>;
-  action?: middlewareActionType<State>;
-  error?: middlewareErrorType<State>;
+export type MiddlewareType<State> = {
+  readonly init?: MiddlewareInitType<State>;
+  readonly action?: MiddlewareActionType<State>;
+  readonly error?: MiddlewareErrorType<State>;
 };
 
-export type middlewareInitType<State, Payload = any> = (
-  state: State,
-  dispatch: storeDispatchType<State, Payload>,
-  updateDirectly: storeSubscribeType<State>,
+export type MiddlewareInitType<State> = (
+  getState: GetStateType<State>,
+  dispatch: StoreDispatchType<State>,
+  updateDirectly: StoreSubscribeType<State>,
 ) => void;
 
-export type middlewareActionType<State, Payload = any> = (
-  action: actionType,
-  state: State,
-  dispatch: storeDispatchType<State, Payload>,
-  reducer: reducerType<State>,
-) => actionSubjectShortType;
+export type MiddlewareActionType<State> = (
+  action: ActionType,
+  getState: GetStateType<State>,
+  dispatch: StoreDispatchType<State>,
+  reducer: ReducerType<State>,
+) => ActionSubjectType;
 
-export type middlewareErrorType<State> = storeErrorHandlerType<State>;
+export type MiddlewareErrorType<State> = StoreErrorHandlerType<State>;
 
 //
 // Helper
 //
 
-export type TypeAction = string | symbol;
-
-export type ExtractProps<T> = T extends new (props: infer U1) => any
-  ? U1
-  : T extends (props: infer U2) => any
-  ? U2
-  : {};
+export type TypePayload = Record<string, any>;
 
 export type UnpackedArray<T> = T extends Array<infer U> ? U : T;
-
-export type FilterRequired<T> = {
-  [K in keyof T]: Extract<T[K], undefined> extends never ? K : undefined;
-};
-
-export type FilterPartial<T> = {
-  [K in keyof T]: Extract<T[K], undefined> extends never ? undefined : K;
-};

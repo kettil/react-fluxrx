@@ -1,14 +1,11 @@
-import create from './lib/app';
+import app from './lib/app';
+import retryByError from './lib/utils/retryByError';
 
 export { middleware } from './lib/middleware';
 export { combineReducers } from './lib/reducers';
-export { getUniqueAction } from './lib/utils/helper';
 export { actionFlat, actions, actionValidate } from './lib/utils/store';
-export { bindActions } from './lib/utils/connect';
+export { hocOptimize } from './lib/utils/React';
+export { UnpackedArray, ActionReturnType, GetStateTypeFactory, ActionTypeFactory } from './lib/types';
 
-export { dispatchType, UnpackedArray, ActionReturnType } from './lib/types';
-
-/**
- *
- */
-export default create;
+export const operators = { retryByError };
+export const createStore = app;

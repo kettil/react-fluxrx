@@ -1,24 +1,21 @@
-import React, { createContext } from 'react';
-
-import createConnect from './connect';
+import { createContext } from 'react';
+import { createDispatchHook } from './hooks/useDispatch';
+import { createDispatchDebounceHook } from './hooks/useDispatchDebounce';
+import { createDispatchRxHook } from './hooks/useDispatchRx';
+import { createDispatchThrottleHook } from './hooks/useDispatchThrottle';
+import { createSelectorHook } from './hooks/useSelector';
+import { createStoreHook } from './hooks/useStore';
 import createStore from './store';
+import { MiddlewareType, ReducerType } from './types';
 
-import { middlewareType, reducerType, storeType } from './types';
-
-/**
- *
- * @param reducer
- * @param init
- * @param options
- */
 export const app = <State>(
-  reducer: reducerType<State>,
+  reducer: ReducerType<State>,
   init?: State,
   {
     middleware,
     timeDebounce,
   }: {
-    middleware?: Array<middlewareType<State>>;
+    middleware?: Array<MiddlewareType<State>>;
     timeDebounce?: number;
   } = {},
 ) => {
@@ -30,25 +27,30 @@ export const app = <State>(
   const store = createStore(reducer, init, middleware, timeDebounce);
 
   // create a react context instance
-  // https://reactjs.org/docs/context.html
   const context = createContext(store);
-  const Consumer: React.Consumer<storeType<State>> = context.Consumer;
-  const Provider: React.Provider<storeType<State>> = context.Provider;
 
-  const connect = createConnect(context);
+  // hooks
+  const useStore = createStoreHook(context);
+  const useSelector = createSelectorHook(context);
+  const useDispatch = createDispatchHook(context);
+  const useDispatchRx = createDispatchRxHook(context);
+  const useDispatchDebounce = createDispatchDebounceHook(context);
+  const useDispatchThrottle = createDispatchThrottleHook(context);
 
   return {
     // store
     store,
-    // linking function to the react component
-    connect,
+    // hooks
+    useSelector,
+    useStore,
+    useDispatch,
+    useDispatchRx,
+    useDispatchDebounce,
+    useDispatchThrottle,
     // React Context
-    Provider,
-    Consumer,
+    Consumer: context.Consumer,
+    Provider: context.Provider,
   };
 };
 
-/**
- *
- */
 export default app;

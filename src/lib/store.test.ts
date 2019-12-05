@@ -1,9 +1,7 @@
 // tslint:disable:no-console
-import { of } from 'rxjs';
-
-import { middlewareInitType } from './types';
-
+import { of, throwError } from 'rxjs';
 import { createStore } from './store';
+import { MiddlewareInitType } from './types';
 
 const reducer = jest.fn((a, b) => ({ ...a, action: [...a.action, b.payload] }));
 
@@ -12,18 +10,12 @@ const middlewareAction1 = jest.fn((a) => a);
 const middlewareAction2 = jest.fn(async (a) => a);
 const middlewareError1 = jest.fn();
 
-/**
- *
- */
 describe('Check the store', () => {
   let state: any;
   let middleware: any[];
 
-  /**
-   *
-   */
   beforeEach(() => {
-    state = { todos: [1, 3, 5], users: { firstname: 'a', lastname: 'z' }, action: [] };
+    state = { action: [] };
 
     middleware = [
       { action: middlewareAction1, error: middlewareError1 },
@@ -31,9 +23,6 @@ describe('Check the store', () => {
     ];
   });
 
-  /**
-   *
-   */
   test('initialize the store', () => {
     const store = createStore(reducer, state, middleware);
 
@@ -43,19 +32,16 @@ describe('Check the store', () => {
       subscribe: expect.any(Function),
     });
 
-    expect(store.getState()).toEqual({ action: [], todos: [1, 3, 5], users: { firstname: 'a', lastname: 'z' } });
+    expect(store.getState()).toEqual({ action: [] });
     expect(reducer).toHaveBeenCalledTimes(0);
 
     expect(middlewareInit2).toHaveBeenCalledTimes(1);
-    expect(middlewareInit2).toHaveBeenCalledWith(state, store.dispatch, expect.any(Function));
+    expect(middlewareInit2).toHaveBeenCalledWith(store.getState, store.dispatch, expect.any(Function));
     expect(middlewareAction1).toHaveBeenCalledTimes(0);
     expect(middlewareAction2).toHaveBeenCalledTimes(0);
     expect(middlewareError1).toHaveBeenCalledTimes(0);
   });
 
-  /**
-   *
-   */
   test('it should be that the initial state is passed when subscribing', (done) => {
     expect.assertions(3);
 
@@ -70,22 +56,21 @@ describe('Check the store', () => {
     expect(reducer).toHaveBeenCalledTimes(0);
 
     store.subscribe((newState) => {
-      expect(newState).toEqual({ todos: [1, 3, 5], users: { firstname: 'a', lastname: 'z' }, action: [] });
+      expect(newState).toEqual({ action: [] });
       done();
     });
   });
 
-  /**
-   *
-   */
   test('it should be that the last state is passed when subscribing', (done) => {
     expect.assertions(11);
+
+    const getState = expect.any(Function);
 
     const store = createStore(reducer, state, middleware, 5);
 
     expect(store).toEqual({
+      getState,
       dispatch: expect.any(Function),
-      getState: expect.any(Function),
       subscribe: expect.any(Function),
     });
 
@@ -96,24 +81,17 @@ describe('Check the store', () => {
     setTimeout(() => {
       store.subscribe((newState) => {
         try {
-          expect(newState).toEqual({
-            todos: [1, 3, 5],
-            users: { firstname: 'a', lastname: 'z' },
-            action: [{ lastname: 'q' }],
-          });
+          expect(newState).toEqual({ action: [{ lastname: 'q' }] });
 
           expect(reducer).toHaveBeenCalledTimes(1);
-          expect(reducer).toHaveBeenCalledWith(
-            { todos: [1, 3, 5], users: { firstname: 'a', lastname: 'z' }, action: [] },
-            action,
-          );
+          expect(reducer).toHaveBeenCalledWith({ action: [] }, action);
 
           expect(middlewareInit2).toHaveBeenCalledTimes(1);
-          expect(middlewareInit2).toHaveBeenCalledWith(state, store.dispatch, expect.any(Function));
+          expect(middlewareInit2).toHaveBeenCalledWith(store.getState, store.dispatch, expect.any(Function));
           expect(middlewareAction1).toHaveBeenCalledTimes(1);
-          expect(middlewareAction1).toHaveBeenCalledWith(action, state, store.dispatch, expect.any(Function));
+          expect(middlewareAction1).toHaveBeenCalledWith(action, store.getState, store.dispatch, expect.any(Function));
           expect(middlewareAction2).toHaveBeenCalledTimes(1);
-          expect(middlewareAction2).toHaveBeenCalledWith(action, state, store.dispatch, expect.any(Function));
+          expect(middlewareAction2).toHaveBeenCalledWith(action, store.getState, store.dispatch, expect.any(Function));
           expect(middlewareError1).toHaveBeenCalledTimes(0);
 
           done();
@@ -124,9 +102,6 @@ describe('Check the store', () => {
     }, 100);
   });
 
-  /**
-   *
-   */
   test('it should be that subscription callback is called twice when dispather is called twice', (done) => {
     expect.assertions(6);
 
@@ -146,15 +121,11 @@ describe('Check the store', () => {
       try {
         switch (i) {
           case 0:
-            expect(newState).toEqual({ action: [], todos: [1, 3, 5], users: { firstname: 'a', lastname: 'z' } });
+            expect(newState).toEqual({ action: [] });
             break;
 
           case 1:
-            expect(newState).toEqual({
-              action: [{ lastname: 'q' }],
-              todos: [1, 3, 5],
-              users: { firstname: 'a', lastname: 'z' },
-            });
+            expect(newState).toEqual({ action: [{ lastname: 'q' }] });
             done();
         }
 
@@ -167,25 +138,18 @@ describe('Check the store', () => {
     store.dispatch(of(action1, action2));
 
     expect(reducer).toHaveBeenCalledTimes(2);
-    expect(reducer).toHaveBeenNthCalledWith(
-      1,
-      { todos: [1, 3, 5], users: { firstname: 'a', lastname: 'z' }, action: [] },
-      { payload: { lastname: 'q' }, type: 'update' },
-    );
+    expect(reducer).toHaveBeenNthCalledWith(1, { action: [] }, { payload: { lastname: 'q' }, type: 'update' });
     expect(reducer).toHaveBeenNthCalledWith(
       2,
-      { todos: [1, 3, 5], users: { firstname: 'a', lastname: 'z' }, action: [{ lastname: 'q' }] },
+      { action: [{ lastname: 'q' }] },
       { payload: { firstname: 'b', lastname: 'y' }, type: 'add' },
     );
   });
 
-  /**
-   *
-   */
   test('it should be that the state is changed directly when updateDirectly() is called', (done) => {
     expect.assertions(2);
 
-    const middlewareInit: middlewareInitType<any> = (_1, _2, updateDirectly) => {
+    const middlewareInit: MiddlewareInitType<any> = (_1, _2, updateDirectly) => {
       updateDirectly({ articles: [] });
     };
 
@@ -209,14 +173,11 @@ describe('Check the store', () => {
     });
   });
 
-  /**
-   *
-   */
   test('it should be that the state was restored and adjusted by action when the dispatcher was called after updateDirectly()', (done) => {
     expect.assertions(2);
 
-    const middlewareInit: middlewareInitType<any> = (_1, _2, updateDirectly) => {
-      updateDirectly({ articles: [] });
+    const middlewareInit: MiddlewareInitType<any> = (_1, _2, updateDirectly) => {
+      updateDirectly({ articles: [], action: [] });
     };
 
     const store = createStore(reducer, state, [{ init: middlewareInit }]);
@@ -231,7 +192,7 @@ describe('Check the store', () => {
 
     store.subscribe((newState) => {
       try {
-        expect(newState).toEqual({ action: [{ id: 5 }], todos: [1, 3, 5], users: { firstname: 'a', lastname: 'z' } });
+        expect(newState).toEqual({ action: [{ id: 5 }] });
         done();
       } catch (err) {
         done(err);
@@ -239,9 +200,6 @@ describe('Check the store', () => {
     });
   });
 
-  /**
-   *
-   */
   test('it should be that the default error handler is called when an incorrect action is passed without middleware', (done) => {
     jest.spyOn(console, 'error').mockImplementation();
 
@@ -262,7 +220,7 @@ describe('Check the store', () => {
     setTimeout(() => {
       store.subscribe((newState) => {
         try {
-          expect(newState).toEqual({ action: [], todos: [1, 3, 5], users: { firstname: 'a', lastname: 'z' } });
+          expect(newState).toEqual({ action: [] });
 
           expect(console.error).toHaveBeenCalledTimes(1);
           expect(console.error).toHaveBeenCalledWith(expect.any(Error));
@@ -277,9 +235,6 @@ describe('Check the store', () => {
     }, 100);
   });
 
-  /**
-   *
-   */
   test('it should be that the middleware error handler is called when an error is thrown', (done) => {
     expect.assertions(4);
 
@@ -303,10 +258,10 @@ describe('Check the store', () => {
 
     store.subscribe((newState) => {
       try {
-        expect(newState).toEqual({ action: [], todos: [1, 3, 5], users: { firstname: 'a', lastname: 'z' } });
+        expect(newState).toEqual({ action: [] });
 
         expect(middlewareError).toHaveBeenCalledTimes(1);
-        expect(middlewareError).toHaveBeenCalledWith(error, store.dispatch, state);
+        expect(middlewareError).toHaveBeenCalledWith(error, store.dispatch, store.getState);
         done();
       } catch (err) {
         done(err);
@@ -314,9 +269,6 @@ describe('Check the store', () => {
     });
   });
 
-  /**
-   *
-   */
   test('it should be that an error was caught when a middleware init has thrown an error', () => {
     jest.spyOn(console, 'error').mockImplementation();
 
@@ -336,9 +288,6 @@ describe('Check the store', () => {
     }
   });
 
-  /**
-   *
-   */
   test('it should be that the default error handler is called when the middleware error handler has thrown an error', () => {
     jest.spyOn(console, 'error').mockImplementation();
 
@@ -365,5 +314,24 @@ describe('Check the store', () => {
     expect(console.error).toHaveBeenCalledTimes(1);
     expect(console.error).toHaveBeenCalledWith(expect.any(Error));
     expect((console.error as jest.Mock).mock.calls[0][0].message).toBe('middleware error');
+  });
+
+  test('it should be reduce a action normaly after a faulty action', () => {
+    expect.assertions(4);
+
+    const subscribtion = jest.fn();
+
+    const store = createStore(reducer, state, [{ error: () => undefined }]);
+
+    store.subscribe(subscribtion);
+
+    store.dispatch({ type: 'run1', payload: { id: 1 } });
+    store.dispatch(throwError('Test-Error'));
+    store.dispatch({ type: 'run1', payload: { id: 2 } });
+
+    expect(subscribtion).toHaveBeenCalledTimes(3);
+    expect(subscribtion).toHaveBeenNthCalledWith(1, { action: [] });
+    expect(subscribtion).toHaveBeenNthCalledWith(2, { action: [{ id: 1 }] });
+    expect(subscribtion).toHaveBeenNthCalledWith(3, { action: [{ id: 1 }, { id: 2 }] });
   });
 });

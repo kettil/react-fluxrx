@@ -1,15 +1,47 @@
 // tslint:disable:no-console
 import { isObservable, of } from 'rxjs';
+import {
+  actionCallback,
+  actionError,
+  actionFlat,
+  actions,
+  actionValidate,
+  reduceMiddleware,
+  reducerHandler,
+} from './store';
 
-import { actionError, actionFlat, actions, actionValidate, reduceMiddleware, reducerHandler } from './store';
-
-/**
- *
- */
 describe('Check the store functions', () => {
-  /**
-   *
-   */
+  test('it should be returned the return value of the function when actionCallback() is called with a function', (done) => {
+    expect.assertions(4);
+
+    const state = { todos: { items: [] } };
+    const callback = actionCallback(() => state);
+
+    expect(typeof callback).toBe('function');
+
+    const result$ = callback((getState) => {
+      expect(typeof getState).toBe('function');
+      expect(getState()).toEqual({ todos: { items: [] } });
+
+      return { type: 'test', payload: { value: 42 } } as const;
+    });
+
+    result$.subscribe((action) => expect(action).toEqual({ payload: { value: 42 }, type: 'test' }), done, done);
+  });
+
+  test('it should be returned the object when actionCallback() is called with an object', (done) => {
+    expect.assertions(2);
+
+    const state = { todos: { items: [] } };
+    const callback = actionCallback(() => state);
+
+    expect(typeof callback).toBe('function');
+
+    const result$ = callback({ type: 'test', payload: { value: 13 } } as const);
+
+    result$.subscribe((action) => expect(action).toEqual({ payload: { value: 13 }, type: 'test' }), done, done);
+  });
+
   test('it should be return a observable when actionFlat() is called with an object', () => {
     expect.assertions(2);
 
@@ -21,26 +53,6 @@ describe('Check the store functions', () => {
     });
   });
 
-  /**
-   *
-   */
-  test('it should be return a observable when actionFlat() is called with two objects', () => {
-    expect.assertions(3);
-
-    const result = actionFlat([{ type: 'qwerty', payload: { a: 1 } }, { type: 'qwerty', payload: { a: 2 } }]);
-    expect(isObservable(result)).toBe(true);
-
-    let a = 1;
-    result.subscribe((action) => {
-      expect(action).toEqual({ type: 'qwerty', payload: { a } });
-
-      a += 1;
-    });
-  });
-
-  /**
-   *
-   */
   test('it should be return a observable when actionFlat() is called with an observable', () => {
     expect.assertions(2);
 
@@ -52,9 +64,6 @@ describe('Check the store functions', () => {
     });
   });
 
-  /**
-   *
-   */
   test('it should be return a observable when actionFlat() is called with a promise', () => {
     expect.assertions(2);
 
@@ -69,9 +78,6 @@ describe('Check the store functions', () => {
   const testActionValidateSuccess: Array<[any]> = [['qwerty'], [Symbol('test')]];
   const testActionValidateFailed: Array<[any]> = [['action'], [{ type: 5, payload: 'test' }], [{ type: 'a' }]];
 
-  /**
-   *
-   */
   test.each(testActionValidateSuccess)(
     'it should no error is thrown when actionValidate() is called with a correct action (%p)',
     (type) => {
@@ -79,9 +85,6 @@ describe('Check the store functions', () => {
     },
   );
 
-  /**
-   *
-   */
   test.each(testActionValidateSuccess)(
     'it should no error is thrown when actionValidate() is called with a correct action and return value (%p)',
     (type) => {
@@ -91,9 +94,6 @@ describe('Check the store functions', () => {
     },
   );
 
-  /**
-   *
-   */
   test.each(testActionValidateFailed)(
     'it should be throw an error when actionValidate() is called with a corrupted action (%p)',
     (action) => {
@@ -107,9 +107,6 @@ describe('Check the store functions', () => {
     },
   );
 
-  /**
-   *
-   */
   test.each(testActionValidateFailed)(
     'it should be throw an error when actionValidate() is called with a corrupted action and return value (%p)',
     (action) => {
@@ -119,13 +116,11 @@ describe('Check the store functions', () => {
     },
   );
 
-  /**
-   *
-   */
   test('it should be return the observable when actionError() is called', () => {
     const getStateMock = jest.fn().mockReturnValue({ a: 42 });
     const dispatchMock = jest.fn();
     const subscribeMock = jest.fn();
+
     const errorHandlersMock1 = jest.fn();
     const errorHandlersMock2 = jest.fn();
 
@@ -147,25 +142,23 @@ describe('Check the store functions', () => {
 
     expect(result$).toBe(actionMock$);
 
-    expect(getStateMock).toHaveBeenCalledTimes(1);
+    expect(getStateMock).toHaveBeenCalledTimes(0);
     expect(dispatchMock).toHaveBeenCalledTimes(0);
     expect(subscribeMock).toHaveBeenCalledTimes(0);
 
     expect(errorHandlersMock1).toHaveBeenCalledTimes(1);
-    expect(errorHandlersMock1).toHaveBeenCalledWith(errMock, dispatchMock, { a: 42 });
+    expect(errorHandlersMock1).toHaveBeenCalledWith(errMock, dispatchMock, getStateMock);
     expect(errorHandlersMock2).toHaveBeenCalledTimes(1);
-    expect(errorHandlersMock2).toHaveBeenCalledWith(errMock, dispatchMock, { a: 42 });
+    expect(errorHandlersMock2).toHaveBeenCalledWith(errMock, dispatchMock, getStateMock);
   });
 
-  /**
-   *
-   */
   test('it should be output the two errors when actionError() is called and the middleware are throwing errors', () => {
     jest.spyOn(console, 'error').mockImplementation();
 
     const getStateMock = jest.fn().mockReturnValue({ a: 42 });
     const dispatchMock = jest.fn();
     const subscribeMock = jest.fn();
+
     const errorHandlersMock1 = jest.fn().mockImplementation(() => {
       throw new Error('middleware error 1');
     });
@@ -191,23 +184,20 @@ describe('Check the store functions', () => {
 
     expect(result$).toBe(actionMock$);
 
-    expect(getStateMock).toHaveBeenCalledTimes(1);
+    expect(getStateMock).toHaveBeenCalledTimes(0);
     expect(dispatchMock).toHaveBeenCalledTimes(0);
     expect(subscribeMock).toHaveBeenCalledTimes(0);
 
     expect(errorHandlersMock1).toHaveBeenCalledTimes(1);
-    expect(errorHandlersMock1).toHaveBeenCalledWith(errMock, dispatchMock, { a: 42 });
+    expect(errorHandlersMock1).toHaveBeenCalledWith(errMock, dispatchMock, getStateMock);
     expect(errorHandlersMock2).toHaveBeenCalledTimes(1);
-    expect(errorHandlersMock2).toHaveBeenCalledWith(errMock, dispatchMock, { a: 42 });
+    expect(errorHandlersMock2).toHaveBeenCalledWith(errMock, dispatchMock, getStateMock);
 
     expect(console.error).toHaveBeenCalledTimes(2);
     expect(console.error).toHaveBeenNthCalledWith(1, expect.any(Error));
     expect(console.error).toHaveBeenNthCalledWith(2, expect.any(Error));
   });
 
-  /**
-   *
-   */
   test('it should be return the new state when reducerHandler() and his callback is called', () => {
     const reducer = jest.fn().mockReturnValue({ todos: [{ message: '......' }] });
 
@@ -224,9 +214,6 @@ describe('Check the store functions', () => {
     expect(reducer).toHaveBeenCalledWith({ todos: [] }, { payload: { message: '...' }, type: 'add' });
   });
 
-  /**
-   *
-   */
   test('it should be return the payload when reducerHandler() and his callback is called with the special action type "fullUpdate"', () => {
     const reducer = jest.fn();
 
@@ -245,9 +232,6 @@ describe('Check the store functions', () => {
     expect(reducer).toHaveBeenCalledTimes(0);
   });
 
-  /**
-   *
-   */
   test('it should be return the payload when reducerHandler() and his callback is called with the special action type "ignoreAction"', () => {
     const reducer = jest.fn();
 
@@ -266,9 +250,6 @@ describe('Check the store functions', () => {
     expect(reducer).toHaveBeenCalledTimes(0);
   });
 
-  /**
-   *
-   */
   test('it should be return only action middleware when reduceMiddleware() is called with the type "action"', () => {
     const init2 = jest.fn();
     const action1 = jest.fn();
@@ -286,9 +267,6 @@ describe('Check the store functions', () => {
     expect(result).toEqual([action1, action2, action3]);
   });
 
-  /**
-   *
-   */
   test('checks the keys of the object with the special action types', () => {
     expect(Object.keys(actions)).toEqual(['fullUpdate', 'ignoreAction']);
   });

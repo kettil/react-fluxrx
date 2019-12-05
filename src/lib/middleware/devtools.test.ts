@@ -5,25 +5,17 @@ const init = jest.fn();
 const send = jest.fn();
 const connect = jest.fn().mockReturnValue({ init, send, subscribe });
 const redux = jest.fn();
+const getState = jest.fn().mockImplementation(() => ({ isState: true }));
 const dispatch = jest.fn();
 const reducer = jest.fn().mockImplementation((state, action) => ({ state, action }));
 const updateDirectly = jest.fn();
 
-/**
- *
- */
 describe('Check the logger middleware', () => {
-  /**
-   *
-   */
   beforeEach(() => {
     (redux as any).connect = connect;
     (global as any).__REDUX_DEVTOOLS_EXTENSION__ = redux;
   });
 
-  /**
-   *
-   */
   test('it should be return the middleware object when devTools() is called and the devTools variable is defined', () => {
     const result = devTools();
 
@@ -36,9 +28,6 @@ describe('Check the logger middleware', () => {
     expect(connect).toHaveBeenCalledTimes(1);
   });
 
-  /**
-   *
-   */
   test('it should be return the middleware object when devTools() is called and the devTools variable is undefined', () => {
     (global as any).__REDUX_DEVTOOLS_EXTENSION__ = undefined;
 
@@ -49,9 +38,6 @@ describe('Check the logger middleware', () => {
     expect(connect).toHaveBeenCalledTimes(0);
   });
 
-  /**
-   *
-   */
   test('it should be output of the message when the middleware.init() is called', () => {
     const result = devTools();
 
@@ -64,7 +50,7 @@ describe('Check the logger middleware', () => {
 
     expect(callback.length).toBe(3);
 
-    callback({ isState: true }, dispatch, updateDirectly);
+    callback(getState, dispatch, updateDirectly);
 
     expect(redux).toHaveBeenCalledTimes(0);
     expect(connect).toHaveBeenCalledTimes(1);
@@ -75,6 +61,7 @@ describe('Check the logger middleware', () => {
     expect(subscribe).toHaveBeenCalledWith(expect.any(Function));
     expect(send).toHaveBeenCalledTimes(0);
 
+    expect(getState).toHaveBeenCalledTimes(1);
     expect(dispatch).toHaveBeenCalledTimes(0);
     expect(updateDirectly).toHaveBeenCalledTimes(0);
   });
@@ -106,9 +93,6 @@ describe('Check the logger middleware', () => {
     ['nothing', 'UNKNOWN', { type: 'ACTION' }, 0, 0],
   ];
 
-  /**
-   *
-   */
   test.each(testDataInit)(
     'it should be %s is called when callback() from middleware.init() is called with type "%s"',
     (_1, _2, message, countDispatch, countUpdateDirectly) => {
@@ -123,7 +107,7 @@ describe('Check the logger middleware', () => {
 
       expect(callbackInit.length).toBe(3);
 
-      callbackInit({ isState: true }, dispatch, updateDirectly);
+      callbackInit(getState, dispatch, updateDirectly);
 
       expect(redux).toHaveBeenCalledTimes(0);
       expect(connect).toHaveBeenCalledTimes(1);
@@ -138,6 +122,7 @@ describe('Check the logger middleware', () => {
 
       callback(message);
 
+      expect(getState).toHaveBeenCalledTimes(1);
       expect(dispatch).toHaveBeenCalledTimes(countDispatch);
       if (countDispatch > 0) {
         expect(dispatch).toHaveBeenCalledWith({ isPayload: true });
@@ -150,10 +135,9 @@ describe('Check the logger middleware', () => {
     },
   );
 
-  /**
-   *
-   */
   test('it should be send() is called when the middleware.action() is called', () => {
+    getState.mockReturnValue({ initState: true });
+
     const result = devTools();
 
     expect(result).toEqual({
@@ -161,28 +145,29 @@ describe('Check the logger middleware', () => {
       init: expect.any(Function),
     });
 
-    (result.init as (...args: any[]) => void)({ iniState: true });
+    (result.init as (...args: any[]) => void)(getState);
     const callback = result.action as (...args: any[]) => void;
 
     expect(callback.length).toBe(4);
 
-    callback({ type: 'add', payload: { message: '...' } }, { isState: true }, dispatch, reducer);
+    callback({ type: 'add', payload: { message: '...' } }, getState, dispatch, reducer);
 
     expect(redux).toHaveBeenCalledTimes(0);
     expect(connect).toHaveBeenCalledTimes(1);
 
     expect(init).toHaveBeenCalledTimes(1);
-    expect(init).toHaveBeenCalledWith({ iniState: true });
+    expect(init).toHaveBeenCalledWith({ initState: true });
     expect(subscribe).toHaveBeenCalledTimes(1);
     expect(subscribe).toHaveBeenCalledWith(expect.any(Function));
     expect(send).toHaveBeenCalledTimes(1);
     expect(send).toHaveBeenCalledWith(
       { payload: { message: '...' }, type: 'add' },
-      { action: { payload: { message: '...' }, type: 'add' }, state: { iniState: true } },
+      { action: { payload: { message: '...' }, type: 'add' }, state: { initState: true } },
     );
 
+    expect(getState).toHaveBeenCalledTimes(1);
     expect(dispatch).toHaveBeenCalledTimes(0);
     expect(reducer).toHaveBeenCalledTimes(1);
-    expect(reducer).toHaveBeenCalledWith({ iniState: true }, { payload: { message: '...' }, type: 'add' });
+    expect(reducer).toHaveBeenCalledWith({ initState: true }, { payload: { message: '...' }, type: 'add' });
   });
 });

@@ -1,31 +1,40 @@
 import { from, isObservable, Observable, of } from 'rxjs';
+import { mergeMap } from 'rxjs/operators';
+import {
+  ActionSubjectExtendType,
+  ActionSubjectType,
+  ActionType,
+  GetStateType,
+  MiddlewareType,
+  ReducerType,
+  StoreErrorHandlerType,
+  StoreType,
+} from '../types';
+import { defaultErrorHandler, isActionPayload, isActionType, isObject, isPromise } from './helper';
 
-import { defaultErrorHandler, getUniqueAction, isActionPayload, isActionType, isObject, isPromise } from './helper';
+export const actionCallback = <State>(getState: GetStateType<State>) => (
+  action: ActionSubjectExtendType<State>,
+): Observable<ActionSubjectType<State>> => {
+  if (!isObservable(action) && !isPromise(action) && typeof action === 'function') {
+    return actionFlat(action(getState));
+  }
 
-import { actionSubjectType, actionType, middlewareType, reducerType, storeErrorHandlerType, storeType } from '../types';
+  return of(action);
+};
 
-/**
- *
- * @param action
- */
-export const actionFlat = (action: actionSubjectType): Observable<actionType> => {
+export const actionFlat = <State>(action: ActionSubjectType<State>): Observable<ActionType<State>> => {
   if (isObservable(action)) {
     return action;
   }
 
   if (isPromise(action)) {
-    return from(action);
+    return from(action).pipe(mergeMap(actionFlat));
   }
 
-  return Array.isArray(action) ? of(...action) : of(action);
+  return of(action);
 };
 
-/**
- *
- * @param action
- * @param withReturn
- */
-export const actionValidate = (action: any, withReturn = false): action is actionType => {
+export const actionValidate = (action: any, withReturn = false): action is ActionType => {
   if (isObject(action) && isActionType(action.type) && isActionPayload(action.payload)) {
     return true;
   }
@@ -37,66 +46,49 @@ export const actionValidate = (action: any, withReturn = false): action is actio
   throw new Error(`Incorrect action structure (${JSON.stringify(action)})`);
 };
 
-/**
- *
- * @param errorHandler
- * @param store
- */
-export const actionError = <State>(errorHandlers: Array<storeErrorHandlerType<State>>, store: storeType<State>) => {
-  return (err: any, action$: Observable<State>) => {
-    const state = store.getState();
+export const actionError = <State>(errorHandlers: Array<StoreErrorHandlerType<State>>, store: StoreType<State>) => <T>(
+  err: any,
+  rx$: Observable<T>,
+): Observable<T> => {
+  // evaluates the error message
+  errorHandlers.forEach((errorHandler) => {
+    try {
+      errorHandler(err, store.dispatch, store.getState);
+    } catch (err) {
+      defaultErrorHandler(err);
+    }
+  });
 
-    // evaluates the error message
-    errorHandlers.forEach((errorHandler) => {
-      try {
-        errorHandler(err, store.dispatch, state);
-      } catch (err) {
-        defaultErrorHandler(err);
-      }
-    });
-
-    // it is nothing
-    return action$;
-  };
+  return rx$;
 };
 
-/**
- *
- * @param reducer
- */
-export const reducerHandler = <State>(reducer: reducerType<State>): reducerType<State> => (
+export const reducerHandler = <State>(reducer: ReducerType<State>): ReducerType<State> => (
   state: State | undefined,
-  action: actionType<State>,
+  action: ActionType<State>,
 ): State => {
   switch (true) {
     case action.type === actions.ignoreAction:
       return state!;
 
     case action.type === actions.fullUpdate:
-      return action.payload;
+      // This is a special case where the complete state should be overwritten.
+      return action.payload as any;
 
     default:
       return reducer(state, action);
   }
 };
 
-/**
- *
- * @param middleware
- */
-export const reduceMiddleware = <State, K extends keyof middlewareType<State>>(
+export const reduceMiddleware = <State, K extends keyof MiddlewareType<State>>(
   type: K,
-  middleware: Array<middlewareType<State>>,
+  middleware: Array<MiddlewareType<State>>,
 ) => {
   return middleware.map((mw) => mw[type]).filter((funcs) => typeof funcs === 'function') as Array<
-    NonNullable<middlewareType<State>[K]>
+    NonNullable<MiddlewareType<State>[K]>
   >;
 };
 
-/**
- *
- */
 export const actions = {
-  fullUpdate: getUniqueAction('FULL_UPDATE_ACTION'),
-  ignoreAction: getUniqueAction('IGNORE_ACTION'),
-};
+  fullUpdate: '@@RX@@/ACTION_FULL_UPDATE',
+  ignoreAction: '@@RX@@/ACTION_IGNORE',
+} as const;

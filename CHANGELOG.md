@@ -4,9 +4,22 @@
 
 ### Features
 
+- Improved output for logging middleware
+- Rewrite higher-order component Connect
+- Add hooks: useDispatch, useSelector and useStore [[#3](https://github.com/kettil/react-fluxrx/issues/3)]
+- AJAX middleware: Add an error handler callback
+- AJAX middleware: Repeat the AJAX call if it fails [[#7](https://github.com/kettil/react-fluxrx/issues/7)]
+- AJAX middleware: Ignore the global URL [[#8](https://github.com/kettil/react-fluxrx/issues/8)]
+
 ### Fixes
 
 ### Chore & Maintenance
+
+- Remove the bindActions function
+- Remove the HOC connect function
+- Conversion to functional components and hooks in the example [TodoMVC with AJAX](./example/todomvc-ajax)
+- Conversion to functional components and hooks in the example [TodoMVC](./example/todomvc)
+- [Documentation](./documents) added [[#6](https://github.com/kettil/react-fluxrx/issues/6)]
 
 ### Performance
 

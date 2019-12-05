@@ -1,9 +1,6 @@
-import { middlewareType } from '../types';
+import { MiddlewareType } from '../types';
 
-/**
- *
- */
-export const devTools = <State>(): middlewareType<State> => {
+export const devTools = <State>(): MiddlewareType<State> => {
   const devToolsObject = typeof window !== 'undefined' && (window as any).__REDUX_DEVTOOLS_EXTENSION__;
 
   if (typeof devToolsObject !== 'function') {
@@ -16,10 +13,10 @@ export const devTools = <State>(): middlewareType<State> => {
   let cachedState: State;
 
   return {
-    init: (state, dispatch, updateDirectly) => {
-      cachedState = state;
+    init: (getState, dispatch, updateDirectly) => {
+      cachedState = getState();
 
-      devToolsInstance.init(state);
+      devToolsInstance.init(cachedState);
       devToolsInstance.subscribe((message: any) => {
         if (message.type && message.payload) {
           switch (message.type) {
@@ -36,7 +33,7 @@ export const devTools = <State>(): middlewareType<State> => {
       });
     },
 
-    action: (action, state, dispatch, reducer) => {
+    action: (action, getState, dispatch, reducer) => {
       cachedState = reducer(cachedState, action);
 
       devToolsInstance.send(action, cachedState);

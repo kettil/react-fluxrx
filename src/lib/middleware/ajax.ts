@@ -1,41 +1,52 @@
-/* tslint:disable:no-submodule-imports */
-import { empty } from 'rxjs';
-import { ajax as rxAjax, AjaxError, AjaxRequest } from 'rxjs/ajax';
-import { map, mergeMap } from 'rxjs/operators';
-
+import { empty, of, throwError } from 'rxjs';
+import { ajax as rxAjax, AjaxError, AjaxRequest, AjaxResponse } from 'rxjs/ajax';
+import { catchError, map, mergeMap } from 'rxjs/operators';
+import { ActionSubjectType, GetStateType, MiddlewareType } from '../types';
+import { isObject } from '../utils/helper';
+import retryByError from '../utils/retryByError';
 import { actionFlat, actionValidate } from '../utils/store';
 
-import { middlewareType, TypeAction } from '../types';
-
-/**
- *
- * @param url
- */
 export const ajax = <State>({
   url,
-  actionWhitelist,
   ajaxRequest = {},
   ajaxBody = {},
+  actionWhitelist,
+  timeout = 2500,
+  retries = 0,
+  delay = 1000,
 }: {
   url: string;
-  actionWhitelist?: TypeAction[];
   ajaxRequest?: AjaxRequest;
-  ajaxBody?: Record<string, any> | ((state: State) => Record<string, any> | void);
-}): middlewareType<State> => {
+  ajaxBody?: Record<string, any> | ((getState: GetStateType<State>) => Record<string, any> | void);
+  actionWhitelist?: string[];
+  timeout?: number;
+  retries?: number;
+  delay?: number[] | number;
+}): MiddlewareType<State> => {
   return {
-    action: (action, state, dispatch, reducer) => {
-      if (typeof action.ajax === 'object' && typeof action.ajax.path === 'string') {
-        const { path, data = {}, response: next, method = 'POST', silent = false, options = {} } = action.ajax;
+    action: (action, getState, dispatch, reducer) => {
+      if (isObject(action.ajax) && typeof action.ajax.path === 'string') {
+        const {
+          path,
+          data = {},
+          method = 'POST',
+          silent = false,
+          options = {},
+          success,
+          error,
+          ignoreUrl = false,
+        } = action.ajax;
 
         const body: AjaxRequest['body'] = {
-          ...(typeof ajaxBody === 'function' ? ajaxBody(state) : ajaxBody),
-          ...(typeof data === 'function' ? data(state) : data),
+          ...(typeof ajaxBody === 'function' ? ajaxBody(getState) : ajaxBody),
+          ...data,
         };
 
         const params: AjaxRequest = {
+          timeout,
           ...ajaxRequest,
           ...options,
-          url: url + path,
+          url: ignoreUrl === true ? path : url + path,
           body: Object.keys(body).length > 0 ? body : undefined,
           method,
           headers: {
@@ -47,27 +58,30 @@ export const ajax = <State>({
         };
 
         const observable = rxAjax(params).pipe(
-          map((ajaxResponse) => {
+          retryByError(retries, delay, (err) => !(err instanceof AjaxError) || err.status < 500),
+          map<AjaxResponse, ActionSubjectType<State>>((ajaxResponse) => {
             const response = ajaxResponse.response || {};
 
             if (silent === true) {
               return empty();
             }
 
-            if (next) {
-              return next(response, ajaxResponse.status, ajaxResponse.responseType);
+            if (success) {
+              return success(response, ajaxResponse.status, ajaxResponse.responseType);
             }
 
-            if (actionValidate(response.action, true) && typeof response.action.type !== 'symbol') {
-              if (Array.isArray(actionWhitelist) && actionWhitelist.indexOf(response.action.type) === -1) {
-                throw new AjaxError(`Action type ${response.action.type} is not allowed`, ajaxResponse.xhr, params);
+            const responseAction = response.action;
+            if (actionValidate(responseAction, true) && typeof responseAction.type === 'string') {
+              if (Array.isArray(actionWhitelist) && actionWhitelist.indexOf(responseAction.type) === -1) {
+                throw new AjaxError(`Action type ${responseAction.type} is not allowed`, ajaxResponse.xhr, params);
               }
 
-              return response.action;
+              return responseAction;
             }
 
             return empty();
           }),
+          catchError((err: unknown) => (error && err instanceof AjaxError ? of(error(err)) : throwError(err))),
           mergeMap(actionFlat),
         );
 

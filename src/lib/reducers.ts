@@ -1,13 +1,13 @@
-import { actionType, reducersType, reducerType } from './types';
+import { ActionType, ReducersType, ReducerType } from './types';
 
 /**
  *
  * @param reducers
  */
-export const combineReducers = <State>(reducers: reducersType<State, any>): reducerType<State, any> => {
+export const combineReducers = <State>(reducers: ReducersType<State>): ReducerType<State> => {
   checkedReducers(reducers);
 
-  return (state: State | undefined, action: actionType<State>): State => {
+  return (state: State | undefined, action: ActionType<State>): State => {
     const nextState: { [K in keyof State]?: State[K] } = {};
     let hasChange = false;
 
@@ -17,9 +17,7 @@ export const combineReducers = <State>(reducers: reducersType<State, any>): redu
       const newSubState = reducer(oldSubState, action);
 
       if (typeof newSubState === 'undefined') {
-        const type = typeof action.type === 'symbol' ? action.type.toString() : action.type;
-
-        throw new Error(`Action "${type}" from Reducer "${key}" returns an undefined value`);
+        throw new Error(`Action "${action.type}" from Reducer "${key}" returns an undefined value`);
       }
 
       nextState[key] = newSubState;
@@ -34,7 +32,7 @@ export const combineReducers = <State>(reducers: reducersType<State, any>): redu
  *
  * @param reducers
  */
-export function checkedReducers<State>(reducers: reducersType<State, any>) {
+export function checkedReducers<State>(reducers: ReducersType<State>) {
   (Object.keys(reducers) as Array<keyof State>).forEach((key) => {
     const reducer = reducers[key];
 
